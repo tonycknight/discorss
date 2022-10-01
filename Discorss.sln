@@ -27,6 +27,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Discorss.Indexing", "src\Di
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Discorss.Test.Benchmarks", "test\Discorss.Test.Benchmarks\Discorss.Test.Benchmarks.fsproj", "{9B6BBB2F-3B50-416F-88C5-7097CECBF6DA}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Discorss.Indexing.Test.Unit", "test\Discorss.Indexing.Test.Unit\Discorss.Indexing.Test.Unit.fsproj", "{9E859C99-7A1F-4362-8F17-E6B7F6C455BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{9B6BBB2F-3B50-416F-88C5-7097CECBF6DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B6BBB2F-3B50-416F-88C5-7097CECBF6DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B6BBB2F-3B50-416F-88C5-7097CECBF6DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E859C99-7A1F-4362-8F17-E6B7F6C455BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E859C99-7A1F-4362-8F17-E6B7F6C455BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E859C99-7A1F-4362-8F17-E6B7F6C455BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E859C99-7A1F-4362-8F17-E6B7F6C455BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{1A2C2853-E161-4052-B2BF-941F52701FD7} = {655744F9-3113-4139-9808-F02C0BF9AD7C}
 		{B7887C0D-0699-400E-B87A-331BF2E7987A} = {655744F9-3113-4139-9808-F02C0BF9AD7C}
 		{9B6BBB2F-3B50-416F-88C5-7097CECBF6DA} = {2C02BE88-7375-4DAD-9CEA-D580938B5971}
+		{9E859C99-7A1F-4362-8F17-E6B7F6C455BE} = {2C02BE88-7375-4DAD-9CEA-D580938B5971}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {885B064D-58C3-4A8F-9235-9D51F72CD0D6}

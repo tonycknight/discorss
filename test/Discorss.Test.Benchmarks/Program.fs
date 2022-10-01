@@ -9,7 +9,7 @@ module Program=
     let main (args: string[]) =
 
         try
-            let asm = typedefof<Indexing.IndexingBenchmarks>.Assembly
+            let asm = typedefof<Indexing.TokenisationBenchmarks>.Assembly
             BenchmarkSwitcher.FromAssembly(asm).Run(args) |> ignore
             0
         with

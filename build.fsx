@@ -143,7 +143,7 @@ Target.create "Build" (fun _ ->
 Target.create "Pack" (fun _ -> publishProjects |> Seq.iter (DotNet.pack packOptions ) )
 
 Target.create "Unit Tests" (fun _ ->
-    !! "test/**/*.Tests.fsproj"
+    !! "test/**/*.Test.Unit.fsproj"
     |> Seq.iter (DotNet.test testOptions)    
 )
 
@@ -164,7 +164,7 @@ Target.create "Consolidate code coverage" (fun _ ->
 
 Target.create "Benchmarks" (fun _ ->
     let args = "-f * "
-    let result = DotNet.exec id "test/Tk.Extensions.Benchmarks/bin/Release/net6.0/Tk.Extensions.Benchmarks.dll" args
+    let result = DotNet.exec id "test/Discorss.Test.Benchmarks/bin/Release/net6.0/Discorss.Test.Benchmarks.dll" args
     
     if not result.OK then failwithf "Benchmarks failed!"
                             
@@ -189,14 +189,14 @@ Target.create "All" ignore
 "Stryker"
   ==> "All"
 *)
+
 "Clean"
   ==> "Restore"
   ==> "Build"
   ==> "Benchmarks"
-(*
+
 "Benchmarks"
   ==> "All"
-*)
 
 "Consolidate code coverage"
   ==> "All"
