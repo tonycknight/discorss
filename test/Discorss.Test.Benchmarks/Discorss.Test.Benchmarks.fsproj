@@ -5,10 +5,11 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="paket.references" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Discorss.Indexing\Discorss.Indexing.fsproj" />
+    <ProjectReference Include="..\..\src\Discorss.Indexing\Discorss.Indexing.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

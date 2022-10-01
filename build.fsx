@@ -185,17 +185,18 @@ Target.create "All" ignore
   ==> "Build"
   ==> "Stryker"
  
-
+(*
 "Stryker"
   ==> "All"
-
+*)
 "Clean"
   ==> "Restore"
   ==> "Build"
   ==> "Benchmarks"
-
+(*
 "Benchmarks"
   ==> "All"
+*)
 
 "Consolidate code coverage"
   ==> "All"
