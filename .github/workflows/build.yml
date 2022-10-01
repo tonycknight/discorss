@@ -1,0 +1,133 @@
+name: Build & Release
+
+
+on:
+  push:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  build-version-number: 0.1.${{ github.run_number }}  
+   
+jobs:
+  sca:
+    uses: ./.github/workflows/sca.yml
+    
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1.9.0
+        with:
+          dotnet-version: "6.0.x"
+        
+      - name: dotnet tool restore
+        run: dotnet tool restore
+              
+      - name: Run build
+        run: dotnet fake run "build.fsx" -t "Consolidate code coverage"
+
+      - name: Archive Test results
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: tests.results
+          path: |
+            ./test/**/TestResults/*
+            
+      - name: Archive Code coverage
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: codecoverage
+          path: ./publish/codecoverage/*.*
+          
+      - name: Archive library nupkg
+        uses: actions/upload-artifact@v2
+        with:
+          name: Tk.Extensions.nupkg
+          path: ./package/Tk.Extensions*.nupkg
+          
+      - name: Unit test results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: unit test results
+          path: ${{ github.workspace }}/test/Tk.Extensions.Tests/TestResults/test_results.trx
+          reporter: dotnet-trx
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Code coverage results
+        uses: 5monkeys/cobertura-action@master
+        if: always()
+        with:
+          path: ${{ github.workspace }}/test/Tk.Extensions.Tests/TestResults/coverage.info
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          minimum_coverage: 90
+          fail_below_threshold: true
+          show_line: true
+          show_branch: true
+          show_missing: true
+          show_class_names: true
+          link_missing_lines: true
+          report_name: code coverage results
+          
+  codeql:
+    uses: ./.github/workflows/codeql-analysis.yml
+
+  stryker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1.9.0
+        with:
+          dotnet-version: "6.0.x"
+        
+      - name: dotnet tool restore
+        run: dotnet tool restore
+              
+      - name: Run build
+        run: dotnet fake run "build.fsx" -t "Stryker"
+
+      - name: Archive Stryker results
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: stryker.results
+          path: |
+            ./StrykerOutput/**/reports/* 
+
+  benchmarks:    
+    # using Windows, as running ubuntu clears DLLs mid-way, causing aborts
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1.9.0
+        with:
+          dotnet-version: "6.0.x"
+        
+      - name: dotnet tool restore
+        run: dotnet tool restore
+              
+      - name: Run build
+        run: dotnet fake run "build.fsx" -t "Benchmarks"
+
+      - name: Archive Benchmark results
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: benchmarks.results
+          path: |
+            ./BenchmarkDotNet.Artifacts/**/results/*.html
+    
+  
