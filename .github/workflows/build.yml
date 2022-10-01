@@ -76,8 +76,8 @@ jobs:
           link_missing_lines: true
           report_name: code coverage results
           
-  codeql:
-    uses: ./.github/workflows/codeql-analysis.yml
+  #codeql:
+  #  uses: ./.github/workflows/codeql-analysis.yml
 
   benchmarks:    
     # using Windows, as running ubuntu clears DLLs mid-way, causing aborts
