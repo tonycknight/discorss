@@ -1,18 +1,20 @@
 ﻿namespace Discorss.Test.Benchmarks
 
 open System
-open BenchmarkDotNet.Running;
+open BenchmarkDotNet.Running
 
 module Program=
+
     [<EntryPoint>]
     let main (args: string[]) =
 
         try
-            //BenchmarkDotNet.Running.BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
+            let asm = typedefof<Indexing.IndexingBenchmarks>.Assembly
+            BenchmarkSwitcher.FromAssembly(asm).Run(args) |> ignore
             0
         with
         | ex -> 
             Console.ForegroundColor <- ConsoleColor.Red
-            Console.WriteLine(ex.ToString())
+            ex.ToString() |> Console.WriteLine
             Console.ResetColor()
             1
