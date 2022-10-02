@@ -3,7 +3,7 @@
 open System
 open BenchmarkDotNet
 open BenchmarkDotNet.Attributes
-
+open Discorss.Indexing
 
 [<MemoryDiagnoserAttribute>]
 [<AllStatisticsColumnAttribute>]
@@ -12,18 +12,18 @@ open BenchmarkDotNet.Attributes
 [<GcServerAttribute(true)>]
 type TokenisationBenchmarks()=
     
-    [<Params(0, 1, 2, 4, 8, 16, 32, 64, 128)>]
+    [<Params(0, 1, 2, 4, 8, 16, 32, 64, 128, 256)>]
     member val Count = 0 with get, set
 
     member val Text = "" with get, set
 
     [<IterationSetup>]
     member this.Setup()=
-        let words = [0 .. this.Count]
+        this.Text <- [0 .. this.Count]
                         |> Seq.map (fun i -> new String('a', i))
-        this.Text <- String.Join(' ', words)        
+                        |> Strings.join " "
 
     [<Benchmark>]
     member this.``wordSplit``() =
-        this.Text |> Discorss.Indexing.Tokenisation.wordSplit |> Array.ofSeq
+        this.Text |> Tokenisation.wordSplit |> Array.ofSeq
         
