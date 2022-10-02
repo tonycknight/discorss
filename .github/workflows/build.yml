@@ -46,12 +46,6 @@ jobs:
           name: codecoverage
           path: ./publish/codecoverage/*.*
           
-      - name: Archive library nupkg
-        uses: actions/upload-artifact@v2
-        with:
-          name: Tk.Extensions.nupkg
-          path: ./package/Tk.Extensions*.nupkg
-          
       - name: Unit test results
         uses: dorny/test-reporter@v1
         if: always()
