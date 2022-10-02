@@ -5,6 +5,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="StringsTests.fs" />
     <Compile Include="TokenisationTests.fs" />
     <None Include="paket.references" />
   </ItemGroup>
