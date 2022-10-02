@@ -57,7 +57,7 @@ jobs:
         if: always()
         with:
           name: unit test results
-          path: ${{ github.workspace }}/test/Tk.Extensions.Tests/TestResults/test_results.trx
+          path: ${{ github.workspace }}/test/**/TestResults/test_results.trx
           reporter: dotnet-trx
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -65,7 +65,7 @@ jobs:
         uses: 5monkeys/cobertura-action@master
         if: always()
         with:
-          path: ${{ github.workspace }}/test/Tk.Extensions.Tests/TestResults/coverage.info
+          path: ${{ github.workspace }}/test/**/TestResults/coverage.info
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           minimum_coverage: 90
           fail_below_threshold: true
