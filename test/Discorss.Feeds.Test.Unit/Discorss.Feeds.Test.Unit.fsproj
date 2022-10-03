@@ -20,6 +20,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Include="Rss091ParserTests.fs" />
+    <Compile Include="Rss092ParserTests.fs" />
     <Compile Include="Rss20ParserTests.fs" />
   </ItemGroup>
   <ItemGroup>
