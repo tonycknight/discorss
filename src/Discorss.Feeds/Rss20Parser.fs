@@ -3,7 +3,7 @@
 open System
 open System.Xml.Linq
 
-module AtomParser=
+module Rss20Parser=
         
     let parseChannel (xml: XDocument)=
         match xml |> Xml.docElement "channel" with 
@@ -26,7 +26,7 @@ module AtomParser=
         
         xml |> Xml.docElements "item" |> Seq.map parse |> List.ofSeq
         
-    let isAtom (xml: XDocument) = 
+    let isRss20 (xml: XDocument) = 
         match Rss.rssVersion xml with
         | Some "2.0" -> true
         | _ -> false
@@ -36,12 +36,12 @@ module AtomParser=
         let title, description = parseChannel xml
         
         let result = { Feed.url = url; 
-                            feedType = FeedType.Atom; 
+                            feedType = FeedType.Rss20; 
                             title = title; 
                             description = description; 
                             updated = DateTimeOffset.UtcNow; 
                             entries = parseEntries xml }
         result |> Some
 
-    let (|IsAtom|_|) (xml: XDocument) =
-        xml |> isAtom |> Some
+    let (|IsRss20|_|) (xml: XDocument) =
+        xml |> isRss20 |> Some

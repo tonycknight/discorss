@@ -15,7 +15,7 @@ module FeedReader =
 
     let parser (xml: XDocument) = 
         match xml with
-        | AtomParser.IsAtom x ->  AtomParser.parse
+        | Rss20Parser.IsRss20 x ->  Rss20Parser.parse
         | _ -> (fun x y -> None)
 
     let parseXmlToFeed url (xml: XDocument) =

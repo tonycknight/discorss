@@ -7,34 +7,34 @@ open FsCheck
 open FsCheck.Xunit
 open FsUnit
 
-module AtomParserTests =
+module Rss20ParserTests =
         
-    let atomDoc() = 
-        "MsAtomFeed.xml" |> TestHelpers.sampleFeedAsString |> XDocument.Parse
+    let sampleDoc() = 
+        "MsRss20Feed.xml" |> TestHelpers.sampleFeedAsString |> XDocument.Parse
         
 
     [<Xunit.Fact>]
-    let ``isAtom empty XML doc``() =
+    let ``isRss20 empty XML doc``() =
         let doc = new XDocument()
 
-        let r = AtomParser.isAtom doc
+        let r = Rss20Parser.isRss20 doc
         
         r |> should equal false
 
     [<Xunit.Fact>]
-    let ``isAtom sample Atom doc``() =
-        let doc = atomDoc()
+    let ``isRss20 sample feed doc``() =
+        let doc = sampleDoc()
 
-        let r = AtomParser.isAtom doc
+        let r = Rss20Parser.isRss20 doc
         
         r |> should equal true
 
     [<Xunit.Fact>]
-    let ``parse sample Atom doc``()=
-        let doc = atomDoc()
+    let ``parse sample Rss20 doc``()=
+        let doc = sampleDoc()
         let url = "http://test.org"
 
-        let feed = AtomParser.parse url doc |> Option.get
+        let feed = Rss20Parser.parse url doc |> Option.get
         
         feed.url |> should equal url
         feed.title |> should equal ".NET Blog"

@@ -5,10 +5,10 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="SampleFeeds\MsAtomFeed.xml">
+    <None Include="SampleFeeds\MsRss20Feed.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Compile Include="Feeds\AtomParserBenchmarks.fs" />
+    <Compile Include="Feeds\Rss20ParserBenchmarks.fs" />
     <Compile Include="Indexing\TokenisationBenchmarks.fs" />
     <None Include="paket.references" />
     <Compile Include="Program.fs" />

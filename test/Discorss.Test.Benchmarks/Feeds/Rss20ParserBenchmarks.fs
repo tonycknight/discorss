@@ -9,7 +9,7 @@ open Discorss.Feeds
 [<RankColumn>]
 [<JsonExporterAttribute.Full>]
 [<GcServerAttribute(true)>]
-type AtomParserBenchmarks()=
+type Rss20ParserBenchmarks()=
     
 
     [<IterationSetup>]
@@ -17,7 +17,7 @@ type AtomParserBenchmarks()=
         this.Text <- Discorss.Feeds.Test.Unit.TestHelpers.sampleFeedAsString this.SampleFileName
         this.Doc <- this.Text |> XDocument.Parse
         
-    [<Params("MsAtomFeed.xml")>]
+    [<Params("MsRss20Feed.xml")>]
     member val SampleFileName = "" with get, set
 
     member val Text = "" with get, set
@@ -26,14 +26,14 @@ type AtomParserBenchmarks()=
     [<Benchmark>]
     member this.Parse()=
         this.Doc
-            |> AtomParser.parse "http://url" 
+            |> Rss20Parser.parse "http://url" 
             |> ignore
 
     [<Benchmark>]
     member this.ParseWithLoad()=
         this.Text 
             |> XDocument.Parse
-            |> AtomParser.parse "http://url" 
+            |> Rss20Parser.parse "http://url" 
             |> ignore
 
 

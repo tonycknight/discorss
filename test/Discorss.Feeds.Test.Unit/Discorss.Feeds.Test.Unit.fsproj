@@ -7,10 +7,10 @@
 
   <ItemGroup>
     <Compile Include="TestHelpers.fs" />
-    <None Include="SampleFeeds\MsAtomFeed.xml">
+    <None Include="SampleFeeds\MsRss20Feed.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Compile Include="AtomParserTests.fs" />
+    <Compile Include="Rss20ParserTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,8 +3,10 @@
 open System
 
 type FeedType=
-    | Atom
+    | Rss20
     | Rss091
+    | Rss092
+    | Atom
     | Unknown
 
 type FeedEntry = {
