@@ -26,7 +26,7 @@ module Rss20Parser=
         
         xml |> Xml.docElements "item" |> Seq.map parse |> List.ofSeq
         
-    let isRss20 (xml: XDocument) = 
+    let isMatch (xml: XDocument) = 
         match Rss.rssVersion xml with
         | Some "2.0" -> true
         | _ -> false
@@ -44,4 +44,6 @@ module Rss20Parser=
         result |> Some
 
     let (|IsRss20|_|) (xml: XDocument) =
-        xml |> isRss20 |> Some
+        match xml |> isMatch with
+        | true -> Some true
+        | _ -> None

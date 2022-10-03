@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Include="TestHelpers.fs" />
+    <Compile Include="FeedReaderTests.fs" />
     <None Include="SampleFeeds\Rss091Feed.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

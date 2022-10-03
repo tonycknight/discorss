@@ -17,7 +17,7 @@ module Rss20ParserTests =
     let ``isRss20 empty XML doc``() =
         let doc = new XDocument()
 
-        let r = Rss20Parser.isRss20 doc
+        let r = Rss20Parser.isMatch doc
         
         r |> should equal false
 
@@ -25,7 +25,7 @@ module Rss20ParserTests =
     let ``isRss20 sample feed doc``() =
         let doc = sampleDoc()
 
-        let r = Rss20Parser.isRss20 doc
+        let r = Rss20Parser.isMatch doc
         
         r |> should equal true
 
