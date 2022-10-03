@@ -5,6 +5,9 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="SampleFeeds\Rss20Feed.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="SampleFeeds\MsRss20Feed.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

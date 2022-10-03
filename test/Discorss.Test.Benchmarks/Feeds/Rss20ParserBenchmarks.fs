@@ -17,7 +17,7 @@ type Rss20ParserBenchmarks()=
         this.Text <- Discorss.Feeds.Test.Unit.TestHelpers.sampleFeedAsString this.SampleFileName
         this.Doc <- this.Text |> XDocument.Parse
         
-    [<Params("MsRss20Feed.xml")>]
+    [<Params("MsRss20Feed.xml", "Rss20Feed.xml")>]
     member val SampleFileName = "" with get, set
 
     member val Text = "" with get, set
