@@ -10,6 +10,7 @@ nuget FsCheck.Xunit
 nuget FSharp.Core
 nuget FsUnit
 nuget giraffe
+nuget HtmlAgilityPack
 nuget Microsoft.NET.Test.Sdk
 nuget NSubstitute
 nuget xunit
