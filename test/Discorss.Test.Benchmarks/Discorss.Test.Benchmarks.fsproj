@@ -5,13 +5,19 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="SampleFeeds\MsAtomFeed.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Compile Include="Feeds\AtomParserBenchmarks.fs" />
     <Compile Include="Indexing\TokenisationBenchmarks.fs" />
     <None Include="paket.references" />
     <Compile Include="Program.fs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\src\Discorss.Common\Discorss.Common.fsproj" />
     <ProjectReference Include="..\..\src\Discorss.Indexing\Discorss.Indexing.fsproj" />
+    <ProjectReference Include="..\Discorss.Feeds.Test.Unit\Discorss.Feeds.Test.Unit.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
