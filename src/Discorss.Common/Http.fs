@@ -47,13 +47,14 @@ type IExternalHttpClient=
 type IExternalHttpClientFactory=
     abstract member httpClient: name:string -> IExternalHttpClient
 
+[<ExcludeFromCodeCoverage>]
 type ExternalHttpClient(httpClient: HttpClient)=
     let httpGet = Http.get httpClient
 
     interface IExternalHttpClient with
         member this.get(url) = httpGet url
 
-
+[<ExcludeFromCodeCoverage>]
 type ExternalHttpClientFactory()=
     let client = Http.httpClientFactory()
     interface IExternalHttpClientFactory with
