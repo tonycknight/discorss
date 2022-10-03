@@ -7,17 +7,17 @@ open FsCheck
 open FsCheck.Xunit
 open FsUnit
 
-module Rss20ParserTests =
+module Rss091ParserTests =
         
     let sampleDoc() = 
-        "MsRss20Feed.xml" |> TestHelpers.sampleFeedAsString |> XDocument.Parse
+        "Rss091Feed.xml" |> TestHelpers.sampleFeedAsString |> XDocument.Parse
         
 
     [<Xunit.Fact>]
     let ``isMatch empty XML doc``() =
         let doc = new XDocument()
 
-        let r = Rss20Parser.isMatch doc
+        let r = Rss091Parser.isMatch doc
         
         r |> should equal false
 
@@ -25,7 +25,7 @@ module Rss20ParserTests =
     let ``isMatch sample feed doc``() =
         let doc = sampleDoc()
 
-        let r = Rss20Parser.isMatch doc
+        let r = Rss091Parser.isMatch doc
         
         r |> should equal true
 
@@ -34,10 +34,10 @@ module Rss20ParserTests =
         let doc = sampleDoc()
         let url = "http://test.org"
 
-        let feed = Rss20Parser.parse url doc |> Option.get
+        let feed = Rss091Parser.parse url doc |> Option.get
         
         feed.url |> should equal url
-        feed.title |> should equal ".NET Blog"
-        feed.description |> should equal "Free. Cross-platform. Open source. A developer platform for building all your apps."
-        feed.entries |> should haveLength 10
+        feed.title |> should equal "WriteTheWeb"
+        feed.description |> should equal "News for web users that write back"
+        feed.entries |> should haveLength 6
 

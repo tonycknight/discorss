@@ -14,6 +14,7 @@
     <Compile Include="Models.fs" />
     <Compile Include="Xml.fs" />
     <Compile Include="Rss.fs" />
+    <Compile Include="Rss091Parser.fs" />
     <Compile Include="Rss20Parser.fs" />
     <Compile Include="FeedReader.fs" />
   </ItemGroup>
