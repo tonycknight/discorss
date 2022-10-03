@@ -1,4 +1,4 @@
-﻿namespace Discorss.Indexing
+﻿namespace Discorss
 
 open System
 

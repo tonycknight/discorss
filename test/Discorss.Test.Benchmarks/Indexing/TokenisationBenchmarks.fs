@@ -1,8 +1,8 @@
 ﻿namespace Discorss.Test.Benchmarks.Indexing
 
 open System
-open BenchmarkDotNet
 open BenchmarkDotNet.Attributes
+open Discorss
 open Discorss.Indexing
 
 [<MemoryDiagnoserAttribute>]
