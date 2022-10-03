@@ -7,11 +7,22 @@
 
   <ItemGroup>
     <Compile Include="TestHelpers.fs" />
+    <None Include="SampleFeeds\Rss091Feed.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="SampleFeeds\Rss092Feed.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="SampleFeeds\Rss20Feed.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="SampleFeeds\MsRss20Feed.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Include="Rss20ParserTests.fs" />
   </ItemGroup>
+
+  <ItemGroup />
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Discorss.Feeds\Discorss.Feeds.fsproj" />
