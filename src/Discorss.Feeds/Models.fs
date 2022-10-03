@@ -34,3 +34,8 @@ type FeedInfo = {
     description:    string
     updated:        DateTimeOffset
     }
+
+type FeedReadResult = 
+    | Xml  of doc:System.Xml.Linq.XDocument
+    | Feed  of feed:Feed
+    | Error of message:string

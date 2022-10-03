@@ -6,22 +6,27 @@ open Discorss
 
 module FeedReader =
     
-    let parseBodyToXml body =
+    let private parseBodyToXml body =
         try
-            XDocument.Parse(body) |> Some
+            XDocument.Parse(body) |> FeedReadResult.Xml
         with
-        | :? System.Xml.XmlException -> None
+        | :? System.Xml.XmlException as ex -> FeedReadResult.Error ex.Message
 
-    let parser (xml: XDocument) = 
+    let private parser (xml: XDocument) = 
         match xml with
-        | Rss20Parser.IsRss20 x ->  Rss20Parser.parse
-        | _ -> (fun x y -> None)
+        | Rss20Parser.IsRss20 x -> Some Rss20Parser.parse 
+        | _ -> None
 
-    let parseXmlToFeed url (xml: XDocument) =
-        (parser xml) url xml
-
+    let private parseXmlToFeed url (xml: XDocument) =
+        match parser xml with
+        | Some p -> (p url xml) |> Option.map FeedReadResult.Feed |> Option.defaultValue ( FeedReadResult.Error "Error in parsing")
+        | None -> FeedReadResult.Error "No parser found"
+        
     let parse url body =
-        body |> parseBodyToXml |> Option.bind (parseXmlToFeed url)
+        body    |> parseBodyToXml
+                |> (function
+                    | FeedReadResult.Xml xml -> parseXmlToFeed url xml
+                    | x -> x)                
 
     let read (clients: IExternalHttpClientFactory) url =
         task {
@@ -29,10 +34,9 @@ module FeedReader =
 
             let! resp = client.get url
 
-            // TODO: errors/unkonwn feeds
             return match resp with
-                    | HttpOkRequestResponse(status,body) -> body |> parse |> Choice1Of2
-                    | HttpErrorRequestResponse(status,body) -> Choice2Of2 (new Exception(body)) // TODO: better error discrimination
-                    | HttpExceptionRequestResponse(ex) -> Choice2Of2 ex
+                    | HttpOkRequestResponse(status,body) ->     body |> parse url
+                    | HttpErrorRequestResponse(status,body) ->  FeedReadResult.Error (sprintf "HTTP %A received" status)
+                    | HttpExceptionRequestResponse(ex) ->       FeedReadResult.Error ex.Message
         }
         

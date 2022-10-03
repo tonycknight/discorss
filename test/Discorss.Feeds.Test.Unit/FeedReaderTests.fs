@@ -15,19 +15,20 @@ module FeedReaderTests=
     let ``parse Rss 20``(name)=
         let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
 
-        feed |> should not' (equal None)
-
+        feed |> should be (ofCase <@ FeedReadResult.Feed @>)
+        
     [<Xunit.Theory>]
     [<Xunit.InlineData("Rss091Feed.xml")>]    
     let ``parse Rss 091``(name)=
         let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
-
-        feed |> should equal None
+        
+        feed |> should be (ofCase <@ FeedReadResult.Error @>)
 
     [<Xunit.Theory>]
     [<Xunit.InlineData("Rss092Feed.xml")>]    
     let ``parse Rss 092``(name)=
         let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
 
-        feed |> should equal None
+        feed |> should be (ofCase <@ FeedReadResult.Error @>)
+        
 
