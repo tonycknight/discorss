@@ -1,14 +1,27 @@
 ﻿namespace Discorss.Feeds.Test.Unit
 
 open System
-open System.Xml.Linq
+open System.Net
+open System.Threading.Tasks
+open Discorss
 open Discorss.Feeds
 open FsCheck
 open FsCheck.Xunit
 open FsUnit
+open NSubstitute
 
 module FeedReaderTests=
     
+    let private mockHttpClientFactory reqResp =         
+
+        let client = Substitute.For<IExternalHttpClient>()
+        client.GetAsync(Arg.Any<string>()).Returns(Task.FromResult(reqResp)) |> ignore
+        
+        let fact = Substitute.For<IExternalHttpClientFactory>()
+        fact.GetHttpClient(Arg.Any<string>()).Returns(client) |> ignore
+
+        fact
+
     [<Xunit.Theory>]
     [<Xunit.InlineData("MsRss20Feed.xml")>]    
     [<Xunit.InlineData("Rss20Feed.xml")>]
@@ -32,3 +45,46 @@ module FeedReaderTests=
         feed |> should be (ofCase <@ FeedReadResult.Error @>)
         
 
+    [<Xunit.Theory>]
+    [<Xunit.InlineData("")>]
+    [<Xunit.InlineData("aa")>]
+    [<Xunit.InlineData("<xml>")>]
+    [<Xunit.InlineData("<xml/>")>]
+    let ``read receives OK with malformed body``(body)=
+        
+        let fact = HttpRequestResponse.HttpOkRequestResponse(HttpStatusCode.OK, body)            
+                    |> mockHttpClientFactory
+
+        let read = "url" |> FeedReader.readAsync fact 
+        
+        let result = read.GetAwaiter().GetResult()
+
+        result |> should be (ofCase <@ FeedReadResult.Error @>)
+
+    [<Xunit.Theory>]
+    [<Xunit.InlineData("")>]
+    [<Xunit.InlineData("aa")>]
+    [<Xunit.InlineData("<xml>")>]
+    [<Xunit.InlineData("<xml/>")>]
+    let ``read receives error with malformed body``(body)=
+        
+        let fact = HttpRequestResponse.HttpErrorRequestResponse(HttpStatusCode.InternalServerError, body)            
+                    |> mockHttpClientFactory
+
+        let read = "url" |> FeedReader.readAsync fact 
+        
+        let result = read.GetAwaiter().GetResult()
+
+        result |> should be (ofCase <@ FeedReadResult.Error @>)
+
+    [<Xunit.Fact>]    
+    let ``read receives exception with malformed body``()=
+        
+        let fact = HttpRequestResponse.HttpExceptionRequestResponse(new Exception())
+                    |> mockHttpClientFactory
+
+        let read = "url" |> FeedReader.readAsync fact 
+        
+        let result = read.GetAwaiter().GetResult()
+
+        result |> should be (ofCase <@ FeedReadResult.Error @>)

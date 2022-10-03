@@ -41,21 +41,21 @@ module Http =
         }
 
 type IExternalHttpClient=
-    abstract member get : url:string -> Task<HttpRequestResponse>
+    abstract member GetAsync : url:string -> Task<HttpRequestResponse>
    
 
 type IExternalHttpClientFactory=
-    abstract member httpClient: name:string -> IExternalHttpClient
+    abstract member GetHttpClient: name:string -> IExternalHttpClient
 
 [<ExcludeFromCodeCoverage>]
 type ExternalHttpClient(httpClient: HttpClient)=
     let httpGet = Http.get httpClient
 
     interface IExternalHttpClient with
-        member this.get(url) = httpGet url
+        member this.GetAsync(url) = httpGet url
 
 [<ExcludeFromCodeCoverage>]
 type ExternalHttpClientFactory()=
     let client = Http.httpClientFactory()
     interface IExternalHttpClientFactory with
-        member this.httpClient(name) = new ExternalHttpClient(client)
+        member this.GetHttpClient(name) = new ExternalHttpClient(client) // TODO: 

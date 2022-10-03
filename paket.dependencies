@@ -11,5 +11,6 @@ nuget FSharp.Core
 nuget FsUnit
 nuget giraffe
 nuget Microsoft.NET.Test.Sdk
+nuget NSubstitute
 nuget xunit
 nuget xunit.runner.visualstudio
