@@ -61,7 +61,7 @@ jobs:
         with:
           path: ${{ github.workspace }}/test/**/TestResults/coverage.info
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          minimum_coverage: 90
+          minimum_coverage: 10
           fail_below_threshold: true
           show_line: true
           show_branch: true
