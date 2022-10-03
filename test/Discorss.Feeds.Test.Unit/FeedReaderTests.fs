@@ -35,14 +35,14 @@ module FeedReaderTests=
     let ``parse Rss 091``(name)=
         let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
         
-        feed |> should be (ofCase <@ FeedReadResult.Error @>)
+        feed |> should be (ofCase <@ FeedReadResult.Feed @>)
 
     [<Xunit.Theory>]
     [<Xunit.InlineData("Rss092Feed.xml")>]    
     let ``parse Rss 092``(name)=
         let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
 
-        feed |> should be (ofCase <@ FeedReadResult.Error @>)
+        feed |> should be (ofCase <@ FeedReadResult.Feed @>)
         
 
     [<Xunit.Theory>]
