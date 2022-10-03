@@ -9,11 +9,14 @@ open FsUnit
 module HtmlTests=
 
     [<Xunit.Theory>]
-    [<Xunit.InlineData("<body><table><th>test</th></table>yadda</body>", "yadda")>]
+    [<Xunit.InlineData("", "")>]
+    [<Xunit.InlineData("yadda", "yadda")>]
+    [<Xunit.InlineData("<body>ya<a href=\"link\">dd</a>ah</body>", "yaddah")>]
+    [<Xunit.InlineData("<body><table><th>test</th></table>yadda</body>", "testyadda")>]
     [<Xunit.InlineData("<body><script>do nothing</script>yadda</body>", "yadda")>]
     let ``stripHtml returns inner text`` html expected =
-        let txt = Discorss.Html.stripHtml html
-        
-        txt |> Option.map id
+        html 
+            |> Discorss.Html.stripHtml        
+            |> Option.map id
             |> Option.defaultValue ""
             |> should equal expected
