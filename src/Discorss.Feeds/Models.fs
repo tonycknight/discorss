@@ -9,7 +9,7 @@ type FeedType=
 
 type FeedEntry = {
     id:             string
-    creation:       DateTimeOffset
+    publication:    DateTimeOffset
     url:            string
     title:          string
     description:    string
