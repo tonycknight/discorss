@@ -5,12 +5,16 @@ open System.Diagnostics.CodeAnalysis
 open System.Threading.Tasks
 
 type IFeedRepository=
-    abstract member GetFeedsAsync: unit -> Task<seq<FeedInfo>>
+    abstract member GetFeedInfosAsync: unit -> Task<seq<FeedInfo>>
+    abstract member SetFeedInfoAsync: FeedInfo -> Task
 
 [<ExcludeFromCodeCoverage>]
 type StubFeedRepository(feedUris)=
     
-    let feeds = feedUris |> List.map (fun u -> { FeedInfo.uri = u; description = ""; updated = DateTimeOffset.MinValue })
+    let feeds = feedUris |> List.map (fun u -> { FeedInfo.uri = u; 
+                                                        description = "";
+                                                        updated = DateTimeOffset.MinValue;
+                                                        lastFetched = DateTimeOffset.MinValue })
     
     let feedCache = feeds   |> Seq.map (fun f -> new System.Collections.Generic.KeyValuePair<string, FeedInfo>(f.uri, f))
                             |> System.Collections.Concurrent.ConcurrentDictionary<string, FeedInfo>
@@ -23,7 +27,12 @@ type StubFeedRepository(feedUris)=
                                 ])
 
     interface IFeedRepository with
-        member this.GetFeedsAsync()=
+        member this.GetFeedInfosAsync()=
             task {                
                 return feedCache.Values 
+            }
+
+        member this.SetFeedInfoAsync(feed: FeedInfo)=
+            task {                
+                feedCache.[feed.uri] <- { feed with updated = DateTimeOffset.UtcNow }
             }

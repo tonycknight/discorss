@@ -36,7 +36,7 @@ module Rss092Parser=
         let title, description = parseChannel xml
         
         let result = { Feed.uri = url; 
-                            feedType = FeedType.Rss20; 
+                            feedType = FeedType.Rss092; 
                             title = title; 
                             description = description; 
                             updated = DateTimeOffset.UtcNow; 

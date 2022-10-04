@@ -33,6 +33,7 @@ type FeedInfo = {
     uri:            string
     description:    string
     updated:        DateTimeOffset
+    lastFetched:    DateTimeOffset
     }
 
 type FeedReadResult = 
