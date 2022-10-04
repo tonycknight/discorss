@@ -1,7 +1,7 @@
 ﻿namespace Discorss.Indexing.Service
 
 open System
-open Discorss.Security
+open Discorss
 open Giraffe
 
 module WebApp=

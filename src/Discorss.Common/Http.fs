@@ -49,7 +49,7 @@ type ExternalHttpClient(httpClient: HttpClient)=
         member this.GetAsync(url) = httpGet url
 
 [<ExcludeFromCodeCoverage>]
-type ExternalHttpClientFactory()=
-    let client = Http.httpClientFactory()
+type ExternalHttpClientFactory(client: IExternalHttpClient)=
+    
     interface IExternalHttpClientFactory with
-        member this.GetHttpClient(name) = new ExternalHttpClient(client)
+        member this.GetHttpClient(name) = client

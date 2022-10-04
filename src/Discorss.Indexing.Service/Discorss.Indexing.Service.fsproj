@@ -13,7 +13,6 @@
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
     <ProjectReference Include="..\Discorss.Feeds\Discorss.Feeds.fsproj" />
     <ProjectReference Include="..\Discorss.Indexing\Discorss.Indexing.fsproj" />
-    <ProjectReference Include="..\Discorss.Security\Discorss.Security.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
