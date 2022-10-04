@@ -59,7 +59,7 @@ jobs:
         uses: 5monkeys/cobertura-action@master
         if: always()
         with:
-          path: ${{ github.workspace }}/test/**/TestResults/coverage.info
+          path: ${{ github.workspace }}/publish/codecoverage/Cobertura.xml
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           minimum_coverage: 10
           fail_below_threshold: true

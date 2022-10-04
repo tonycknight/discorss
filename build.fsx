@@ -155,12 +155,20 @@ Target.create "Stryker" (fun _ ->
                             )
 )
 
-Target.create "Consolidate code coverage" (fun _ ->  
+Target.create "Generate code coverage reports" (fun _ ->  
     let args = sprintf @"-reports:""./test/**/coverage.info"" -targetdir:""./%s/codecoverage"" -reporttypes:""Html""" publishDir
     let result = DotNet.exec id "reportgenerator" args
   
     if not result.OK then failwithf "reportgenerator failed!"  
 )
+
+Target.create "Consolidate code coverage" (fun _ ->  
+    let args = sprintf @"-reports:""./test/**/coverage.info"" -targetdir:""./%s/codecoverage"" -reporttypes:""Cobertura""" publishDir
+    let result = DotNet.exec id "reportgenerator" args
+  
+    if not result.OK then failwithf "reportgenerator failed!"  
+)
+
 
 Target.create "Benchmarks" (fun _ ->
     let args = "-f * "
@@ -177,6 +185,7 @@ Target.create "All" ignore
   ==> "Build"
   ==> "Pack"
   ==> "Unit Tests"
+  ==> "Generate code coverage reports"
   ==> "Consolidate code coverage"
   
 
