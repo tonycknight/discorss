@@ -7,8 +7,8 @@ module Rss20Parser=
         
     let parseChannel (xml: XDocument)=
         match xml |> Xml.docElement "channel" with 
-        | Some channel -> let title = channel |> Xml.elementValueDefault "title" 
-                          let description = channel |> Xml.elementValueDefault "description" 
+        | Some channel -> let title = channel |> Xml.elementValueDefault "title" |> Rss.dehtmlify
+                          let description = channel |> Xml.elementValueDefault "description" |> Rss.dehtmlify
                           (title, description)
         | _ -> ("", "")
 
@@ -16,11 +16,11 @@ module Rss20Parser=
         let parse (e: XElement) =            
             { FeedEntry.id = e |> Xml.elementValueDefault "link";
                         publication = DateTimeOffset.Now;
-                        url = e |> Xml.elementValueDefault "link" ;
-                        title = e |> Xml.elementValueDefault "title" ;
-                        description = e |> Xml.elementValueDefault "description" ;
+                        uri = e |> Xml.elementValueDefault "link" ;
+                        title = e |> Xml.elementValueDefault "title" |> Rss.dehtmlify;
+                        description = e |> Xml.elementValueDefault "description" |> Rss.dehtmlify;
                         author = e |> Xml.elementValueDefault (Xml.xn XmlNs.dcns "creator") ;
-                        content = e |> Xml.elementValueDefault (Xml.xn XmlNs.contentns "encoded") ;
+                        content = e |> Xml.elementValueDefault (Xml.xn XmlNs.contentns "encoded") |> Rss.dehtmlify;
                         categories = e |> Xml.elementValues "category" |> List.ofSeq;
                         }
         
@@ -35,10 +35,10 @@ module Rss20Parser=
         
         let title, description = parseChannel xml
         
-        let result = { Feed.url = url; 
+        let result = { Feed.uri = url; 
                             feedType = FeedType.Rss20; 
-                            title = title; 
-                            description = description; 
+                            title = title |> Rss.dehtmlify;
+                            description = description |> Rss.dehtmlify; 
                             updated = DateTimeOffset.UtcNow; 
                             entries = parseEntries xml }
         result |> Some

@@ -18,6 +18,7 @@
     <Compile Include="Rss092Parser.fs" />
     <Compile Include="Rss20Parser.fs" />
     <Compile Include="FeedReader.fs" />
+    <Compile Include="FeedRepository.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />

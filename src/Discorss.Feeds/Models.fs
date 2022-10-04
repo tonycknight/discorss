@@ -12,7 +12,7 @@ type FeedType=
 type FeedEntry = {
     id:             string
     publication:    DateTimeOffset
-    url:            string
+    uri:            string
     title:          string
     description:    string
     author:         string
@@ -23,14 +23,14 @@ type FeedEntry = {
 type Feed = {
     feedType:       FeedType
     title:          string
-    url:            string
+    uri:            string
     description:    string
     updated:        DateTimeOffset
     entries:        FeedEntry list
     }
 
 type FeedInfo = {
-    url:            string
+    uri:            string
     description:    string
     updated:        DateTimeOffset
     }

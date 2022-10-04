@@ -36,7 +36,7 @@ module Rss092ParserTests =
 
         let feed = Rss092Parser.parse url doc |> Option.get
         
-        feed.url |> should equal url
+        feed.uri |> should equal url
         feed.title |> should equal "Dave Winer: Grateful Dead"
         feed.description |> should equal "A high-fidelity Grateful Dead song every day. This is where we're experimenting with enclosures on RSS news items that download when you're not using your computer. If it works (it will) it will be the end of the Click-And-Wait multimedia experience on the Internet. "
         feed.entries |> should haveLength 22

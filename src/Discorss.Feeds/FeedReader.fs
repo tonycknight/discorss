@@ -11,17 +11,18 @@ module FeedReader =
             XDocument.Parse(body) |> FeedReadResult.Xml
         with
         | :? System.Xml.XmlException as ex -> FeedReadResult.Error ex.Message
-
+            
     let private parser (xml: XDocument) = 
         match xml with
-        | Rss20Parser.IsRss20 x -> Some Rss20Parser.parse 
-        | Rss092Parser.IsRss092 x -> Some Rss092Parser.parse 
-        | Rss091Parser.IsRss091 x -> Some Rss091Parser.parse 
+        | Rss20Parser.IsRss20 x ->      Rss20Parser.parse |> Some
+        | Rss092Parser.IsRss092 x ->    Rss092Parser.parse |> Some
+        | Rss091Parser.IsRss091 x ->    Rss091Parser.parse |> Some
         | _ -> None
-
+                
     let private parseXmlToFeed url (xml: XDocument) =
         match parser xml with
-        | Some p -> (p url xml) |> Option.map FeedReadResult.Feed |> Option.defaultValue ( FeedReadResult.Error "Error in parsing")
+        | Some p -> (p url xml) |> Option.map FeedReadResult.Feed
+                                |> Option.defaultValue ( FeedReadResult.Error "Error in parsing")
         | None -> FeedReadResult.Error "No parser found"
         
     let parse url body =

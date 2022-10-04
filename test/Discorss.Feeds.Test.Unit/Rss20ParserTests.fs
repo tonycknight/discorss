@@ -36,7 +36,7 @@ module Rss20ParserTests =
 
         let feed = Rss20Parser.parse url doc |> Option.get
         
-        feed.url |> should equal url
+        feed.uri |> should equal url
         feed.title |> should equal ".NET Blog"
         feed.description |> should equal "Free. Cross-platform. Open source. A developer platform for building all your apps."
         feed.entries |> should haveLength 10

@@ -1,18 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup>    
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
+
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="Models.fs" />
+    <Compile Include="WebAppHandlers.fs" />
     <Compile Include="WebApp.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
     <ProjectReference Include="..\Discorss.Feeds\Discorss.Feeds.fsproj" />
-    <ProjectReference Include="..\Discorss.Indexing\Discorss.Indexing.fsproj" />
     <ProjectReference Include="..\Discorss.Security\Discorss.Security.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />

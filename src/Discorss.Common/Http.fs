@@ -58,4 +58,4 @@ type ExternalHttpClient(httpClient: HttpClient)=
 type ExternalHttpClientFactory()=
     let client = Http.httpClientFactory()
     interface IExternalHttpClientFactory with
-        member this.GetHttpClient(name) = new ExternalHttpClient(client) // TODO: 
+        member this.GetHttpClient(name) = new ExternalHttpClient(client)

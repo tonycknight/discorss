@@ -16,7 +16,7 @@ module Rss091Parser=
         let parse (e: XElement) =            
             { FeedEntry.id = e |> Xml.elementValueDefault "link";
                         publication = DateTimeOffset.Now;
-                        url = e |> Xml.elementValueDefault "link" ;
+                        uri = e |> Xml.elementValueDefault "link" ;
                         title = e |> Xml.elementValueDefault "title" ;
                         description = e |> Xml.elementValueDefault "description" ;
                         author = e |> Xml.elementValueDefault (Xml.xn XmlNs.dcns "creator") ;
@@ -35,7 +35,7 @@ module Rss091Parser=
         
         let title, description = parseChannel xml
         
-        let result = { Feed.url = url; 
+        let result = { Feed.uri = url; 
                             feedType = FeedType.Rss20; 
                             title = title; 
                             description = description; 

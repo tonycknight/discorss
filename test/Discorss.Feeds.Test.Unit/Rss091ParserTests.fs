@@ -36,7 +36,7 @@ module Rss091ParserTests =
 
         let feed = Rss091Parser.parse url doc |> Option.get
         
-        feed.url |> should equal url
+        feed.uri |> should equal url
         feed.title |> should equal "WriteTheWeb"
         feed.description |> should equal "News for web users that write back"
         feed.entries |> should haveLength 6
