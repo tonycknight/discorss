@@ -1,11 +1,13 @@
 ﻿namespace Discorss.Feeds
 
 open System
+open System.Diagnostics.CodeAnalysis
 open System.Threading.Tasks
 
 type IFeedRepository=
     abstract member GetFeedsAsync: unit -> Task<seq<FeedInfo>>
 
+[<ExcludeFromCodeCoverage>]
 type StubFeedRepository(feedUris)=
     
     let feeds = feedUris |> List.map (fun u -> { FeedInfo.uri = u; description = ""; updated = DateTimeOffset.MinValue })

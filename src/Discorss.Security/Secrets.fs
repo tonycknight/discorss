@@ -1,10 +1,12 @@
 ﻿namespace Discorss.Security
 
 open System
+open System.Diagnostics.CodeAnalysis
 
 type ISecretProvider=
     abstract member IsSecretValueEqual : string -> string -> bool
 
+[<ExcludeFromCodeCoverage>]
 type StubSecretProvider(secrets: (string * string) seq)=
     let secrets = secrets |> Map.ofSeq
     
