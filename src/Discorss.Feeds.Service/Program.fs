@@ -15,6 +15,7 @@ type Startup() =
         services.AddLogging()
                 .AddHttpLogging(fun lo -> lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All)
                 .AddHttpClient()
+                .AddSingleton<Discorss.IInternalHttpClient, Discorss.InternalHttpClient>()
                 .AddSingleton<Discorss.IExternalHttpClient, Discorss.ExternalHttpClient>()
                 .AddSingleton<Discorss.IExternalHttpClientFactory, Discorss.ExternalHttpClientFactory>()
                 .AddSingleton<Discorss.Feeds.IFeedRepository, Discorss.Feeds.StubFeedRepository>()

@@ -24,20 +24,35 @@ module Http =
                     return HttpErrorRequestResponse(resp.StatusCode, body)
                     }
 
-    let get (client: HttpClient) (url: string) =
+    let get (client: HttpClient) (msg: HttpRequestMessage) =
         task {
             try
-                let! resp = client.GetAsync(url)
+                let! resp = client.SendAsync msg
                 return! parse resp        
             with
             | ex ->
                 return HttpExceptionRequestResponse(ex)            
         }
 
+type IInternalHttpClient=
+    abstract member GetAsync : url:string -> Task<HttpRequestResponse>
+
+[<ExcludeFromCodeCoverage>]
+type InternalHttpClient(httpClient: HttpClient, secrets: Security.ISecretProvider)=
+    let httpGet = Http.get httpClient
+    
+    let req (url: string) = 
+        let result = new HttpRequestMessage(HttpMethod.Get, url)
+        result.Headers.Add("x-api-key", secrets.GetSecretValue "apikey")
+        result
+
+    interface IInternalHttpClient with
+        member this.GetAsync(url) = url |> req |> httpGet
+
+
 type IExternalHttpClient=
     abstract member GetAsync : url:string -> Task<HttpRequestResponse>
-   
-
+  
 type IExternalHttpClientFactory=
     abstract member GetHttpClient: name:string -> IExternalHttpClient
 
@@ -45,8 +60,10 @@ type IExternalHttpClientFactory=
 type ExternalHttpClient(httpClient: HttpClient)=
     let httpGet = Http.get httpClient
 
+    let req (url: string) = new HttpRequestMessage(HttpMethod.Get, url)
+
     interface IExternalHttpClient with
-        member this.GetAsync(url) = httpGet url
+        member this.GetAsync(url) = url |> req |> httpGet
 
 [<ExcludeFromCodeCoverage>]
 type ExternalHttpClientFactory(client: IExternalHttpClient)=

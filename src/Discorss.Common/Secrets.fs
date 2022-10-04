@@ -5,6 +5,7 @@ open System.Diagnostics.CodeAnalysis
 
 type ISecretProvider=
     abstract member IsSecretValueEqual : string -> string -> bool
+    abstract member GetSecretValue : string -> string 
 
 [<ExcludeFromCodeCoverage>]
 type StubSecretProvider(secrets: (string * string) seq)=
@@ -18,3 +19,7 @@ type StubSecretProvider(secrets: (string * string) seq)=
                 | Some v -> StringComparer.Ordinal.Equals(v, value)
                 | _ -> false
             
+        member this.GetSecretValue name =
+            match secrets |> Map.tryFind name with
+                | Some v -> v
+                | _ -> ""
