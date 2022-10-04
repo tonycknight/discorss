@@ -13,12 +13,6 @@ type HttpRequestResponse =
 
 [<ExcludeFromCodeCoverage>]
 module Http =    
-    let httpClientFactory () =        
-        // TODO: 
-        let hc = new HttpClient()
-        // hc.DefaultRequestHeaders.UserAgent <- "discorss"        
-        hc
-    
     let parse (resp: HttpResponseMessage) =
         match resp.IsSuccessStatusCode with
         | true -> task {
