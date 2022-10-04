@@ -7,6 +7,12 @@ open Giraffe
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
 
+[<CLIMutable>]
+type ApiErrorResult = {
+    errors: string[]
+    }
+    
+
 module Api =    
     let private isHomeIp (ctx: HttpContext) = ctx.Connection.RemoteIpAddress |> IPAddress.IsLoopback
                     

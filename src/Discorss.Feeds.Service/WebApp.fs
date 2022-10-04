@@ -13,11 +13,10 @@ module WebApp=
                         choose [
                                 GET >=> choose  [    
                                                     Discorss.Api.heartbeatRoute
-                                                    route "/feeds" >=> (WebAppHandlers.getFeeds sp)
-                                                ]
-                                POST >=> choose [
-                                                    route "/preview" >=> (WebAppHandlers.previewFeed sp)
-                                                ]   
+                                                    
+                                                    routeCif "/feeds/%s/" (fun url -> WebAppHandlers.getFeed sp url)
+                                                    route "/feeds/" >=> (WebAppHandlers.getFeeds sp)
+                                                ]                                
                                 ]
                 )
 

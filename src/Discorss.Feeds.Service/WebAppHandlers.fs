@@ -1,6 +1,7 @@
 ﻿namespace Discorss.Feeds.Service
 
 open System
+open Discorss
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
@@ -17,27 +18,25 @@ module WebAppHandlers=
                 return! Successful.OK feeds next ctx
             }
 
-    let previewFeed (sp: IServiceProvider)=
+    let getFeed (sp: IServiceProvider) feedUri=
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {                
-                let! articleRequest = ctx.BindJsonAsync<PreviewFeedRequest>()
+                let hc = hc sp
                 
-                if String.IsNullOrWhiteSpace(articleRequest.uri) then
-                    return! RequestErrors.BAD_REQUEST [] next ctx
-                else
-                    let hc = hc sp
-                    let! feed = articleRequest.uri |> Discorss.Feeds.FeedReader.readAsync hc
-                        
-                    match feed with
-                    | Discorss.Feeds.FeedReadResult.Feed feed ->    
-                        let result = { PreviewFeedResponse.feed  = Some feed; uri = articleRequest.uri; messages = [] }
-                        return! Successful.OK result next ctx
+                // TODO: check cache
+
+                let! feed = feedUri |> Discorss.Feeds.FeedReader.readAsync hc
+                
+                match feed with
+                    | Discorss.Feeds.FeedReadResult.Feed feed ->                            
+                        return! Successful.OK feed next ctx
                     | Discorss.Feeds.FeedReadResult.Error msg ->    
-                        let result = { PreviewFeedResponse.feed  = None; uri = articleRequest.uri; messages = [ msg ] }
+                        let result = { ApiErrorResult.errors = [| msg|]}
                         return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
-                    | _ ->        
-                        let result = { PreviewFeedResponse.feed  = None; uri = articleRequest.uri; messages = [ "Internal error" ] }
+                    | _ ->  
+                        let result = { ApiErrorResult.errors = [| "Internal error" |]}
                         return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
+
             }
 
 

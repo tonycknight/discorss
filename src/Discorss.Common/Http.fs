@@ -56,7 +56,7 @@ type IExternalHttpClient=
 [<ExcludeFromCodeCoverage>]
 type ExternalHttpClient(httpClient: HttpClient)=
     let httpGet = Http.get httpClient
-
+    // TODO: log req/resp?
     let req (url: string) = new HttpRequestMessage(HttpMethod.Get, url)
 
     interface IExternalHttpClient with
