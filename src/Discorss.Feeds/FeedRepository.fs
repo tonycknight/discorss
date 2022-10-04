@@ -12,7 +12,7 @@ type IFeedRepository=
 type StubFeedRepository(feedUris)=
     
     let feeds = feedUris |> List.map (fun u -> { FeedInfo.uri = u; 
-                                                        description = "";
+                                                        title = "";
                                                         updated = DateTimeOffset.MinValue;
                                                         lastFetched = DateTimeOffset.MinValue })
     

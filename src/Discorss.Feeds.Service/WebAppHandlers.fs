@@ -10,6 +10,7 @@ open Giraffe
 module WebAppHandlers=
     let private hc (sp: IServiceProvider) = sp.GetRequiredService<Discorss.IExternalHttpClient>()
     let private feedRepo (sp: IServiceProvider) = sp.GetRequiredService<IFeedRepository>()
+    let private feedProvider (sp: IServiceProvider) = sp.GetRequiredService<IFeedProvider>()
         
     let getFeeds (sp: IServiceProvider)=
         fun (next : HttpFunc) (ctx : HttpContext) ->
@@ -21,29 +22,29 @@ module WebAppHandlers=
 
     let getFeed (sp: IServiceProvider) feedUri=
         fun (next : HttpFunc) (ctx : HttpContext) ->
-            task {                
-                let hc = hc sp
+            task {                                                
+                if Uri.tryParse feedUri |> Option.isNone then
+                    let result = { ApiErrorResult.errors = [| "Invalid Uri" |]}
+                    return! RequestErrors.BAD_REQUEST result next ctx
+                else
+                    let! feed = (feedProvider sp).GetFeedAsync feedUri
                 
-                // TODO: check cache
-
-                let! feed = feedUri |> FeedReader.readAsync hc
-                
-                match feed with
-                    | FeedReadResult.Feed feed ->                        
-                        let fi = { FeedInfo.uri = feedUri; 
-                                        description = feed.description;
-                                        lastFetched = DateTimeOffset.UtcNow;
-                                        updated = DateTimeOffset.UtcNow;
-                                        }
-                        do! (feedRepo sp).SetFeedInfoAsync fi
+                    match feed with
+                        | FeedReadResult.Feed feed ->                        
+                            let fi = { FeedInfo.uri = feedUri; 
+                                            title = feed.title;
+                                            lastFetched = DateTimeOffset.UtcNow;
+                                            updated = DateTimeOffset.UtcNow;
+                                            }
+                            do! (feedRepo sp).SetFeedInfoAsync fi
                         
-                        return! Successful.OK feed next ctx
-                    | FeedReadResult.Error msg ->    
-                        let result = { ApiErrorResult.errors = [| msg|]}
-                        return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
-                    | _ ->  
-                        let result = { ApiErrorResult.errors = [| "Internal error" |]}
-                        return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
+                            return! Successful.OK feed next ctx
+                        | FeedReadResult.Error msg ->    
+                            let result = { ApiErrorResult.errors = [| msg|]}
+                            return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
+                        | _ ->  
+                            let result = { ApiErrorResult.errors = [| "Internal error" |]}
+                            return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
 
             }
 

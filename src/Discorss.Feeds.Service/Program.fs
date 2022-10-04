@@ -19,6 +19,7 @@ type Startup() =
                 .AddSingleton<Discorss.IExternalHttpClient, Discorss.ExternalHttpClient>()
                 .AddSingleton<Discorss.Feeds.IFeedRepository, Discorss.Feeds.StubFeedRepository>()
                 .AddSingleton<Discorss.Security.ISecretProvider, Discorss.Security.StubSecretProvider>()
+                .AddSingleton<Discorss.Feeds.IFeedProvider, Discorss.Feeds.FeedProvider>()                
                 .AddGiraffe() 
                 |> ignore
         

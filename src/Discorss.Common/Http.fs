@@ -12,7 +12,15 @@ type HttpRequestResponse =
     | HttpExceptionRequestResponse of ex: Exception
 
 [<ExcludeFromCodeCoverage>]
+module Uri =
+    let tryParse (uri: string) =
+        match Uri.IsWellFormedUriString(uri, UriKind.Absolute) with
+        | true -> new Uri(uri) |> Some
+        | _ -> None
+
+[<ExcludeFromCodeCoverage>]
 module Http =    
+    
     let parse (resp: HttpResponseMessage) =
         match resp.IsSuccessStatusCode with
         | true -> task {
@@ -56,8 +64,9 @@ type IExternalHttpClient=
 [<ExcludeFromCodeCoverage>]
 type ExternalHttpClient(httpClient: HttpClient)=
     let httpGet = Http.get httpClient
+    
     // TODO: log req/resp?
-    let req (url: string) = new HttpRequestMessage(HttpMethod.Get, url)
+    let req (url:string) = new HttpRequestMessage(HttpMethod.Get, url)
 
     interface IExternalHttpClient with
         member this.GetAsync(url) = url |> req |> httpGet

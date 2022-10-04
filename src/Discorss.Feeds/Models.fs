@@ -31,7 +31,7 @@ type Feed = {
 
 type FeedInfo = {
     uri:            string
-    description:    string
+    title:          string
     updated:        DateTimeOffset
     lastFetched:    DateTimeOffset
     }
