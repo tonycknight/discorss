@@ -33,6 +33,6 @@ type StubFeedRepository(feedUris)=
             }
 
         member this.SetFeedInfoAsync(feed: FeedInfo)=
-            task {                
+            task {
                 feedCache.[feed.uri] <- { feed with updated = DateTimeOffset.UtcNow }
             }
