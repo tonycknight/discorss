@@ -38,7 +38,7 @@ module WebAppHandlers=
                                         description = req.description; 
                                         content = req.content; 
                                         author = req.author }
-                    let stats = da.Analyse doc
+                    let stats = da.Statistics doc
 
                     let freqs = stats.wordFrequencies |> Seq.sortByDescending snd
 

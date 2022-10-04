@@ -1,8 +1,9 @@
 ﻿namespace Discorss.Indexing
 
+open Discorss
 
 type IDocumentAnalyser=
-    abstract member Analyse: Document -> DocumentStatistics
+    abstract member Statistics: Document -> DocumentStatistics
 
 type DocumentAnalyser()=
     
@@ -19,11 +20,7 @@ type DocumentAnalyser()=
             |> Seq.filter (Lexicons.isStopWord >> not)
 
     interface IDocumentAnalyser with
-        member this.Analyse(doc: Document)=
-
-            let wordCounts = doc    |> words
-                                    |> Seq.groupBy id 
-                                    |> Seq.map (fun (w,ws) -> (w, ws |> Seq.length) )
-                                    |> Array.ofSeq
-            { DocumentStatistics.uri = doc.uri; wordFrequencies = wordCounts; }
-
+        member this.Statistics(doc: Document)=
+            { DocumentStatistics.uri = doc.uri; 
+                                 wordFrequencies = doc |> words |> Seq.counts |> Array.ofSeq; 
+                                 }
