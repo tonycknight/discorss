@@ -1,14 +1,12 @@
 ﻿namespace Discorss.Indexing.Service
 
-
 [<CLIMutable>]
-type IndexFeedRequest = {
-    uri:    string
+type ArticleRequest = {
+    uri:            string
+    title:          string
+    description:    string
+    author:         string
+    content:        string
+    categories:     string[]
     }
 
-[<CLIMutable>]
-type IndexFeedResponse = {
-    uri:        string
-    feed:       Discorss.Feeds.Feed option
-    message:    string option
-    }

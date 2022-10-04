@@ -15,7 +15,7 @@ module WebApp=
                                                 Discorss.Api.heartbeatRoute
                                             ]
                             POST >=> choose [
-                                                route "/index"          >=> json [ "queued" ]
+                                                route "/stats"          >=> WebAppHandlers.getDocumentStatistics sp
                                             ]   
                             ]            
             )

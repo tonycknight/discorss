@@ -6,6 +6,7 @@
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="Models.fs" />
+    <Compile Include="WebAppHandlers.fs" />
     <Compile Include="WebApp.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

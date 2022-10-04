@@ -5,7 +5,13 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Models.fs" />
     <Compile Include="Tokenisation.fs" />
+    <Compile Include="Lexicons.fs" />
+    <Compile Include="DocumentAnalyser.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

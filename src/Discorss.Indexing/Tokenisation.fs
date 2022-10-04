@@ -2,6 +2,7 @@
 
 open System
 open System.Text
+open Discorss
 
 module Tokenisation=
 
@@ -29,3 +30,7 @@ module Tokenisation=
         
         result.ToString()
             
+    let wordify(text: string)=
+        text    |> Option.ofNull
+                |> Option.map (wordSplit >> (Seq.map stripPunctuation) )
+                |> Seq.noneToEmpty
