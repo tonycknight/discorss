@@ -31,10 +31,8 @@ module FeedReader =
                     | FeedReadResult.Xml xml -> parseXmlToFeed url xml
                     | x -> x)                
 
-    let readAsync (clients: IExternalHttpClientFactory) url =
-        task {
-            let client = clients.GetHttpClient("")
-
+    let readAsync (client: IExternalHttpClient) url =
+        task {            
             let! resp = client.GetAsync url
 
             return match resp with

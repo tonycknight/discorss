@@ -14,7 +14,6 @@ type Startup() =
                 .AddHttpLogging(fun lo -> lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All)
                 .AddHttpClient()
                 .AddSingleton<Discorss.IExternalHttpClient, Discorss.ExternalHttpClient>()
-                .AddSingleton<Discorss.IExternalHttpClientFactory, Discorss.ExternalHttpClientFactory>()
                 .AddSingleton<Discorss.Security.ISecretProvider, Discorss.Security.StubSecretProvider>()
                 .AddGiraffe() 
                 |> ignore

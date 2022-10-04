@@ -53,9 +53,6 @@ type InternalHttpClient(httpClient: HttpClient, secrets: Security.ISecretProvide
 type IExternalHttpClient=
     abstract member GetAsync : url:string -> Task<HttpRequestResponse>
   
-type IExternalHttpClientFactory=
-    abstract member GetHttpClient: name:string -> IExternalHttpClient
-
 [<ExcludeFromCodeCoverage>]
 type ExternalHttpClient(httpClient: HttpClient)=
     let httpGet = Http.get httpClient
@@ -65,8 +62,3 @@ type ExternalHttpClient(httpClient: HttpClient)=
     interface IExternalHttpClient with
         member this.GetAsync(url) = url |> req |> httpGet
 
-[<ExcludeFromCodeCoverage>]
-type ExternalHttpClientFactory(client: IExternalHttpClient)=
-    
-    interface IExternalHttpClientFactory with
-        member this.GetHttpClient(name) = client

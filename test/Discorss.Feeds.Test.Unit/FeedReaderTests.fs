@@ -12,15 +12,12 @@ open NSubstitute
 
 module FeedReaderTests=
     
-    let private mockHttpClientFactory reqResp =         
+    let private mockHttpClient reqResp =         
 
         let client = Substitute.For<IExternalHttpClient>()
         client.GetAsync(Arg.Any<string>()).Returns(Task.FromResult(reqResp)) |> ignore
         
-        let fact = Substitute.For<IExternalHttpClientFactory>()
-        fact.GetHttpClient(Arg.Any<string>()).Returns(client) |> ignore
-
-        fact
+        client
 
     [<Xunit.Theory>]
     [<Xunit.InlineData("MsRss20Feed.xml")>]    
@@ -52,10 +49,9 @@ module FeedReaderTests=
     [<Xunit.InlineData("<xml/>")>]
     let ``read receives OK with malformed body``(body)=
         
-        let fact = HttpRequestResponse.HttpOkRequestResponse(HttpStatusCode.OK, body)            
-                    |> mockHttpClientFactory
+        let client = HttpRequestResponse.HttpOkRequestResponse(HttpStatusCode.OK, body) |> mockHttpClient
 
-        let read = "url" |> FeedReader.readAsync fact 
+        let read = "url" |> FeedReader.readAsync client 
         
         let result = read.GetAwaiter().GetResult()
 
@@ -69,7 +65,7 @@ module FeedReaderTests=
     let ``read receives error with malformed body``(body)=
         
         let fact = HttpRequestResponse.HttpErrorRequestResponse(HttpStatusCode.InternalServerError, body)            
-                    |> mockHttpClientFactory
+                    |> mockHttpClient
 
         let read = "url" |> FeedReader.readAsync fact 
         
@@ -81,7 +77,7 @@ module FeedReaderTests=
     let ``read receives exception with malformed body``()=
         
         let fact = HttpRequestResponse.HttpExceptionRequestResponse(new Exception())
-                    |> mockHttpClientFactory
+                    |> mockHttpClient
 
         let read = "url" |> FeedReader.readAsync fact 
         

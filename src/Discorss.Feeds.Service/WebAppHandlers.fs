@@ -6,7 +6,7 @@ open Microsoft.Extensions.DependencyInjection
 open Giraffe
 
 module WebAppHandlers=
-    let private hcf (sp: IServiceProvider) = sp.GetRequiredService<Discorss.IExternalHttpClientFactory>()
+    let private hc (sp: IServiceProvider) = sp.GetRequiredService<Discorss.IExternalHttpClient>()
     let private feedRepo (sp: IServiceProvider) = sp.GetRequiredService<Discorss.Feeds.IFeedRepository>()
         
     let getFeeds (sp: IServiceProvider)=
@@ -25,8 +25,8 @@ module WebAppHandlers=
                 if String.IsNullOrWhiteSpace(articleRequest.uri) then
                     return! RequestErrors.BAD_REQUEST [] next ctx
                 else
-                    let hcf = hcf sp
-                    let! feed = articleRequest.uri |> Discorss.Feeds.FeedReader.readAsync hcf 
+                    let hc = hc sp
+                    let! feed = articleRequest.uri |> Discorss.Feeds.FeedReader.readAsync hc
                         
                     match feed with
                     | Discorss.Feeds.FeedReadResult.Feed feed ->    
