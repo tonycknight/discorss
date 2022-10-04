@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="CombinatorsTests.fs" />
+    <Compile Include="SeqTests.fs" />
     <Compile Include="HtmlTests.fs" />
   </ItemGroup>
 
