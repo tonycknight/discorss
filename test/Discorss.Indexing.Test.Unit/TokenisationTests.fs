@@ -34,6 +34,7 @@ module TokenisationTests=
     [<InlineData("a  b", "a|b")>]
     [<InlineData(" a  b ", "a|b")>]
     [<InlineData(" a  b c", "a|b|c")>]
+    [<InlineData(" a\nb\nc", "a|b|c")>]
     let ``wordSplit of arbitrary texts``(text, expected: string)=
         
         let expectedWords = expected.Split('|', StringSplitOptions.RemoveEmptyEntries ||| StringSplitOptions.TrimEntries)

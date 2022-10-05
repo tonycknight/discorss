@@ -11,10 +11,10 @@ type DocumentAnalyser(lexicon: ILexicon)=
     
     let words (doc: Document)=
         let wordify = Tokenisation.wordify lexicon
-        (wordify doc.title)
-            |> Seq.append (wordify doc.description)
+        (wordify doc.content)
             |> Seq.append (wordify doc.description)
             |> Seq.append (wordify doc.author)
+            |> Seq.append (wordify doc.title)
             |> Seq.map Strings.lower
             |> Seq.filter ( (String.IsNullOrEmpty >> not) >&&> (lexicon.IsStopWord >> not) )
 

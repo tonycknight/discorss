@@ -6,7 +6,7 @@ open Discorss
 
 module Tokenisation=
 
-    let private WordDelim = " ,!?[]<>()-".ToCharArray()
+    let private WordDelim = " ,!?[]<>()-\n".ToCharArray()
 
     let wordSplit (text: string) =
         
