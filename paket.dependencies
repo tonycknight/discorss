@@ -14,5 +14,6 @@ nuget HtmlAgilityPack
 nuget Microsoft.NET.Test.Sdk
 nuget NSubstitute
 nuget System.Net.Http
+nuget System.Text.RegularExpressions
 nuget xunit
 nuget xunit.runner.visualstudio
