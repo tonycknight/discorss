@@ -39,14 +39,6 @@ module LexiconsTests=
 
 
     [<Property(Verbose = true)>]
-    let ``IsStopWord random are all false``(x: NonEmptyString)=
-        let lexicon = (new Lexicon() :> ILexicon)
-        
-        let hit = x.ToString() |> lexicon.IsStopWord
-
-        hit |> should equal false
-
-    [<Property(Verbose = true)>]
     let ``IsStopWord random guid are all false``(x: System.Guid)=
         let lexicon = (new Lexicon() :> ILexicon)
 
