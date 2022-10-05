@@ -5,7 +5,7 @@ open System.Xml.Linq
 open Discorss.Feeds
 open FsCheck
 open FsCheck.Xunit
-open FsUnit
+open FsUnit.Xunit
 
 module Rss091ParserTests =
         

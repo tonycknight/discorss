@@ -6,8 +6,9 @@ open System.Threading.Tasks
 open Discorss
 open Discorss.Feeds
 open FsCheck
-open FsCheck.Xunit
 open FsUnit
+open FsUnit.CustomMatchers
+open FsUnit.Xunit
 open NSubstitute
 
 module FeedReaderTests=

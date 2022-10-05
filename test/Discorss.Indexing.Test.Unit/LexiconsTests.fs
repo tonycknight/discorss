@@ -5,7 +5,7 @@ open Discorss
 open Discorss.Indexing
 open FsCheck
 open FsCheck.Xunit
-open FsUnit
+open FsUnit.Xunit
 
 module LexiconsTests=
 

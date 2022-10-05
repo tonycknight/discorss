@@ -6,4 +6,4 @@ xunit.runner.visualstudio
 Microsoft.NET.Test.Sdk
 FsCheck.Xunit
 FluentAssertions
-FsUnit
+FsUnit.Xunit

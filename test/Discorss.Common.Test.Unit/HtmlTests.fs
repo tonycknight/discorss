@@ -4,7 +4,7 @@ open System
 open Discorss
 open FsCheck
 open FsCheck.Xunit
-open FsUnit
+open FsUnit.Xunit
 
 module HtmlTests=
 

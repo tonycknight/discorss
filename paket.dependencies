@@ -8,7 +8,7 @@ nuget coverlet.msbuild
 nuget FluentAssertions
 nuget FsCheck.Xunit
 nuget FSharp.Core
-nuget FsUnit
+nuget FsUnit.Xunit
 nuget giraffe
 nuget HtmlAgilityPack
 nuget Microsoft.NET.Test.Sdk
