@@ -6,20 +6,23 @@ open Discorss
 
 module Tokenisation=
 
-    let private WordDelim = " ,!?[]<>(){}-\r\n\b\t\\".ToCharArray()
+    let private WordDelim = " ,;!?[]<>(){}-\r\n\b\t\\".ToCharArray()
 
     let wordSplit (text: string) =
         
         seq {
             let mutable i = 0
-            
-            for j in [ 0 .. text.Length-1] do
+            for j = 0 to text.Length-1 do
                 let c = text.[j]
+                // TODO: future: consider Char.IsLetterOrDigit >> not
                 if Array.contains c WordDelim then
-                    yield text.Substring(i, j - i).Trim()
+                    let k = j - i
+                    if k > 0 then
+                        yield text.Substring(i, k).Trim()
                     i <- j+1
-
-            yield text.Substring(i, text.Length - i).Trim()
+            let k = text.Length - i
+            if k > 0 then
+                yield text.Substring(i, k).Trim()
         } |> Seq.filter (fun s -> s.Length > 0)
 
     let stripPunctuation (text: string) =                
