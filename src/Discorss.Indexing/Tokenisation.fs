@@ -6,7 +6,7 @@ open Discorss
 
 module Tokenisation=
 
-    let private WordDelim = " .,!?[]<>()-".ToCharArray()
+    let private WordDelim = " ,!?[]<>()-".ToCharArray()
 
     let wordSplit (text: string) =
         
@@ -22,15 +22,28 @@ module Tokenisation=
             yield text.Substring(i, text.Length - i).Trim()
         } |> Seq.filter (fun s -> s.Length > 0)
 
-    let stripPunctuation (text: string) =        
+    let stripPunctuation (text: string) =                
         let result =    text
                         |> Seq.filter (Char.IsPunctuation >> not) 
                         |> Seq.filter (Char.IsWhiteSpace >> not) 
-                        |> Seq.fold (fun (sb: StringBuilder) c -> sb.Append(c) ) (new StringBuilder())
-        
+                        |> Seq.fold (fun (sb: StringBuilder) c -> sb.Append(c) ) (new StringBuilder())        
         result.ToString()
-            
-    let wordify(text: string)=
+    
+    let stripTrailingPunctuation (text: string) =                
+        let result =    text
+                        |> Seq.rev
+                        |> Seq.skipWhile (Char.IsPunctuation >||> Char.IsWhiteSpace)
+                        |> Seq.rev
+                        |> Seq.filter (Char.IsWhiteSpace >> not) 
+                        |> Seq.fold (fun (sb: StringBuilder) c -> sb.Append(c) ) (new StringBuilder())        
+        result.ToString()
+
+    let wordify (lexicon: ILexicon)  (text: string)=
+        let stripPunctuation word = 
+            match lexicon.IsKnownWord word with 
+            | true -> word // TODO: if the prefix contains a known word (e.g. .net) then the trailing punctuation is all that's removed
+            | _ -> stripPunctuation word
+
         text    |> Option.ofNull
-                |> Option.map (wordSplit >> (Seq.map stripPunctuation) )
+                |> Option.map (wordSplit >> (Seq.map stripPunctuation ))
                 |> Option.defaultValue Seq.empty

@@ -55,3 +55,16 @@ module TokenisationTests=
     let ``stripPunctuation has punctuation and whitespace removed``(text, expected)=
         let result = text |> Tokenisation.stripPunctuation
         result |> should equal expected
+
+    [<Theory>]
+    [<InlineData("", "")>]
+    [<InlineData(" ", "")>]
+    [<InlineData("?", "")>]
+    [<InlineData("<>", "<>")>]
+    [<InlineData(" a. ", "a")>]
+    [<InlineData(" .Net", ".Net")>]
+    [<InlineData(" .Net!.", ".Net")>]
+    [<InlineData(" a!A ", "a!A")>]
+    let ``stripTrailingPunctuation has punctuation and whitespace removed``(text, expected)=
+        let result = text |> Tokenisation.stripTrailingPunctuation
+        result |> should equal expected

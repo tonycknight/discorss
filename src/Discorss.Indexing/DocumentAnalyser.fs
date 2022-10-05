@@ -10,13 +10,13 @@ type IDocumentAnalyser=
 type DocumentAnalyser(lexicon: ILexicon)=
     
     let words (doc: Document)=
-        
-        (Tokenisation.wordify doc.title)
-            |> Seq.append (Tokenisation.wordify doc.description)
-            |> Seq.append (Tokenisation.wordify doc.description)
-            |> Seq.append (Tokenisation.wordify doc.author)
+        let wordify = Tokenisation.wordify lexicon
+        (wordify doc.title)
+            |> Seq.append (wordify doc.description)
+            |> Seq.append (wordify doc.description)
+            |> Seq.append (wordify doc.author)
             |> Seq.map Strings.lower
-            |> Seq.filter (String.IsNullOrEmpty >> not >&&> lexicon.IsStopWord >> not)
+            |> Seq.filter ( (String.IsNullOrEmpty >> not) >&&> (lexicon.IsStopWord >> not) )
 
     interface IDocumentAnalyser with
         member this.Words(doc: Document)=
@@ -24,5 +24,5 @@ type DocumentAnalyser(lexicon: ILexicon)=
 
         member this.Statistics(doc: Document)=
             { DocumentStatistics.uri = doc.uri; 
-                                 wordFrequencies = doc |> words |> Seq.counts |> Array.ofSeq; 
+                                 wordFrequencies = doc |> words |> Seq.counts |> Seq.sortByDescending snd |> Array.ofSeq; 
                                  }
