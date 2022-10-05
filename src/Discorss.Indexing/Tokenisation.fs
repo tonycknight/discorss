@@ -40,8 +40,9 @@ module Tokenisation=
 
     let wordify (lexicon: ILexicon)  (text: string)=
         let stripPunctuation word = 
-            match lexicon.IsKnownWord word with 
-            | true -> word // TODO: if the prefix contains a known word (e.g. .net) then the trailing punctuation is all that's removed
+            let word2 = stripTrailingPunctuation word
+            match lexicon.IsKnownWord word2 with 
+            | true -> word2
             | _ -> stripPunctuation word
 
         text    |> Option.ofNull
