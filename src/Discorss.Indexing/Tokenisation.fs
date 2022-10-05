@@ -33,4 +33,4 @@ module Tokenisation=
     let wordify(text: string)=
         text    |> Option.ofNull
                 |> Option.map (wordSplit >> (Seq.map stripPunctuation) )
-                |> Seq.noneToEmpty
+                |> Option.defaultValue Seq.empty

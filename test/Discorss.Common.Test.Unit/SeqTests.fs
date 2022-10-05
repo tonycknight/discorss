@@ -8,21 +8,6 @@ open FsUnit
 
 module SeqTests=
     
-    [<Xunit.Fact>]
-    let ``noneToEmpty yields empty``()=        
-        let r = None |> Seq.noneToEmpty
-
-        r |> should equal Seq.empty
-
-    [<Xunit.Fact>]
-    let ``noneToEmpty yields sequence``()=
-        let xs = seq { 1 } 
-
-        let r = xs |> Some |> Seq.noneToEmpty
-        
-        r |> should equal xs
-
-
     [<Property(Verbose = true)>]
     let ``counts same value``(PositiveInt count)=
         

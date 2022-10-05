@@ -3,11 +3,6 @@
 open System
 
 module Seq=
-    let noneToEmpty(xs: seq<'a> option) =
-        match xs with
-        | Some xs -> xs
-        | _ -> Seq.empty<'a>        
-
     let counts (xs: seq<'a>)=
         let result = new System.Collections.Generic.Dictionary<'a, int>()
         for x in xs do 
