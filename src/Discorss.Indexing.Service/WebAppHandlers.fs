@@ -26,6 +26,24 @@ module WebAppHandlers=
                 return Choice2Of2 req
             }
 
+    let getDocumentWords(sp: IServiceProvider)=
+        fun (next : HttpFunc) (ctx : HttpContext) ->
+            task {            
+                match! validateArticle ctx with
+                | Choice1Of2 error -> return! RequestErrors.BAD_REQUEST error next ctx
+                | Choice2Of2 req ->                     
+                    let da = sp.GetRequiredService<Indexing.IDocumentAnalyser>()
+                    let doc = { Document.uri = req.uri; 
+                                        title = req.title; 
+                                        description = req.description; 
+                                        content = req.content; 
+                                        author = req.author }
+                    let words = da.Words doc
+
+                    return! Successful.OK words next ctx
+
+            }
+
     let getDocumentStatistics (sp: IServiceProvider)=
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {                      
@@ -40,9 +58,7 @@ module WebAppHandlers=
                                         author = req.author }
                     let stats = da.Statistics doc
 
-                    let freqs = stats.wordFrequencies |> Seq.sortByDescending snd
-
-                    return! Successful.OK freqs next ctx
+                    return! Successful.OK stats next ctx
             }
         
 

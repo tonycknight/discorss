@@ -4,7 +4,7 @@ open Discorss
 
 module Lexicons=
 
-    let stopWords = [ "the"; "a"; "an"; "and"; "i"; "we"; "is"; "as"; "be"; "to"; "has" ]
+    let stopWords = [ "the"; "these"; "this"; "a"; "an"; "and"; "i"; "we"; "is"; "as"; "be"; "to"; "has"; "for" ]
                         |> Set.ofSeq
 
     let isStopWord word = 

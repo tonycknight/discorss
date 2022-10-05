@@ -16,6 +16,7 @@ module WebApp=
                                             ]
                             POST >=> choose [
                                                 route "/stats"          >=> WebAppHandlers.getDocumentStatistics sp
+                                                route "/words"          >=> WebAppHandlers.getDocumentWords sp
                                             ]   
                             ]            
             )
