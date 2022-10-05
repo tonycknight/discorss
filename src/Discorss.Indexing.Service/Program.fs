@@ -15,6 +15,7 @@ type Startup() =
                 .AddHttpClient()
                 .AddSingleton<Discorss.IExternalHttpClient, Discorss.ExternalHttpClient>()
                 .AddSingleton<Discorss.Security.ISecretProvider, Discorss.Security.StubSecretProvider>()
+                .AddSingleton<Discorss.Indexing.ILexicon, Discorss.Indexing.Lexicon>()
                 .AddSingleton<Discorss.Indexing.IDocumentAnalyser, Discorss.Indexing.DocumentAnalyser>()
                 .AddGiraffe() 
                 |> ignore

@@ -7,7 +7,7 @@ type IDocumentAnalyser=
     abstract member Statistics: Document -> DocumentStatistics
     abstract member Words: Document -> seq<string>
 
-type DocumentAnalyser()=
+type DocumentAnalyser(lexicon: ILexicon)=
     
     let words (doc: Document)=
         
@@ -16,7 +16,7 @@ type DocumentAnalyser()=
             |> Seq.append (Tokenisation.wordify doc.description)
             |> Seq.append (Tokenisation.wordify doc.author)
             |> Seq.map Strings.lower
-            |> Seq.filter (String.IsNullOrEmpty >> not >&&> Lexicons.isStopWord >> not)
+            |> Seq.filter (String.IsNullOrEmpty >> not >&&> lexicon.IsStopWord >> not)
 
     interface IDocumentAnalyser with
         member this.Words(doc: Document)=
