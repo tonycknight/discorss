@@ -7,3 +7,4 @@ Microsoft.NET.Test.Sdk
 FsCheck.Xunit
 FluentAssertions
 FsUnit.Xunit
+System.Net.Http
