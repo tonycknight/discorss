@@ -10,9 +10,8 @@ module TokenisationTests=
     
     [<Fact>]
     let ``wordSplit of empty string is empty``()=
-        let xs = "" |> Tokenisation.wordSplit |> Array.ofSeq
-
-        xs |> should haveLength 0
+        ""  |> Tokenisation.wordSplit |> Array.ofSeq
+            |> should haveLength 0
 
 
     [<Theory>]
@@ -25,9 +24,8 @@ module TokenisationTests=
         
         let words = text |> Tokenisation.wordSplit |> Array.ofSeq 
         
-        let result = words |> Strings.join " "
-
-        result |> should equal text
+        words   |> Strings.join " "
+                |> should equal text
 
 
     [<Theory>]
@@ -41,9 +39,8 @@ module TokenisationTests=
         let expectedWords = expected.Split('|', StringSplitOptions.RemoveEmptyEntries ||| StringSplitOptions.TrimEntries)
                                     |> Strings.join " "
 
-        let result = text |> Tokenisation.wordSplit |> Strings.join " "
-
-        result |> should equal expectedWords
+        text    |> Tokenisation.wordSplit |> Strings.join " "
+                |> should equal expectedWords
 
 
     [<Theory>]
@@ -51,7 +48,8 @@ module TokenisationTests=
     [<InlineData(" ", "")>]
     [<InlineData("?", "")>]
     [<InlineData("<>", "<>")>]
-    [<InlineData(" a ", "a")>]
+    [<InlineData(" a.", "a")>]
+    [<InlineData(" .Net", "Net")>]
     [<InlineData(" a! ", "a")>]
     [<InlineData(" a!A ", "aA")>]
     let ``stripPunctuation has punctuation and whitespace removed``(text, expected)=
