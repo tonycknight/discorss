@@ -29,14 +29,18 @@ module Tokenisation=
                         |> Seq.fold (fun (sb: StringBuilder) c -> sb.Append(c) ) (new StringBuilder())        
         result.ToString()
     
-    let stripTrailingPunctuation (text: string) =                
-        let result =    text
-                        |> Seq.rev
-                        |> Seq.skipWhile (Char.IsPunctuation >||> Char.IsWhiteSpace)
-                        |> Seq.rev
-                        |> Seq.filter (Char.IsWhiteSpace >> not) 
-                        |> Seq.fold (fun (sb: StringBuilder) c -> sb.Append(c) ) (new StringBuilder())        
-        result.ToString()
+    let stripTrailingPunctuation (text: string) =                 
+        let mutable result = ""
+        let mutable i = (text.Length - 1)
+
+        while i >= 0 && result = "" do        
+            let c = text.[i]
+            if (Char.IsPunctuation c || Char.IsWhiteSpace c) |> not then
+                result <- text.Substring(0, i + 1).Trim()
+            else
+                i <- i - 1
+        result
+             
 
     let wordify (lexicon: ILexicon)  (text: string)=
         let stripPunctuation word = 
