@@ -26,11 +26,11 @@ module Tokenisation=
         } |> Seq.filter (fun s -> s.Length > 0)
 
     let stripPunctuation (text: string) =                
-        let result =    text
-                        |> Seq.filter (Char.IsPunctuation >> not) 
-                        |> Seq.filter (Char.IsWhiteSpace >> not) 
-                        |> Seq.fold (fun (sb: StringBuilder) c -> sb.Append(c) ) (new StringBuilder())        
-        result.ToString()
+        text
+            |> Seq.filter ( (Char.IsPunctuation >> not) >&&> (Char.IsWhiteSpace >> not) )
+            |> Seq.fold (fun (sb: StringBuilder) c -> sb.Append(c) ) (new StringBuilder())
+            |> Strings.str
+        
     
     let stripTrailingPunctuation (text: string) =                 
         let mutable result = ""
