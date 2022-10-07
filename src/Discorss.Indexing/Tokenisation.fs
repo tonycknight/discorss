@@ -30,7 +30,9 @@ module Tokenisation=
             |> Seq.filter ( (Char.IsPunctuation >> not) >&&> (Char.IsWhiteSpace >> not) )
             |> Seq.fold (fun (sb: StringBuilder) c -> sb.Append(c) ) (new StringBuilder())
             |> Strings.str
-        
+    
+    let isCandidateWord (text: string)=
+        text |> Seq.exists Char.IsLetterOrDigit
     
     let stripTrailingPunctuation (text: string) =                 
         let mutable result = ""
@@ -53,5 +55,5 @@ module Tokenisation=
             | _ -> stripPunctuation word
 
         text    |> Option.ofNull
-                |> Option.map (wordSplit >> (Seq.map stripPunctuation ))
+                |> Option.map (wordSplit >> (Seq.map stripPunctuation) >> (Seq.filter isCandidateWord) )
                 |> Option.defaultValue Seq.empty

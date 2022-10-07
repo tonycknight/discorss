@@ -57,8 +57,8 @@ module TokenisationTests=
     [<InlineData(" a! ", "a")>]
     [<InlineData(" a!A ", "aA")>]
     let ``stripPunctuation has punctuation and whitespace removed``(text, expected)=
-        let result = text |> Tokenisation.stripPunctuation
-        result |> should equal expected
+        text |> Tokenisation.stripPunctuation
+            |> should equal expected
 
     [<Theory>]
     [<InlineData("", "")>]
@@ -70,5 +70,19 @@ module TokenisationTests=
     [<InlineData(" .Net!.", ".Net")>]
     [<InlineData(" a!A ", "a!A")>]
     let ``stripTrailingPunctuation has punctuation and whitespace removed``(text, expected)=
-        let result = text |> Tokenisation.stripTrailingPunctuation
-        result |> should equal expected
+        text |> Tokenisation.stripTrailingPunctuation
+            |> should equal expected
+
+    [<Theory>]
+    [<InlineData("", false)>]
+    [<InlineData(" ", false)>]
+    [<InlineData(" a ", true)>]
+    [<InlineData(" a1 ", true)>]
+    [<InlineData(" =a", true)>]
+    [<InlineData(" =", false)>]
+    [<InlineData("=", false)>]
+    [<InlineData("=a", true)>]
+    let ``isCandidateWord``(text, expected)=
+        text |> Tokenisation.isCandidateWord
+            |> should equal expected
+        
