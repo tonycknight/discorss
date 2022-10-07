@@ -12,5 +12,6 @@ type Document = {
 
 type DocumentStatistics = {
     uri:                string
+    wordCount:          int
     wordFrequencies:    (string * int)[]
     }

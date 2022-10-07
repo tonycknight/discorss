@@ -23,6 +23,9 @@ type DocumentAnalyser(lexicon: ILexicon)=
             words doc
 
         member this.Statistics(doc: Document)=
+            let docWords = doc |> words |> Array.ofSeq
+            
             { DocumentStatistics.uri = doc.uri; 
-                                 wordFrequencies = doc |> words |> Seq.counts |> Seq.sortByDescending snd |> Array.ofSeq; 
+                                 wordCount = docWords.Length;
+                                 wordFrequencies = docWords |> Seq.counts |> Seq.sortByDescending snd |> Array.ofSeq;
                                  }
