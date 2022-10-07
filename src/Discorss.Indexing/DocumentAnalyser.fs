@@ -27,5 +27,5 @@ type DocumentAnalyser(lexicon: ILexicon)=
             
             { DocumentStatistics.uri = doc.uri; 
                                  wordCount = docWords.Length;
-                                 wordFrequencies = docWords |> Seq.counts |> Seq.sortByDescending snd |> Array.ofSeq;
+                                 wordFrequencies = docWords |> Seq.counts |> Map.ofSeq
                                  }
