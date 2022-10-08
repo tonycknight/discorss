@@ -50,5 +50,7 @@ module ApiStartup =
                 .AddSingleton<Discorss.IInternalHttpClient, Discorss.InternalHttpClient>()
                 .AddSingleton<Discorss.IExternalHttpClient, Discorss.ExternalHttpClient>()
     
-    let addApi(services: IServiceCollection)=
+    let addWebFramework(services: IServiceCollection)=
         services.AddGiraffe() 
+
+    let addApi<'a when 'a :> IServiceCollection> = addApiLogging >> addApiConfig >> addApiHttp >> addWebFramework

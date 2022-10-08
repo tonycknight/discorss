@@ -12,15 +12,9 @@ open Giraffe
 type Startup() =
     member __.ConfigureServices (services : IServiceCollection) =
 
-        let addDeps(services : IServiceCollection) =
-            services.AddSingleton<Discorss.Indexing.ILexicon, Discorss.Indexing.Lexicon>()
-                    .AddSingleton<Discorss.Indexing.IDocumentAnalyser, Discorss.Indexing.DocumentAnalyser>()                
-
-        services    |> ApiStartup.addApiLogging
-                    |> ApiStartup.addApiConfig
-                    |> ApiStartup.addApiHttp
-                    |> ApiStartup.addApi
-                    |> addDeps
+        services    |> ApiStartup.addApi
+                    |> (fun s -> s.AddSingleton<Discorss.Indexing.ILexicon, Discorss.Indexing.Lexicon>()
+                                  .AddSingleton<Discorss.Indexing.IDocumentAnalyser, Discorss.Indexing.DocumentAnalyser>())
                     |> ignore
         
     member __.Configure (app : IApplicationBuilder)

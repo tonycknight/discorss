@@ -14,15 +14,9 @@ type Startup() =
     
     member __.ConfigureServices (services : IServiceCollection) =
 
-        let addDeps(services : IServiceCollection) =
-            services.AddSingleton<Discorss.Feeds.IFeedRepository, Discorss.Feeds.StubFeedRepository>()
-                    .AddSingleton<Discorss.Feeds.IFeedProvider, Discorss.Feeds.FeedProvider>()                               
-
-        services    |> ApiStartup.addApiLogging
-                    |> ApiStartup.addApiConfig
-                    |> ApiStartup.addApiHttp
-                    |> ApiStartup.addApi
-                    |> addDeps
+        services    |> ApiStartup.addApi
+                    |> (fun s -> s.AddSingleton<Discorss.Feeds.IFeedRepository, Discorss.Feeds.StubFeedRepository>()
+                                  .AddSingleton<Discorss.Feeds.IFeedProvider, Discorss.Feeds.FeedProvider>() )
                     |> ignore
         
     member __.Configure (app : IApplicationBuilder)

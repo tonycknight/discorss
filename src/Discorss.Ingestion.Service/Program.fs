@@ -11,10 +11,7 @@ open Giraffe
 
 type Startup() =
     member __.ConfigureServices (services : IServiceCollection) =
-        services    |> ApiStartup.addApiLogging
-                    |> ApiStartup.addApiConfig
-                    |> ApiStartup.addApiHttp
-                    |> ApiStartup.addApi
+        services    |> ApiStartup.addApi
                     |> ignore
         
     member __.Configure (app : IApplicationBuilder)
