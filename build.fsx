@@ -52,15 +52,11 @@ let codeCoverageParams (buildParams)=
         ("CoverletOutputFormat", "cobertura");        
     ]  |> List.append buildParams
 
-let packBuildParams (buildParams) =
-    [ ("PackageVersion", version); ] |> List.append buildParams
-
 let buildOptions = fun (opts: DotNet.BuildOptions) -> 
                                 { opts with
                                     Configuration = DotNet.BuildConfiguration.Release;
                                     MSBuildParams = { opts.MSBuildParams with Properties = assemblyInfoParams opts.MSBuildParams.Properties; WarnAsError = Some [ "*" ]; }
                                     }
-let restoreOptions = fun (opts: DotNet.RestoreOptions) -> opts
 
 let testOptions (opts: DotNet.TestOptions)=
     let properties = codeCoverageParams opts.MSBuildParams.Properties
@@ -70,13 +66,6 @@ let testOptions (opts: DotNet.TestOptions)=
                 Logger = Some "trx;LogFileName=test_results.trx";
                 Filter = Some "OS!=Windows";
                 MSBuildParams = { opts.MSBuildParams with Properties = properties } }
-
-let packOptions = fun (opts: DotNet.PackOptions) -> 
-                                { opts with 
-                                    Configuration = DotNet.BuildConfiguration.Release; 
-                                    NoBuild = false; 
-                                    MSBuildParams = { opts.MSBuildParams with Properties = (packBuildParams opts.MSBuildParams.Properties |> assemblyInfoParams )};
-                                    OutputPath = Some packageDir }
 
 let publishByRuntimeOptions = fun(runtime: string) (opts: DotNet.PublishOptions) -> 
     let props = ("AssemblyFileVersion", version)
@@ -132,7 +121,7 @@ Target.create "Clean" (fun _ ->
 
 Target.create "Restore" (fun _ ->
     !! mainSolution
-    |> Seq.iter (DotNet.restore restoreOptions)
+    |> Seq.iter (DotNet.restore id)
 )
 
 Target.create "Build" (fun _ ->
@@ -140,7 +129,7 @@ Target.create "Build" (fun _ ->
     |> Seq.iter (DotNet.build buildOptions)
 )
 
-Target.create "Pack" (fun _ -> publishProjects |> Seq.iter (DotNet.pack packOptions ) )
+Target.create "Publish services" (fun _ -> publishAndCopy "win-x64" )
 
 Target.create "Unit Tests" (fun _ ->
     !! "test/**/*.Test.Unit.fsproj"
@@ -175,26 +164,28 @@ Target.create "Benchmarks" (fun _ ->
     let result = DotNet.exec id "test/Discorss.Test.Benchmarks/bin/Release/net6.0/Discorss.Test.Benchmarks.dll" args
     
     if not result.OK then failwithf "Benchmarks failed!"
-                            
 )
 
 Target.create "All" ignore
 
 "Clean"
   ==> "Restore"
-  ==> "Build"
-  ==> "Pack"
+  ==> "Build"  
   ==> "Unit Tests"
   ==> "Generate code coverage reports"
   ==> "Consolidate code coverage"
-  
 
 "Clean"
   ==> "Restore"
   ==> "Build"
-  ==> "Stryker"
- 
+  ==> "Publish services"  
+
 (*
+"Clean"
+  ==> "Restore"
+  ==> "Build"
+  ==> "Stryker"
+
 "Stryker"
   ==> "All"
 *)
@@ -208,6 +199,9 @@ Target.create "All" ignore
   ==> "All"
 
 "Consolidate code coverage"
+  ==> "All"
+
+"Publish services"
   ==> "All"
 
 Target.runOrDefault "All"
