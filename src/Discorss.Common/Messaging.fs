@@ -17,22 +17,6 @@ type MessageHubMessage = {
                                 priority = 0M; messageType = ""; content = null;
                                 created = DateTimeOffset.UtcNow }        
 
-[<CLIMutable>]
-type MessageHubMessageDto = {
-    id:             Guid
-    priority:       decimal
-    messageType:    string
-    content:        string
-    created:        DateTimeOffset
-    }
-    with static member ofMsg(msg: MessageHubMessage)=
-                    { MessageHubMessageDto.id = msg.id; priority = msg.priority; messageType = msg.messageType;
-                                           content = msg.content; created = msg.created
-                    }
-         static member toMsg(msg: MessageHubMessageDto)=
-                    { MessageHubMessage.id = msg.id; priority = msg.priority; messageType = msg.messageType;
-                                           content = msg.content; created = msg.created
-                    }
 
 type IMessageHubClient = 
     abstract member GetNextAsync : queueName:string -> Task<MessageHubMessage option>
@@ -49,8 +33,7 @@ type MessageHubClient(config: Discorss.Configuration.IConfigurationProvider, cli
             
             return match resp with
                     | HttpOkRequestResponse (status,body) when status = System.Net.HttpStatusCode.OK -> 
-                            body    |> Newtonsoft.Json.JsonConvert.DeserializeObject<MessageHubMessageDto> 
-                                    |> MessageHubMessageDto.toMsg
+                            body    |> Newtonsoft.Json.JsonConvert.DeserializeObject<MessageHubMessage> 
                                     |> Some                            
                     | _ -> None
         }
@@ -58,7 +41,6 @@ type MessageHubClient(config: Discorss.Configuration.IConfigurationProvider, cli
     let pushMessage queueName msg =
         task {
             let! resp = msg 
-                          |> MessageHubMessageDto.ofMsg
                           |> Newtonsoft.Json.JsonConvert.SerializeObject 
                           |> client.PutAsync $"{serviceConfig}/api/v1/queues/{queueName}/"            
 
