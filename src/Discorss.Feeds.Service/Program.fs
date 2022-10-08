@@ -1,6 +1,7 @@
 ﻿namespace Discorss.Feeds.Service
 
 open System
+open Discorss
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Hosting
@@ -12,15 +13,12 @@ open Giraffe
 type Startup() =
     
     member __.ConfigureServices (services : IServiceCollection) =
-        services.AddLogging()
-                .AddHttpLogging(fun lo -> lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All)
-                .AddHttpClient()
-                .AddSingleton<Discorss.IInternalHttpClient, Discorss.InternalHttpClient>()
-                .AddSingleton<Discorss.IExternalHttpClient, Discorss.ExternalHttpClient>()
-                .AddSingleton<Discorss.Feeds.IFeedRepository, Discorss.Feeds.StubFeedRepository>()
-                .AddSingleton<Discorss.Security.ISecretProvider, Discorss.Security.StubSecretProvider>()
+        services.AddSingleton<Discorss.Feeds.IFeedRepository, Discorss.Feeds.StubFeedRepository>()
                 .AddSingleton<Discorss.Feeds.IFeedProvider, Discorss.Feeds.FeedProvider>()                
-                .AddGiraffe() 
+                |> ApiStartup.addApiLogging
+                |> ApiStartup.addApiConfig
+                |> ApiStartup.addApiHttp
+                |> ApiStartup.addApi
                 |> ignore
         
     member __.Configure (app : IApplicationBuilder)

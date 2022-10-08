@@ -1,6 +1,7 @@
 ﻿namespace Discorss.Ingestion.Service
 
 open System
+open Discorss
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Hosting
@@ -10,13 +11,11 @@ open Giraffe
 
 type Startup() =
     member __.ConfigureServices (services : IServiceCollection) =
-        services.AddLogging()
-                .AddHttpLogging(fun lo -> lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All)
-                .AddHttpClient()
-                .AddSingleton<Discorss.IExternalHttpClient, Discorss.ExternalHttpClient>()
-                .AddSingleton<Discorss.Security.ISecretProvider, Discorss.Security.StubSecretProvider>()
-                .AddGiraffe() 
-                |> ignore
+        services    |> ApiStartup.addApiLogging
+                    |> ApiStartup.addApiConfig
+                    |> ApiStartup.addApiHttp
+                    |> ApiStartup.addApi
+                    |> ignore
         
     member __.Configure (app : IApplicationBuilder)
                         (env : IHostEnvironment)

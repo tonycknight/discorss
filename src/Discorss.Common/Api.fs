@@ -32,3 +32,23 @@ module Api =
     let isAuthorised (sp: System.IServiceProvider): HttpHandler =         
         let secrets = sp.GetRequiredService<ISecretProvider>()
         requiresValidIp >=> requiresApiKey secrets
+
+
+module ApiStartup =
+
+    let addApiLogging(services: IServiceCollection)=
+        services.AddLogging()
+                .AddHttpLogging(fun lo -> lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All)
+
+    let addApiConfig(services: IServiceCollection)=
+        services.AddSingleton<Discorss.Configuration.IConfigurationProvider, Discorss.Configuration.ConfigurationProvider>()                
+                .AddSingleton<Discorss.IExternalHttpClient, Discorss.ExternalHttpClient>()
+                .AddSingleton<Discorss.Security.ISecretProvider, Discorss.Security.StubSecretProvider>()
+        
+    let addApiHttp(services: IServiceCollection)=
+        services.AddHttpClient()
+                .AddSingleton<Discorss.IInternalHttpClient, Discorss.InternalHttpClient>()
+                .AddSingleton<Discorss.IExternalHttpClient, Discorss.ExternalHttpClient>()
+    
+    let addApi(services: IServiceCollection)=
+        services.AddGiraffe() 
