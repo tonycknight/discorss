@@ -15,7 +15,7 @@ module WebApp=
                                                 Discorss.Api.heartbeatRoute
                                                 // TODO: hub stats
                                                 route "/queues/" >=> WebAppHandlers.getQueueNames sp
-                                                routeCif "/queues/%s/next/" (fun name -> WebAppHandlers.getNextMessage sp name) >=> (responseCaching CacheDirective.NoCache None None)
+                                                routeCif "/queues/%s/next/" (fun name -> noResponseCaching >=> WebAppHandlers.getNextMessage sp name)
                                             ]
                             PUT >=> choose [                                                    
                                                 routeCif "/queues/%s/" (fun name -> WebAppHandlers.pushMessage sp name) 
