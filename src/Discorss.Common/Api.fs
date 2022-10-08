@@ -68,3 +68,17 @@ module ApiValidation =
                         | false -> Choice2Of2 msg
                         | true -> Choice1Of2 { ApiErrorResult.errors = [| "Invalid request" |] }
             }
+
+module ApiPorts=
+    
+    [<Literal>]
+    let feedServicePort = 63530
+
+    [<Literal>]
+    let indexServicePort = 63531
+
+    [<Literal>]
+    let ingestionServicePort = 63532
+
+    [<Literal>]
+    let hubServicePort = 63533

@@ -26,7 +26,8 @@ module Program=
     [<EntryPoint>]
     let main _ =
         Host.CreateDefaultBuilder()
-            .ConfigureWebHostDefaults(fun whb -> whb.UseStartup<Startup>() |> ignore)
+            .ConfigureWebHostDefaults(fun whb -> whb.UseStartup<Startup>() 
+                                                    .UseUrls($"http://+:{ApiPorts.ingestionServicePort}") |> ignore)
             .Build()
             .Run()
         0
