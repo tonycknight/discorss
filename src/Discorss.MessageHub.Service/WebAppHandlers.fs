@@ -9,13 +9,14 @@ open Giraffe
 
 module WebAppHandlers=
     let qp (sp:IServiceProvider) = sp.GetRequiredService<IQueueProvider>()
-    
+        
     let pushMessage sp queueName =
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {                                      
                 match! ApiValidation.getRequest<MessageHubMessage> ctx with
                 | Choice1Of2 error ->   return! RequestErrors.BAD_REQUEST error next ctx
-                | Choice2Of2 msg ->     do! (qp sp).PushAsync queueName msg
+                | Choice2Of2 msg ->     let! q = (qp sp).GetQueueAsync queueName 
+                                        do! q.PushAsync msg
                                         return! Successful.NO_CONTENT next ctx
             }
     
@@ -30,7 +31,8 @@ module WebAppHandlers=
     let getNextMessage sp queueName =
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {                
-                let! msg = (qp sp).GetNextAsync queueName
+                let! q = (qp sp).GetQueueAsync(queueName)
+                let! msg = q.GetNextAsync()
                 let resp = match msg with
                             | None -> Successful.NO_CONTENT
                             | Some m -> Successful.OK m

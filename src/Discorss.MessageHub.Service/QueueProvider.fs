@@ -6,8 +6,7 @@ open Discorss.Messaging
 
 type IQueueProvider =
     abstract member GetQueuesAsync : unit -> Task<QueueInfo[]>
-    abstract member GetNextAsync : queueName:string -> Task<MessageHubMessage option>
-    abstract member PushAsync : queueName:string -> message:MessageHubMessage -> Task
+    abstract member GetQueueAsync : queueName:string -> Task<IQueue>
 
 type QueueProvider()=
     
@@ -25,17 +24,8 @@ type QueueProvider()=
                 return! Task.WhenAll qis                
             }
 
-        member this.GetNextAsync(queueName) =
+        member this.GetQueueAsync(queueName) = 
             task {
-                let queue = getQueue queueName
-
-                return! queue.GetNextAsync()
-            }
-
-        member this.PushAsync queueName message =
-            task {                                
-                let queue = getQueue queueName
-
-                do! queue.PushAsync message
-            }
+                return getQueue queueName
+            }        
     
