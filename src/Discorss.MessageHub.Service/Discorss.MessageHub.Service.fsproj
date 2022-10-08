@@ -5,6 +5,8 @@
     <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Queues.fs" />
+    <Compile Include="QueueProvider.fs" />
     <Compile Include="WebAppHandlers.fs" />
     <Compile Include="WebApp.fs" />
     <None Include="paket.references" />

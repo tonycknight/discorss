@@ -49,6 +49,7 @@ module ApiStartup =
         services.AddHttpClient()
                 .AddSingleton<Discorss.IInternalHttpClient, Discorss.InternalHttpClient>()
                 .AddSingleton<Discorss.IExternalHttpClient, Discorss.ExternalHttpClient>()
+                .AddSingleton<Discorss.Messaging.IMessageHubClient, Discorss.Messaging.MessageHubClient>()
     
     let addWebFramework(services: IServiceCollection)=
         services.AddGiraffe() 
