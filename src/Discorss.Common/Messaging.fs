@@ -10,7 +10,14 @@ type MessageHubMessage = {
     priority:       decimal
     messageType:    string
     content:        string
+    created:        DateTimeOffset
     }
+    with static member empty() = 
+        { MessageHubMessage.id = Guid.NewGuid();
+                            priority = 0M;
+                            messageType = "";
+                            content = "";
+                            created = DateTimeOffset.UtcNow }
 
 type IMessageHubClient = 
     abstract member GetNextAsync : queueName:string -> Task<MessageHubMessage option>
@@ -23,6 +30,5 @@ type MessageHubClient(config: Discorss.Configuration.IConfigurationProvider, cli
 
         member this.GetNextAsync(queueName)=
             task {
-                
                 return None // TODO: 
             }
