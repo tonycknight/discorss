@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <IsPackable>true</IsPackable>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
-
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="Models.fs" />
@@ -12,7 +12,6 @@
     <Compile Include="WebApp.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
     <ProjectReference Include="..\Discorss.Feeds\Discorss.Feeds.fsproj" />

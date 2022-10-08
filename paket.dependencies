@@ -12,6 +12,7 @@ nuget FsUnit.Xunit
 nuget giraffe
 nuget HtmlAgilityPack
 nuget Microsoft.NET.Test.Sdk
+nuget MongoDB.Driver
 nuget NSubstitute
 nuget System.Net.Http
 nuget System.Text.RegularExpressions
