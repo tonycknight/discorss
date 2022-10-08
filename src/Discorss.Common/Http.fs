@@ -58,14 +58,14 @@ type InternalHttpClient(httpClient: HttpClient, secrets: Security.ISecretProvide
         let result = new HttpRequestMessage(HttpMethod.Get, url)
         result |> appendApiKey
 
-    let putJsonReq (url: string) (content: string)= 
+    let putJsonReq (url: string) (content: string)=         
         let result = new HttpRequestMessage(HttpMethod.Put, url)
-        result.Content <- System.Net.Http.Json.JsonContent.Create(content)
+        result.Content <- new System.Net.Http.StringContent(content, Text.Encoding.UTF8, System.Net.Mime.MediaTypeNames.Application.Json)
         result |> appendApiKey
 
     interface IInternalHttpClient with
         member this.GetAsync url = url |> getReq |> httpSend
-        member this.PutAsync url content = url |> putJsonReq content |> httpSend
+        member this.PutAsync url content = content |> putJsonReq url |> httpSend
 
 
 type IExternalHttpClient=

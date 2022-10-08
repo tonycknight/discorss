@@ -13,10 +13,10 @@ module WebAppHandlers=
     let pushMessage sp queueName =
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {                                      
-                match! ApiValidation.getRequest<MessageHubMessage> ctx with
+                match! ApiValidation.getRequest<MessageHubMessageDto> ctx with
                 | Choice1Of2 error ->   return! RequestErrors.BAD_REQUEST error next ctx
                 | Choice2Of2 msg ->     let! q = (qp sp).GetQueueAsync queueName 
-                                        let msg = { msg with created = DateTimeOffset.UtcNow }
+                                        let msg = { ( MessageHubMessageDto.toMsg msg ) with created = DateTimeOffset.UtcNow }                                        
                                         do! q.PushAsync msg
                                         return! Successful.NO_CONTENT next ctx
             }

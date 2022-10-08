@@ -7,14 +7,28 @@ type AppConfiguration = {
         messageHubServiceUrl :  string
     }
 
+module ApiPorts=
+    
+    [<Literal>]
+    let feedServicePort = 63530
+
+    [<Literal>]
+    let indexServicePort = 63531
+
+    [<Literal>]
+    let ingestionServicePort = 63532
+
+    [<Literal>]
+    let hubServicePort = 63533
+
 type IConfigurationProvider =
     abstract member GetConfig : unit -> AppConfiguration
 
 type ConfigurationProvider() =
     interface IConfigurationProvider with
         member this.GetConfig()=
-            { AppConfiguration.indexServiceUrl = "http://localhost:63532";
-                                feedServiceUrl = "http://localhost:62369";
-                                ingestionServiceUrl = "http://localhost:63530";
-                                messageHubServiceUrl = "http://localhost:63532"
+            { AppConfiguration.indexServiceUrl = $"http://localhost:{ApiPorts.indexServicePort}";
+                                feedServiceUrl = $"http://localhost:{ApiPorts.feedServicePort}";
+                                ingestionServiceUrl = $"http://localhost:{ApiPorts.ingestionServicePort}";
+                                messageHubServiceUrl = $"http://localhost:{ApiPorts.hubServicePort}"
                                 }
