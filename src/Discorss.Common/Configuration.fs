@@ -4,6 +4,7 @@ type AppConfiguration = {
         indexServiceUrl :       string
         feedServiceUrl :        string
         ingestionServiceUrl :   string
+        messageHubServiceUrl :  string
     }
 
 type IConfigurationProvider =
@@ -14,4 +15,6 @@ type ConfigurationProvider() =
         member this.GetConfig()=
             { AppConfiguration.indexServiceUrl = "http://localhost:63532";
                                 feedServiceUrl = "http://localhost:62369";
-                                ingestionServiceUrl = "http://localhost:63530"}
+                                ingestionServiceUrl = "http://localhost:63530";
+                                messageHubServiceUrl = "http://localhost:63532"
+                                }
