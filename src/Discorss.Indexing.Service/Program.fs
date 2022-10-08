@@ -14,7 +14,8 @@ type Startup() =
 
         services    |> ApiStartup.addApi
                     |> (fun s -> s.AddSingleton<Discorss.Indexing.ILexicon, Discorss.Indexing.Lexicon>()
-                                  .AddSingleton<Discorss.Indexing.IDocumentAnalyser, Discorss.Indexing.DocumentAnalyser>())
+                                  .AddSingleton<Discorss.Indexing.IDocumentAnalyser, Discorss.Indexing.DocumentAnalyser>()
+                                  .AddSingleton<Discorss.Indexing.IDocumentStatsWriter, Discorss.Indexing.StubDocumentStatsWriter>())
                     |> ignore
         
     member __.Configure (app : IApplicationBuilder)

@@ -22,10 +22,11 @@ type DocumentAnalyser(lexicon: ILexicon)=
         member this.Words(doc: Document)=
             words doc
 
-        member this.Statistics(doc: Document)=
-            let docWords = doc |> words |> Array.ofSeq
-            
+        member this.Statistics(doc: Document)=            
+            let wordCounts = doc |> words |> Seq.counts |> Map.ofSeq
+            let wordCount = wordCounts |> Seq.sumBy (fun kvp -> kvp.Value)
+
             { DocumentStatistics.uri = doc.uri; 
-                                 wordCount = docWords.Length;
-                                 wordFrequencies = docWords |> Seq.counts |> Map.ofSeq
+                                 wordCount = wordCount;
+                                 wordFrequencies = wordCounts 
                                  }

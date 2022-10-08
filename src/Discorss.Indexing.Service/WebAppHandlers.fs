@@ -49,11 +49,16 @@ module WebAppHandlers=
             task {                      
                 match! ApiValidation.getRequest<ArticleRequest> ctx with
                 | Choice1Of2 error -> return! RequestErrors.BAD_REQUEST error next ctx
-                | Choice2Of2 req ->                     
-                    let da = sp.GetRequiredService<Indexing.IDocumentAnalyser>()
+                | Choice2Of2 req ->
+                    let doc = { Document.uri = req.uri; 
+                                        title = req.title; 
+                                        description = req.description; 
+                                        content = req.content; 
+                                        author = req.author }
+                    let stats = doc |> sp.GetRequiredService<Indexing.IDocumentAnalyser>().Statistics
+                    
+                    do! sp.GetRequiredService<Indexing.IDocumentStatsWriter>().Set(stats)
 
-                    // TODO: persist
-
-                    return! Successful.OK [] next ctx
+                    return! Successful.NO_CONTENT next ctx
             }
         

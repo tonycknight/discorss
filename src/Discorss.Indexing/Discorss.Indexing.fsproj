@@ -9,6 +9,7 @@
     <Compile Include="Lexicons.fs" />
     <Compile Include="Tokenisation.fs" />
     <Compile Include="DocumentAnalyser.fs" />
+    <Compile Include="Documents.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
