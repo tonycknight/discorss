@@ -15,9 +15,12 @@ module WebApp=
                                                 Discorss.Api.heartbeatRoute
                                             ]
                             POST >=> choose [
-                                                route "/stats"          >=> WebAppHandlers.getDocumentStatistics sp
-                                                route "/words"          >=> WebAppHandlers.getDocumentWords sp
+                                                route "/stats" >=> WebAppHandlers.getDocumentStatistics sp
+                                                route "/words" >=> WebAppHandlers.getDocumentWords sp                                                
                                             ]   
+                            PUT >=> choose  [
+                                                route "/index" >=> WebAppHandlers.setDocument sp
+                                            ]
                             ]            
             )
 

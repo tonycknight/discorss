@@ -61,4 +61,16 @@ module WebAppHandlers=
                     return! Successful.OK stats next ctx
             }
         
+    let setDocument (sp: IServiceProvider)=
+        fun (next : HttpFunc) (ctx : HttpContext) ->
+            task {                      
+                match! validateArticle ctx with
+                | Choice1Of2 error -> return! RequestErrors.BAD_REQUEST error next ctx
+                | Choice2Of2 req ->                     
+                    let da = sp.GetRequiredService<Indexing.IDocumentAnalyser>()
 
+                    // TODO: persist
+
+                    return! Successful.OK [] next ctx
+            }
+        
