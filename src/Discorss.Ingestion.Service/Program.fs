@@ -26,9 +26,7 @@ module Program=
     [<EntryPoint>]
     let main _ =
         Host.CreateDefaultBuilder()
-            .ConfigureWebHostDefaults(
-                fun webHostBuilder -> webHostBuilder.UseStartup<Startup>()
-                                        |> ignore)
+            .ConfigureWebHostDefaults(fun whb -> whb.UseStartup<Startup>() |> ignore)
             .Build()
             .Run()
         0
