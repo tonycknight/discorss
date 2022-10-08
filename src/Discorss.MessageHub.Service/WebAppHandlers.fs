@@ -41,7 +41,7 @@ module WebAppHandlers=
             task {                                      
                 let qp = qp sp
 
-                let! names = qp.GetQueueNamesAsync()
+                let! names = qp.GetQueuesAsync()
 
                 return! Successful.OK names next ctx
             }

@@ -5,7 +5,7 @@ open System.Threading.Tasks
 open Discorss.Messaging
 
 type IQueueProvider =
-    abstract member GetQueueNamesAsync : unit -> Task<string[]>
+    abstract member GetQueuesAsync : unit -> Task<QueueInfo[]>
     abstract member GetNextAsync : queueName:string -> Task<MessageHubMessage option>
     abstract member PushAsync : queueName:string -> message:MessageHubMessage -> Task
 
@@ -14,12 +14,15 @@ type QueueProvider()=
     let queues = new System.Collections.Concurrent.ConcurrentDictionary<string, IQueue>(StringComparer.OrdinalIgnoreCase)
 
     let getQueue queueName =
-        queues.GetOrAdd(queueName, (fun _ ->  new MemoryQueue() :> IQueue ) )
+        queues.GetOrAdd(queueName, (fun n -> new MemoryQueue(n) :> IQueue ) )
         
     interface IQueueProvider with
-        member this.GetQueueNamesAsync() = 
+        member this.GetQueuesAsync() = 
             task {
-                return queues.Keys |> Seq.sort |> Array.ofSeq
+                let qis = queues.Values
+                                    |> Array.ofSeq
+                                    |> Array.Parallel.map (fun q -> q.GetInfoAsync())                                    
+                return! Task.WhenAll qis                
             }
 
         member this.GetNextAsync(queueName) =
