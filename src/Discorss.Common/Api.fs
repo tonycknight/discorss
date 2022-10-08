@@ -38,7 +38,7 @@ module ApiStartup =
 
     let addApiLogging(services: IServiceCollection)=
         services.AddLogging()
-                .AddHttpLogging(fun lo -> lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All)
+                .AddHttpLogging(fun lo -> lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.Request)
 
     let addApiConfig(services: IServiceCollection)=
         services.AddSingleton<Discorss.Configuration.IConfigurationProvider, Discorss.Configuration.ConfigurationProvider>()                
