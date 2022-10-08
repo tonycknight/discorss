@@ -13,13 +13,17 @@ open Giraffe
 type Startup() =
     
     member __.ConfigureServices (services : IServiceCollection) =
-        services.AddSingleton<Discorss.Feeds.IFeedRepository, Discorss.Feeds.StubFeedRepository>()
-                .AddSingleton<Discorss.Feeds.IFeedProvider, Discorss.Feeds.FeedProvider>()                
-                |> ApiStartup.addApiLogging
-                |> ApiStartup.addApiConfig
-                |> ApiStartup.addApiHttp
-                |> ApiStartup.addApi
-                |> ignore
+
+        let addDeps(services : IServiceCollection) =
+            services.AddSingleton<Discorss.Feeds.IFeedRepository, Discorss.Feeds.StubFeedRepository>()
+                    .AddSingleton<Discorss.Feeds.IFeedProvider, Discorss.Feeds.FeedProvider>()                               
+
+        services    |> ApiStartup.addApiLogging
+                    |> ApiStartup.addApiConfig
+                    |> ApiStartup.addApiHttp
+                    |> ApiStartup.addApi
+                    |> addDeps
+                    |> ignore
         
     member __.Configure (app : IApplicationBuilder)
                         (env : IHostEnvironment)
