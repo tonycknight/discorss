@@ -55,3 +55,16 @@ module ApiStartup =
         services.AddGiraffe() 
 
     let addApi<'a when 'a :> IServiceCollection> = addApiLogging >> addApiConfig >> addApiHttp >> addWebFramework
+
+module ApiValidation =
+    let getRequest<'a>(ctx: HttpContext)=   
+        task {
+            if ctx.Request.ContentType <> "application/json" then
+                let result = { ApiErrorResult.errors = [| "Invalid content type" |] }
+                return Choice1Of2 result
+            else
+                let! msg = ctx.BindModelAsync<'a>()
+                return match System.Object.ReferenceEquals(msg, null) with                        
+                        | false -> Choice2Of2 msg
+                        | true -> Choice1Of2 { ApiErrorResult.errors = [| "Invalid request" |] }
+            }

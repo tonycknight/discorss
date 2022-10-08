@@ -9,36 +9,19 @@ open Giraffe
 
 module WebAppHandlers=
     
-
-    let private validateArticle (ctx : HttpContext)  =
-        task {
-            if ctx.Request.ContentType <> "application/json" then
-                let result = { ApiErrorResult.errors = [| "Invalid content type" |] }
-                return Choice1Of2 result
-            else
-                let! req = ctx.BindModelAsync<ArticleRequest>()
-                // TODO: get the request from the payload; 400 if no good
-                // invalid content type?
-                // invalid schema?
-                // missing uri
-                // missing content of any kind?
-
-                return Choice2Of2 req
-            }
-
     let getDocumentWords(sp: IServiceProvider)=
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {            
-                match! validateArticle ctx with
+                match! ApiValidation.getRequest<ArticleRequest> ctx with
                 | Choice1Of2 error -> return! RequestErrors.BAD_REQUEST error next ctx
                 | Choice2Of2 req ->                     
                     let da = sp.GetRequiredService<Indexing.IDocumentAnalyser>()
-                    let doc = { Document.uri = req.uri; 
+                    let words = { Document.uri = req.uri; 
                                         title = req.title; 
                                         description = req.description; 
                                         content = req.content; 
                                         author = req.author }
-                    let words = da.Words doc
+                                |> da.Words 
 
                     return! Successful.OK words next ctx
 
@@ -47,7 +30,7 @@ module WebAppHandlers=
     let getDocumentStatistics (sp: IServiceProvider)=
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {                      
-                match! validateArticle ctx with
+                match! ApiValidation.getRequest<ArticleRequest> ctx with
                 | Choice1Of2 error -> return! RequestErrors.BAD_REQUEST error next ctx
                 | Choice2Of2 req ->                     
                     let da = sp.GetRequiredService<Indexing.IDocumentAnalyser>()
@@ -64,7 +47,7 @@ module WebAppHandlers=
     let setDocument (sp: IServiceProvider)=
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {                      
-                match! validateArticle ctx with
+                match! ApiValidation.getRequest<ArticleRequest> ctx with
                 | Choice1Of2 error -> return! RequestErrors.BAD_REQUEST error next ctx
                 | Choice2Of2 req ->                     
                     let da = sp.GetRequiredService<Indexing.IDocumentAnalyser>()

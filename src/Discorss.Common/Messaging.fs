@@ -6,8 +6,10 @@ open System.Threading.Tasks
 open Discorss
 
 type MessageHubMessage = {
-    id:         Guid
-    priority:   decimal
+    id:             Guid
+    priority:       decimal
+    messageType:    string
+    content:        string
     }
 
 type IMessageHubClient = 
@@ -15,7 +17,8 @@ type IMessageHubClient =
 
 [<ExcludeFromCodeCoverage>]
 type MessageHubClient(config: Discorss.Configuration.IConfigurationProvider, client: IInternalHttpClient) =
-        
+    let config = config.GetConfig()
+    
     interface IMessageHubClient with
 
         member this.GetNextAsync(queueName)=
