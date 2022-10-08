@@ -32,7 +32,7 @@ module Http =
                     return HttpErrorRequestResponse(resp.StatusCode, body)
                     }
 
-    let get (client: HttpClient) (msg: HttpRequestMessage) =
+    let send (client: HttpClient) (msg: HttpRequestMessage) =
         task {
             try
                 let! resp = client.SendAsync msg
@@ -44,18 +44,28 @@ module Http =
 
 type IInternalHttpClient=
     abstract member GetAsync : url:string -> Task<HttpRequestResponse>
+    abstract member PutAsync : url:string -> content:string -> Task<HttpRequestResponse>
 
 [<ExcludeFromCodeCoverage>]
 type InternalHttpClient(httpClient: HttpClient, secrets: Security.ISecretProvider)=
-    let httpGet = Http.get httpClient
+    let httpSend = Http.send httpClient
     
-    let req (url: string) = 
+    let appendApiKey (req: HttpRequestMessage)=
+        req.Headers.Add("x-api-key", secrets.GetSecretValue "apikey")
+        req
+
+    let getReq (url: string) = 
         let result = new HttpRequestMessage(HttpMethod.Get, url)
-        result.Headers.Add("x-api-key", secrets.GetSecretValue "apikey")
-        result
+        result |> appendApiKey
+
+    let putJsonReq (url: string) (content: string)= 
+        let result = new HttpRequestMessage(HttpMethod.Put, url)
+        result.Content <- System.Net.Http.Json.JsonContent.Create(content)
+        result |> appendApiKey
 
     interface IInternalHttpClient with
-        member this.GetAsync(url) = url |> req |> httpGet
+        member this.GetAsync url = url |> getReq |> httpSend
+        member this.PutAsync url content = url |> putJsonReq content |> httpSend
 
 
 type IExternalHttpClient=
@@ -63,11 +73,11 @@ type IExternalHttpClient=
   
 [<ExcludeFromCodeCoverage>]
 type ExternalHttpClient(httpClient: HttpClient)=
-    let httpGet = Http.get httpClient
+    let httpSend = Http.send httpClient
     
     // TODO: log req/resp?
     let req (url:string) = new HttpRequestMessage(HttpMethod.Get, url)
 
     interface IExternalHttpClient with
-        member this.GetAsync(url) = url |> req |> httpGet
+        member this.GetAsync(url) = url |> req |> httpSend
 

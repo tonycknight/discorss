@@ -13,22 +13,41 @@ type MessageHubMessage = {
     created:        DateTimeOffset
     }
     with static member empty() = 
-        { MessageHubMessage.id = Guid.NewGuid();
-                            priority = 0M;
-                            messageType = "";
-                            content = "";
-                            created = DateTimeOffset.UtcNow }
+            { MessageHubMessage.id = Guid.NewGuid();
+                                priority = 0M; messageType = ""; content = "";
+                                created = DateTimeOffset.UtcNow }
 
 type IMessageHubClient = 
     abstract member GetNextAsync : queueName:string -> Task<MessageHubMessage option>
+    abstract member PushAsync : queueName:string -> msg:MessageHubMessage -> Task
 
 [<ExcludeFromCodeCoverage>]
 type MessageHubClient(config: Discorss.Configuration.IConfigurationProvider, client: IInternalHttpClient) =
     let config = config.GetConfig()
-    
-    interface IMessageHubClient with
+    let serviceConfig = config.messageHubServiceUrl
 
-        member this.GetNextAsync(queueName)=
-            task {
-                return None // TODO: 
-            }
+    let getNextMessage queueName =
+        task {
+            let! resp = client.GetAsync $"{serviceConfig}/api/v1/queues/{queueName}/next/"
+            
+            return match resp with
+                    | HttpOkRequestResponse (status,body) when status = System.Net.HttpStatusCode.OK -> 
+                            body |> Newtonsoft.Json.JsonConvert.DeserializeObject<MessageHubMessage> |> Some
+                    | _ -> None
+        }
+
+    let pushMessage queueName msg =
+        task {
+            let! resp = msg 
+                          |> Newtonsoft.Json.JsonConvert.SerializeObject 
+                          |> client.PutAsync $"{serviceConfig}/api/v1/queues/{queueName}/"            
+
+            match resp with 
+            | HttpExceptionRequestResponse ex -> Exception($"Cannot send message", ex) |> raise
+            | HttpErrorRequestResponse (_,msg) ->  Exception($"Cannot send message{Environment.NewLine}{msg}") |> raise 
+            | _ -> ignore 0
+        }
+
+    interface IMessageHubClient with
+        member this.GetNextAsync queueName = getNextMessage queueName
+        member this.PushAsync queueName msg = pushMessage queueName msg
