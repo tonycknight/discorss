@@ -1,8 +1,10 @@
 ﻿namespace Discorss
 
 open System
+open System.Diagnostics.CodeAnalysis
 open MongoDB.Driver
 
+[<ExcludeFromCodeCoverage>]
 module Mongo=
 
     let dbClient(connection: string)=

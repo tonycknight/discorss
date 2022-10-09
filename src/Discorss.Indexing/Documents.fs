@@ -1,12 +1,13 @@
 ﻿namespace Discorss.Indexing
 
-open System
+open System.Diagnostics.CodeAnalysis
 open System.Threading.Tasks
 open Discorss
 
 type IDocumentStatsWriter=
     abstract member Set: stats:DocumentStatistics -> Task
 
+[<ExcludeFromCodeCoverage>]
 type StubDocumentStatsWriter()=
     
     interface IDocumentStatsWriter with

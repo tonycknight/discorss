@@ -1,15 +1,12 @@
 ﻿namespace Discorss
 
 open System
-open System.Text
 
 module Strings=
     let str (value: 'a) = value.ToString()
 
     let join (delim : string) (strings: seq<string>) = String.Join(delim, strings)
     
-    let trim (text: string) = text.Trim()
-
     let lower (text: string) = text.ToLower()
 
     let upper (text: string) = text.ToUpper()
