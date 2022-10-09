@@ -2,7 +2,7 @@
 
 open System
 open System.Diagnostics.CodeAnalysis
-open Discorss.Configuration
+open Discorss
 
 type ISecretProvider=
     abstract member IsSecretValueEqual : string -> string -> bool

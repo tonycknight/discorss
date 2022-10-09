@@ -35,8 +35,8 @@ module Api =
         requiresValidIp >=> requiresApiKey secrets
 
     let config (sp: System.IServiceProvider) =
-        sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>().Get<Configuration.AppConfiguration>()
-            |> Configuration.ApplicationConfiguration.mergeDefaults
+        sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>().Get<AppConfiguration>()
+            |> Configuration.mergeDefaults
 
 module ApiStartup =
 
@@ -45,14 +45,14 @@ module ApiStartup =
                 .AddHttpLogging(fun lo -> lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.Request)
 
     let addApiConfig(services: IServiceCollection)=
-        services.AddSingleton<Configuration.AppConfiguration>(fun sp -> Api.config sp)
-                .AddSingleton<Discorss.IExternalHttpClient, Discorss.ExternalHttpClient>()
+        services.AddSingleton<AppConfiguration>(fun sp -> Api.config sp)
+                .AddSingleton<IExternalHttpClient, ExternalHttpClient>()
                 .AddSingleton<Discorss.Security.ISecretProvider, Discorss.Security.StubSecretProvider>()
         
     let addApiHttp(services: IServiceCollection)=
         services.AddHttpClient()
-                .AddSingleton<Discorss.IInternalHttpClient, Discorss.InternalHttpClient>()
-                .AddSingleton<Discorss.IExternalHttpClient, Discorss.ExternalHttpClient>()
+                .AddSingleton<IInternalHttpClient, InternalHttpClient>()
+                .AddSingleton<IExternalHttpClient, ExternalHttpClient>()
                 .AddSingleton<Discorss.Messaging.IMessageHubClient, Discorss.Messaging.MessageHubClient>()
     
     let addWebFramework(services: IServiceCollection)=

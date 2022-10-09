@@ -1,13 +1,11 @@
-﻿namespace Discorss.Feeds.Test.Unit.Configuration
+﻿namespace Discorss.Feeds.Test.Unit
 
-open System
-open Discorss
 open FsCheck
 open FsCheck.Xunit
 open FsUnit.Xunit
-open Discorss.Configuration
+open Discorss
 
-module ApplicationConfigurationTests=
+module ConfigurationTests=
 
     [<Xunit.Theory>]
     [<Xunit.InlineData("")>]
@@ -18,7 +16,7 @@ module ApplicationConfigurationTests=
         let c = { AppConfiguration.defaultConfig with feedServiceUrl = value}
         let dc = AppConfiguration.defaultConfig
         
-        let c2 = ApplicationConfiguration.mergeDefaults c
+        let c2 = Configuration.mergeDefaults c
         
         c2.feedServiceUrl |> should equal dc.feedServiceUrl        
         c2.ingestionServiceUrl |> should equal dc.ingestionServiceUrl
@@ -32,7 +30,7 @@ module ApplicationConfigurationTests=
         let c = { AppConfiguration.defaultConfig with feedServiceUrl = value.Get}
         let dc = AppConfiguration.defaultConfig
         
-        let c2 = ApplicationConfiguration.mergeDefaults c
+        let c2 = Configuration.mergeDefaults c
                 
         c2.feedServiceUrl |> should equal value.Get
         c2.ingestionServiceUrl |> should equal dc.ingestionServiceUrl

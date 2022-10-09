@@ -1,4 +1,4 @@
-﻿namespace Discorss.Configuration
+﻿namespace Discorss
 
 module ApiPorts=
     
@@ -30,7 +30,7 @@ type AppConfiguration = {
                                 secretsConnection = ""
                                 }
     
-module ApplicationConfiguration=
+module Configuration=
     open System.Reflection
     
     let private configProp =

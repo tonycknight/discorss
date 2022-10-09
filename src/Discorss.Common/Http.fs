@@ -47,7 +47,7 @@ type IInternalHttpClient=
     abstract member PutAsync : url:string -> content:string -> Task<HttpRequestResponse>
 
 [<ExcludeFromCodeCoverage>]
-type InternalHttpClient(httpClient: HttpClient, config: Configuration.AppConfiguration, secrets: Security.ISecretProvider)=
+type InternalHttpClient(httpClient: HttpClient, config: AppConfiguration, secrets: Security.ISecretProvider)=
     let httpSend = Http.send httpClient
     
     let appendApiKey (req: HttpRequestMessage)=
@@ -72,7 +72,7 @@ type IExternalHttpClient=
     abstract member GetAsync : url:string -> Task<HttpRequestResponse>
   
 [<ExcludeFromCodeCoverage>]
-type ExternalHttpClient(httpClient: HttpClient, config: Configuration.AppConfiguration)=
+type ExternalHttpClient(httpClient: HttpClient, config: AppConfiguration)=
     let httpSend = Http.send httpClient
     
     // TODO: log req/resp?

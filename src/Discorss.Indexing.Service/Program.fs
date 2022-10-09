@@ -31,7 +31,7 @@ module Program=
     let main _ =        
         Host.CreateDefaultBuilder()
             .ConfigureWebHostDefaults(fun whb -> whb.UseStartup<Startup>() 
-                                                    .UseUrls($"http://+:{Configuration.ApiPorts.indexServicePort}") 
+                                                    .UseUrls($"http://+:{ApiPorts.indexServicePort}") 
                                                     .ConfigureAppConfiguration(ApiStartup.configureAppConfig)
                                                     |> ignore)
             .Build()
