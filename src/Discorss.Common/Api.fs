@@ -36,6 +36,7 @@ module Api =
 
     let config (sp: System.IServiceProvider) =
         sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>().Get<Configuration.AppConfiguration>()
+            |> Configuration.ApplicationConfiguration.mergeDefaults
 
 module ApiStartup =
 
