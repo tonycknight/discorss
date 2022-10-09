@@ -20,7 +20,7 @@ module EnvVarConfigurationProviderTests=
         let evp = new EnvVarConfigurationProvider(ev) :> IConfigurationProvider
 
         let c = evp.GetConfig()
-        let dc = AppConfiguration.defaultConfig()
+        let dc = AppConfiguration.defaultConfig
         
         c.ingestionServiceUrl |> should equal dc.ingestionServiceUrl
         c.messageHubServiceUrl |> should equal dc.messageHubServiceUrl
