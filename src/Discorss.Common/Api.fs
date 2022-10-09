@@ -5,6 +5,7 @@ open Discorss
 open Discorss.Security
 open Giraffe
 open Microsoft.AspNetCore.Http
+open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 
 [<CLIMutable>]
@@ -33,6 +34,8 @@ module Api =
         let secrets = sp.GetRequiredService<ISecretProvider>()
         requiresValidIp >=> requiresApiKey secrets
 
+    let config (sp: System.IServiceProvider) =
+        sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>().Get<Configuration.AppConfiguration>()
 
 module ApiStartup =
 
@@ -55,6 +58,11 @@ module ApiStartup =
         services.AddGiraffe() 
 
     let addApi<'a when 'a :> IServiceCollection> = addApiLogging >> addApiConfig >> addApiHttp >> addWebFramework
+
+    let configureAppConfig (whbc: IConfigurationBuilder)=
+        whbc.AddJsonFile("appsettings.json", false, true)
+            .AddEnvironmentVariables("Discorss_")
+            |> ignore
 
 module ApiValidation =
     let getRequest<'a>(ctx: HttpContext)=   

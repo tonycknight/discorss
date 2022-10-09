@@ -28,10 +28,12 @@ type Startup() =
 module Program=
     
     [<EntryPoint>]
-    let main _ =
+    let main _ =        
         Host.CreateDefaultBuilder()
             .ConfigureWebHostDefaults(fun whb -> whb.UseStartup<Startup>() 
-                                                    .UseUrls($"http://+:{Configuration.ApiPorts.indexServicePort}") |> ignore)
+                                                    .UseUrls($"http://+:{Configuration.ApiPorts.indexServicePort}") 
+                                                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig)
+                                                    |> ignore)
             .Build()
             .Run()
         0
