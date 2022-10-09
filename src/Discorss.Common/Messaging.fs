@@ -23,8 +23,7 @@ type IMessageHubClient =
     abstract member PushAsync : queueName:string -> msg:MessageHubMessage -> Task
 
 [<ExcludeFromCodeCoverage>]
-type MessageHubClient(config: Discorss.Configuration.IConfigurationProvider, client: IInternalHttpClient) =
-    let config = config.GetConfig()
+type MessageHubClient(config: Discorss.Configuration.AppConfiguration, client: IInternalHttpClient) =
     let serviceConfig = config.messageHubServiceUrl
 
     let getNextMessage queueName =

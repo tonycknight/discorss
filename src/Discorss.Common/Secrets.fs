@@ -27,9 +27,8 @@ type StubSecretProvider(secrets: (string * string) seq)=
                 | _ -> ""
 
 [<ExcludeFromCodeCoverage>]
-type SecretProvider(config: IConfigurationProvider)=
+type SecretProvider(config: AppConfiguration)=
     
-    let config = config.GetConfig()
     let secrets = Map.empty
 
     interface ISecretProvider with
