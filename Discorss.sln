@@ -14,8 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{68B857CC
 		build.fsx = build.fsx
 		build.ps1 = build.ps1
 		.github\workflows\build.yml = .github\workflows\build.yml
-		.github\CODEOWNERS = .github\CODEOWNERS
 		.github\workflows\clean-builds.yml = .github\workflows\clean-builds.yml
+		.github\CODEOWNERS = .github\CODEOWNERS
 		.github\workflows\codeql-analysis.yml = .github\workflows\codeql-analysis.yml
 		paket.dependencies = paket.dependencies
 		.github\workflows\sca.yml = .github\workflows\sca.yml
@@ -40,6 +40,10 @@ EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Discorss.Feeds.Service", "src\Discorss.Feeds.Service\Discorss.Feeds.Service.fsproj", "{89DE538D-62ED-421D-A5F2-C9842C2FA7AC}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Discorss.MessageHub.Service", "src\Discorss.MessageHub.Service\Discorss.MessageHub.Service.fsproj", "{CE33D6AE-79DE-4366-A5F9-DE3ECF4165F0}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Discorss.Ingestion", "src\Discorss.Ingestion\Discorss.Ingestion.fsproj", "{27169819-0182-4A69-89C2-9DD3010D2B1D}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Discorss.Ingestion.Test.Unit", "test\Discorss.Ingestion.Test.Unit\Discorss.Ingestion.Test.Unit.fsproj", "{CB792DA8-4D4D-42E6-A721-7675EF5B375B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +95,14 @@ Global
 		{CE33D6AE-79DE-4366-A5F9-DE3ECF4165F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE33D6AE-79DE-4366-A5F9-DE3ECF4165F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE33D6AE-79DE-4366-A5F9-DE3ECF4165F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27169819-0182-4A69-89C2-9DD3010D2B1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27169819-0182-4A69-89C2-9DD3010D2B1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27169819-0182-4A69-89C2-9DD3010D2B1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27169819-0182-4A69-89C2-9DD3010D2B1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB792DA8-4D4D-42E6-A721-7675EF5B375B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB792DA8-4D4D-42E6-A721-7675EF5B375B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB792DA8-4D4D-42E6-A721-7675EF5B375B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB792DA8-4D4D-42E6-A721-7675EF5B375B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,6 +119,8 @@ Global
 		{7ACC590A-8E9A-488D-98B0-58CBCB8A6593} = {2C02BE88-7375-4DAD-9CEA-D580938B5971}
 		{89DE538D-62ED-421D-A5F2-C9842C2FA7AC} = {655744F9-3113-4139-9808-F02C0BF9AD7C}
 		{CE33D6AE-79DE-4366-A5F9-DE3ECF4165F0} = {655744F9-3113-4139-9808-F02C0BF9AD7C}
+		{27169819-0182-4A69-89C2-9DD3010D2B1D} = {655744F9-3113-4139-9808-F02C0BF9AD7C}
+		{CB792DA8-4D4D-42E6-A721-7675EF5B375B} = {2C02BE88-7375-4DAD-9CEA-D580938B5971}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {885B064D-58C3-4A8F-9235-9D51F72CD0D6}

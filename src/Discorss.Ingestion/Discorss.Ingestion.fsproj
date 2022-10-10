@@ -6,11 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Library.fs" />
+    <Compile Include="ActorMessages.fs" />
+    <Compile Include="Actors.fs" />
+    <Compile Include="FeedActor.fs" />
+    <Compile Include="FeedsActor.fs" />
+    <Compile Include="IngestionActor.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
+    <ProjectReference Include="..\Discorss.Feeds\Discorss.Feeds.fsproj" />
+    <ProjectReference Include="..\Discorss.Indexing\Discorss.Indexing.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 

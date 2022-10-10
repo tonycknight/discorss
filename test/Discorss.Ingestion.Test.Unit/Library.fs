@@ -1,4 +1,4 @@
-﻿namespace Discorss.Ingestion
+﻿namespace Discorss.Ingestion.Test.Unit
 
 module Say =
     let hello name =

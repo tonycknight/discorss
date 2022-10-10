@@ -1,0 +1,11 @@
+xunit
+FSharp.Core
+coverlet.collector
+coverlet.msbuild
+xunit.runner.visualstudio
+Microsoft.NET.Test.Sdk
+FsCheck.Xunit
+FluentAssertions
+FsUnit.Xunit
+System.Net.Http
+System.Text.RegularExpressions

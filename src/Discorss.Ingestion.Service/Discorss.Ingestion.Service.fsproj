@@ -13,6 +13,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
+    <ProjectReference Include="..\Discorss.Ingestion\Discorss.Ingestion.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
