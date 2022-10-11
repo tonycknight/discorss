@@ -14,6 +14,9 @@ module WebApp=
                             GET >=> choose  [    
                                                 Discorss.Api.heartbeatRoute
                                             ]
+                            POST >=> choose [
+                                                route "/ingest" >=> WebAppHandlers.testIngestion sp
+                                            ]
                             ]            
             )
 

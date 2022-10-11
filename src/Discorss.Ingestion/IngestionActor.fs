@@ -7,7 +7,7 @@ open Discorss
 type IngestionActor(config:AppConfiguration, http:IInternalHttpClient) as self=
 
     let feedsActor = new FeedsActor(self, config, http) :> IActor
-
+    
     let actor = MailboxProcessor<ActorMessage>.Start(
             fun inbox ->
                 let rec loop() = async {
@@ -18,7 +18,8 @@ type IngestionActor(config:AppConfiguration, http:IInternalHttpClient) as self=
                     | ActorMessage.RemoveFeed _
                     | ActorMessage.QueryFeed _
                     | ActorMessage.Feeds _ ->       msg |> feedsActor.Post 
-                    | ActorMessage.Documents _ ->   ignore 0 // TODO:
+                    | ActorMessage.IngestFeeds ->   ignore 0
+                    | ActorMessage.Documents _ 
                     | ActorMessage.IndexDoc _ ->    ignore 0 // TODO: 
                     | m ->                          ignore 0
 
@@ -29,6 +30,4 @@ type IngestionActor(config:AppConfiguration, http:IInternalHttpClient) as self=
 
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg
-        member this.Start() = actor.Start()
-
-
+        

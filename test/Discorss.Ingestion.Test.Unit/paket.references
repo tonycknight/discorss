@@ -9,3 +9,4 @@ FluentAssertions
 FsUnit.Xunit
 System.Net.Http
 System.Text.RegularExpressions
+NSubstitute

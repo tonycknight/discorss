@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Include="Library.fs" />
+    <Compile Include="FeedActorTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Discorss.Common\Discorss.Common.fsproj" />

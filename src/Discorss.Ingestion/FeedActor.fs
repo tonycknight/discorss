@@ -6,7 +6,7 @@ open Discorss
 [<ExcludeFromCodeCoverage>]
 type FeedActor(parent:IActor, config:AppConfiguration, http:IInternalHttpClient, feedUri)=
 
-    let feedServiceUrl = $"{config.feedServiceUrl}/feeds/"
+    let feedServiceUrl = $"{config.feedServiceUrl}/api/v1/feeds/"
 
     let query() =
         task {
@@ -22,7 +22,7 @@ type FeedActor(parent:IActor, config:AppConfiguration, http:IInternalHttpClient,
     let getDocuments()=
         task {
             let! r = query() 
-            return r |> Option.map (fun x -> toDocs x |> ActorMessage.Documents)
+            return r |> Option.map (toDocs >> ActorMessage.Documents)
         }
 
     let actor = MailboxProcessor<ActorMessage>.Start(
@@ -30,11 +30,10 @@ type FeedActor(parent:IActor, config:AppConfiguration, http:IInternalHttpClient,
                 let rec loop() = async {
 
                     match! inbox.Receive() with
-                    | ActorMessage.QueryFeed uri
-                        when feedUri = uri ->       let! m = getDocuments() |> Async.AwaitTask
-                                                    match m with
-                                                    | Some m -> parent.Post m
-                                                    | _ -> ignore 0
+                    | ActorMessage.QueryFeed uri ->
+                        //when feedUri = uri ->       
+                                                    let! m = getDocuments() |> Async.AwaitTask
+                                                    m |> Option.iter parent.Post
                     | m ->                          parent.Post m
 
                     return! loop()
@@ -43,7 +42,6 @@ type FeedActor(parent:IActor, config:AppConfiguration, http:IInternalHttpClient,
             )
     
     interface IActor with
-        member this.Post(msg: ActorMessage) = actor.Post msg
-        member this.Start() = actor.Start()
+        member this.Post(msg: ActorMessage) = actor.Post msg        
 
 

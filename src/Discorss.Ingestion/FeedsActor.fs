@@ -10,12 +10,12 @@ type FeedsActorState = {
 [<ExcludeFromCodeCoverage>]
 type FeedsActor(parent:IActor, config:AppConfiguration, http:IInternalHttpClient) as self=
 
-    let feedServiceUrl = $"{config.feedServiceUrl}/feeds/"    
+    let feedServiceUrl = $"{config.feedServiceUrl}/api/v1/feeds/"    
     let state() = { feedActors = Map.empty } 
 
     let queryFeeds()=
-        task {
-            let! r = feedServiceUrl |> http.GetAsync
+        async {
+            let! r = feedServiceUrl |> http.GetAsync |> Async.AwaitTask
             return match r with
                     | HttpRequestResponse.HttpOkRequestResponse (_,body) -> body |> Newtonsoft.Json.JsonConvert.DeserializeObject<Feeds.FeedInfo[]> |> Some
                     | _ -> None
@@ -29,8 +29,7 @@ type FeedsActor(parent:IActor, config:AppConfiguration, http:IInternalHttpClient
                     match state.feedActors.TryFind uri with
                     | Some feed ->  (state,feed)
                     | _ ->          let actor = new FeedActor(self, config, http, uri) :> IActor
-                                    let actors = state.feedActors |> Map.add uri actor                                        
-                                    let state = { state with feedActors = actors }
+                                    let state = { state with feedActors = state.feedActors |> Map.add uri actor }
                                     (state, actor)
 
         (state,actor)
@@ -52,16 +51,14 @@ type FeedsActor(parent:IActor, config:AppConfiguration, http:IInternalHttpClient
                 let rec loop(state:FeedsActorState) = async {
                     let! msg = inbox.Receive()
                     let state = match msg with
-                                | ActorMessage.GetFeeds ->          queryFeeds() 
-                                                                        |> Task.map (Option.bind (ActorMessage.Feeds >> Some))
-                                                                        |> Option.iter parent.Post
+                                | ActorMessage.GetFeeds ->          queryFeeds() |> Async.RunSynchronously // TODO: ewwww
+                                                                        |> Option.iter (ActorMessage.Feeds >> parent.Post)
                                                                     state
                                 | ActorMessage.Feeds feeds ->       addFeeds state feeds
                                 | ActorMessage.AddFeed uri ->       let state,_ = getOrCreateFeed state uri
                                                                     state
                                 | ActorMessage.RemoveFeed uri ->    removeFeed state uri                                                                    
                                 | ActorMessage.QueryFeed uri ->     let state,actor = getOrCreateFeed state uri
-                                                                    actor.Start()
                                                                     msg |> actor.Post
                                                                     state 
                                 | m ->                              parent.Post m
@@ -72,10 +69,9 @@ type FeedsActor(parent:IActor, config:AppConfiguration, http:IInternalHttpClient
                                     
                 state() |> loop
             )
-    
 
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg
-        member this.Start() = actor.Start()
-
+        
+            
 

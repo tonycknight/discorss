@@ -8,5 +8,6 @@ type ActorMessage =
 | AddFeed of url:string
 | RemoveFeed of url:string
 | QueryFeed of url:string
+| IngestFeeds
 | Documents of docs:Discorss.Indexing.Document[]
 | IndexDoc of doc:Discorss.Indexing.Document

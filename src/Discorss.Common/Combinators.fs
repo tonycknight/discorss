@@ -15,3 +15,5 @@ module Task=
     let map(f: 'a -> 'b) (x: Task<'a>)=
         x.GetAwaiter().GetResult() |> f // TODO: ewww        
 
+    let fromResult(value)=
+        Task.FromResult(value)
