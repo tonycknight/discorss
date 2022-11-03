@@ -13,6 +13,7 @@ module WebApp=
                     choose [
                             GET >=> choose  [    
                                                 Discorss.Api.heartbeatRoute
+                                                route "/stats" >=> WebAppHandlers.getActorStats sp
                                             ]
                             POST >=> choose [
                                                 route "/ingest" >=> WebAppHandlers.testIngestion sp

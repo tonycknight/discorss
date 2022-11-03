@@ -7,6 +7,7 @@ open Giraffe
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Logging
 
 [<CLIMutable>]
 type ApiErrorResult = {
@@ -38,6 +39,13 @@ module Api =
         sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>().Get<AppConfiguration>()
             |> Configuration.mergeDefaults
 
+    let errorHandler : ErrorHandler = 
+        fun (ex: exn) (logger: ILogger) ->
+            [ ex.GetType().FullName; ex.Message; ex.StackTrace; ] |> Strings.join System.Environment.NewLine |> logger.LogError
+            clearResponse 
+                >=> publicResponseCaching 5 None
+                >=> ServerErrors.internalError ( json ( { ApiErrorResult.errors = [| "An unhandled error occurred." |]} ) )
+
 module ApiStartup =
 
     let addApiLogging(services: IServiceCollection)=
@@ -55,6 +63,7 @@ module ApiStartup =
                 .AddSingleton<IExternalHttpClient, ExternalHttpClient>()
                 .AddSingleton<Discorss.Messaging.IMessageHubClient, Discorss.Messaging.MessageHubClient>()
     
+        
     let addWebFramework(services: IServiceCollection)=
         services.AddGiraffe() 
 

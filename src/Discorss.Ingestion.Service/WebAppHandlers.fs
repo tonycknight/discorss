@@ -24,4 +24,14 @@ module WebAppHandlers=
                 return! Successful.OK [] next ctx
             }
 
+    let getActorStats(sp:IServiceProvider)=
+        
+        fun (next : HttpFunc) (ctx : HttpContext) ->
+            task {                                      
+                let! result = (actor sp).GetStats()
+                
+                return! Successful.OK result next ctx
+            }
+
+
 

@@ -11,7 +11,7 @@ open Xunit
 module FeedActorTests=
 
     [<Fact>]
-    let ``Post TODO``()=
+    let ``Post parent receives Feeds``()=
         let parent = Substitute.For<IActor>()
         let config = AppConfiguration.defaultConfig
         let http = Substitute.For<IInternalHttpClient>()
@@ -19,9 +19,9 @@ module FeedActorTests=
         let feedUri = "test"
 
         let actor = new FeedActor(parent, config, http, feedUri)  :> IActor
-        //actor.Start()
-        ActorMessage.QueryFeed feedUri |> actor.Post
-        // TODO: result??? there's no promise to hang on to
-        Task.Delay(10000).GetAwaiter().GetResult()
-        ignore 0
-        // parent should have a Documents message posted to it ... eventually
+        ActorMessage.FetchFeed feedUri |> actor.Post
+        
+        Task.Delay(1000).GetAwaiter().GetResult()
+        parent.Received(1).Post(Arg.Any<ActorMessage>())
+        
+    

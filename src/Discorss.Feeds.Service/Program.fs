@@ -22,7 +22,8 @@ type Startup() =
     member __.Configure (app : IApplicationBuilder)
                         (env : IHostEnvironment)
                         (loggerFactory : ILoggerFactory) =       
-        app.UseHttpLogging()
+        app.UseGiraffeErrorHandler(Api.errorHandler)
+           .UseHttpLogging()
            .UseGiraffe (WebApp.webApp app.ApplicationServices)
         
     
