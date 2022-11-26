@@ -16,6 +16,7 @@ type ActorMessage =
 | RemoveFeed of url:string
 | FetchFeed of url:string
 | IngestFeeds
+// TODO: | IngestFeed
 | Documents of docs:Discorss.Indexing.Document[]
 | IndexDoc of doc:Discorss.Indexing.Document
 | GetActorStats of rc:AsyncReplyChannel<ActorStats>
