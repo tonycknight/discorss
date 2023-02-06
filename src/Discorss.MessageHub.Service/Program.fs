@@ -30,7 +30,7 @@ module Program=
         Host.CreateDefaultBuilder()
             .ConfigureWebHostDefaults(fun whb -> whb.UseStartup<Startup>()
                                                     .UseUrls($"http://+:{ApiPorts.hubServicePort}")
-                                                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig)|> ignore)
+                                                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig) |> ignore)
             .Build()
             .Run()
         0

@@ -14,11 +14,11 @@ module WebApp=
                             GET >=> choose  [    
                                                 Discorss.Api.heartbeatRoute
                                                 // TODO: hub stats
-                                                route "/queues/" >=> WebAppHandlers.getQueueNames sp
-                                                routeCif "/queues/%s/next/" (fun name -> noResponseCaching >=> WebAppHandlers.getNextMessage sp name)
+                                                route "/queue/" >=> WebAppHandlers.getQueueNames sp
+                                                routeCif "/queue/%s/head/" (fun name -> noResponseCaching >=> WebAppHandlers.getNextMessage sp name)
                                             ]
-                            PUT >=> choose [                                                    
-                                                routeCif "/queues/%s/" (fun name -> WebAppHandlers.pushMessage sp name) 
+                            POST >=> choose [                                                    
+                                                routeCif "/queue/%s/" (fun name -> WebAppHandlers.pushMessage sp name) 
                                             ]
                             ]            
             )

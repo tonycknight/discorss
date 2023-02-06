@@ -28,7 +28,7 @@ type MessageHubClient(config: AppConfiguration, client: IInternalHttpClient) =
 
     let getNextMessage queueName =
         task {
-            let! resp = client.GetAsync $"{serviceConfig}/api/v1/queues/{queueName}/next/"
+            let! resp = client.GetAsync $"{serviceConfig}/api/v1/queue/{queueName}/head/"
             
             return match resp with
                     | HttpOkRequestResponse (status,body) when status = System.Net.HttpStatusCode.OK -> 
@@ -41,7 +41,7 @@ type MessageHubClient(config: AppConfiguration, client: IInternalHttpClient) =
         task {
             let! resp = msg 
                           |> Newtonsoft.Json.JsonConvert.SerializeObject 
-                          |> client.PutAsync $"{serviceConfig}/api/v1/queues/{queueName}/"            
+                          |> client.PostAsync $"{serviceConfig}/api/v1/queue/{queueName}/"            
 
             match resp with 
             | HttpExceptionRequestResponse ex -> Exception($"Cannot send message", ex) |> raise
