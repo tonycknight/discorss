@@ -2,18 +2,23 @@
 
 open System
 open System.Threading.Tasks
-open Discorss.Messaging
+
+type IQueueFactory =
+    abstract member CreateQueue : name:string -> IQueue
+
+type MemoryQueueFactory()=
+    interface IQueueFactory with    
+        member this.CreateQueue(name: string) = new MemoryQueue(name) 
 
 type IQueueProvider =
     abstract member GetQueuesAsync : unit -> Task<QueueInfo[]>
     abstract member GetQueueAsync : queueName:string -> Task<IQueue>
 
-type QueueProvider()=
+type QueueProvider(queueFactory : IQueueFactory)=
     
     let queues = new System.Collections.Concurrent.ConcurrentDictionary<string, IQueue>(StringComparer.OrdinalIgnoreCase)
 
-    let getQueue queueName =
-        queues.GetOrAdd(queueName, (fun n -> new MemoryQueue(n) :> IQueue ) )
+    let getQueue queueName = queues.GetOrAdd(queueName, queueFactory.CreateQueue)
         
     interface IQueueProvider with
         member this.GetQueuesAsync() = 

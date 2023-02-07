@@ -12,6 +12,7 @@ open Giraffe
 type Startup() =
     member __.ConfigureServices (services : IServiceCollection) =
         services    |> ApiStartup.addApi
+                    |> (fun s -> s.AddSingleton<IQueueFactory, MemoryQueueFactory>())
                     |> (fun s -> s.AddSingleton<IQueueProvider, QueueProvider>())
                     |> ignore
         
