@@ -29,7 +29,7 @@ module Api =
     let private requiresValidIp : HttpHandler = authorizeRequest isHomeIp forbidden
     let private requiresApiKey secrets: HttpHandler = authorizeRequest (isValidApiKey secrets >||> isHomeIp) accessDenied
 
-    let heartbeatRoute : HttpHandler = route "/heartbeat"      >=> json [ "OK" ]
+    let heartbeatRoute : HttpHandler = route "/heartbeat" >=> noResponseCaching >=> json [ "OK" ]
 
     let isAuthorised (sp: System.IServiceProvider): HttpHandler =         
         let secrets = sp.GetRequiredService<ISecretProvider>()

@@ -14,8 +14,8 @@ module WebApp=
                                 GET >=> choose  [    
                                                     Discorss.Api.heartbeatRoute
                                                     
-                                                    routeCif "/feeds/%s/" (fun url -> WebAppHandlers.getFeed sp url)
-                                                    route "/feeds/" >=> (WebAppHandlers.getFeeds sp)
+                                                    routeCif "/feeds/%s/" (fun url -> publicResponseCaching 5 None >=> WebAppHandlers.getFeed sp url)
+                                                    route "/feeds/" >=> (noResponseCaching >=> WebAppHandlers.getFeeds sp)
                                                 ]                                
                                 ]
                 )
