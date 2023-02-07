@@ -4,7 +4,9 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Discorss__messageHubServiceUrl": "http://testmsg.com",
+        "Discorss__indexServiceUrl": "http://testmsg2.com"
       },
       "applicationUrl": "https://localhost:63531;http://localhost:63532"
     }

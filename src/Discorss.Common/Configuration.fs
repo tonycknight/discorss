@@ -12,7 +12,7 @@ module ApiPorts=
     let ingestionServicePort = 63532
 
     [<Literal>]
-    let hubServicePort = 63533
+    let msgHubServicePort = 63533
 
 [<CLIMutable>]
 type AppConfiguration = {
@@ -26,7 +26,7 @@ type AppConfiguration = {
             { AppConfiguration.indexServiceUrl = $"http://localhost:{ApiPorts.indexServicePort}";
                                 feedServiceUrl = $"http://localhost:{ApiPorts.feedServicePort}";
                                 ingestionServiceUrl = $"http://localhost:{ApiPorts.ingestionServicePort}";
-                                messageHubServiceUrl = $"http://localhost:{ApiPorts.hubServicePort}";
+                                messageHubServiceUrl = $"http://localhost:{ApiPorts.msgHubServicePort}";
                                 secretsConnection = ""
                                 }
     
@@ -41,7 +41,7 @@ module Configuration=
                                     |> Seq.sortByDescending (fun c -> c.GetParameters().Length)
                                     |> Seq.head    
     let private ctorParams = configCtor.GetParameters()
-    
+
     let mergeDefaults config =        
         let propValue c = configProp >> propValue c
         let paramValues = ctorParams |> Array.map (fun p ->     let v = let cv = p.Name |> propValue config

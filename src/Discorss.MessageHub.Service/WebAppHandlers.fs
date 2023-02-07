@@ -4,6 +4,7 @@ open System
 open Discorss
 open Discorss.Messaging
 open Microsoft.AspNetCore.Http
+open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
 
@@ -25,6 +26,7 @@ module WebAppHandlers=
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {                                                      
                 let! names = (qp sp).GetQueuesAsync()
+                let config = Api.config sp
 
                 return! Successful.OK names next ctx
             }

@@ -36,8 +36,9 @@ module Api =
         requiresValidIp >=> requiresApiKey secrets
 
     let config (sp: System.IServiceProvider) =
-        sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>().Get<AppConfiguration>()
-            |> Configuration.mergeDefaults
+        let c = AppConfiguration.defaultConfig
+        sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>().GetSection("Discorss").Bind(c)
+        c
 
     let errorHandler : ErrorHandler = 
         fun (ex: exn) (logger: ILogger) ->
