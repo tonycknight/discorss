@@ -11,11 +11,12 @@ type MessageHubMessage = {
     messageType:    string
     content:        string
     created:        DateTimeOffset
+    ttl:            DateTimeOffset option
     }
     with static member empty() = 
             { MessageHubMessage.id = Guid.NewGuid();
                                 priority = 0M; messageType = ""; content = null;
-                                created = DateTimeOffset.UtcNow }        
+                                created = DateTimeOffset.UtcNow; ttl = None }
 
 
 type IMessageHubClient = 
