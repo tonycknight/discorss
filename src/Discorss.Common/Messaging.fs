@@ -5,7 +5,7 @@ open System.Diagnostics.CodeAnalysis
 open System.Threading.Tasks
 open Discorss
 
-type MessageHubMessage =
+type QueueMessage =
     { id: Guid
       priority: decimal
       messageType: string
@@ -14,7 +14,7 @@ type MessageHubMessage =
       ttl: DateTimeOffset option }
 
     static member empty() =
-        { MessageHubMessage.id = Guid.NewGuid()
+        { QueueMessage.id = Guid.NewGuid()
           priority = 0M
           messageType = ""
           content = null
@@ -23,8 +23,8 @@ type MessageHubMessage =
 
 
 type IMessageHubClient =
-    abstract member GetNextAsync: queueName: string -> Task<MessageHubMessage option>
-    abstract member PushAsync: queueName: string -> msg: MessageHubMessage -> Task
+    abstract member GetNextAsync: queueName: string -> Task<QueueMessage option>
+    abstract member PushAsync: queueName: string -> msg: QueueMessage -> Task
 
 [<ExcludeFromCodeCoverage>]
 type MessageHubClient(config: AppConfiguration, client: IInternalHttpClient) =
@@ -37,7 +37,7 @@ type MessageHubClient(config: AppConfiguration, client: IInternalHttpClient) =
             return
                 match resp with
                 | HttpOkRequestResponse(status, body) when status = System.Net.HttpStatusCode.OK ->
-                    body |> Newtonsoft.Json.JsonConvert.DeserializeObject<MessageHubMessage> |> Some
+                    body |> Newtonsoft.Json.JsonConvert.DeserializeObject<QueueMessage> |> Some
                 | _ -> None
         }
 

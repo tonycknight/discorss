@@ -1,4 +1,4 @@
-﻿namespace Discorss.MessageHub.Service
+﻿namespace Discorss.Queues
 
 open System
 open System.Threading.Tasks
@@ -7,13 +7,13 @@ open Discorss.Messaging
 type QueueInfo = { name: string; count: int }
 
 type IQueue =
-    abstract member GetNextAsync: unit -> Task<MessageHubMessage option>
-    abstract member PushAsync: message: MessageHubMessage -> Task
+    abstract member GetNextAsync: unit -> Task<QueueMessage option>
+    abstract member PushAsync: message: QueueMessage -> Task
     abstract member GetInfoAsync: unit -> Task<QueueInfo>
 
 type MemoryQueue(name: string) =
 
-    let queue = new System.Collections.Concurrent.ConcurrentQueue<MessageHubMessage>()
+    let queue = new System.Collections.Concurrent.ConcurrentQueue<QueueMessage>()
 
     interface IQueue with
         member this.GetInfoAsync() =

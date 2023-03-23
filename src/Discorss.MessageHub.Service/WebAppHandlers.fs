@@ -13,7 +13,7 @@ module WebAppHandlers =
     let pushMessage sp queueName =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                match! ApiValidation.getRequest<MessageHubMessage> ctx with
+                match! ApiValidation.getRequest<QueueMessage> ctx with
                 | Choice1Of2 error -> return! RequestErrors.BAD_REQUEST error next ctx
                 | Choice2Of2 msg ->
                     let! q = (qp sp).GetQueueAsync queueName

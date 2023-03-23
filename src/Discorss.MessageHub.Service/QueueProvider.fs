@@ -2,6 +2,7 @@
 
 open System
 open System.Threading.Tasks
+open Discorss.Queues
 
 type IQueueFactory =
     abstract member CreateQueue: name: string -> IQueue
