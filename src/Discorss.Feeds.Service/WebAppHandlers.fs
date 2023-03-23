@@ -12,6 +12,13 @@ module WebAppHandlers=
     let private feedRepo (sp: IServiceProvider) = sp.GetRequiredService<IFeedRepository>()
     let private feedProvider (sp: IServiceProvider) = sp.GetRequiredService<IFeedProvider>()
         
+    let private feedInfo feedUri title = 
+        { FeedInfo.uri = feedUri; 
+                   title = title;
+                   lastFetched = DateTimeOffset.UtcNow;
+                   updated = DateTimeOffset.UtcNow;
+        }
+
     let getFeeds (sp: IServiceProvider)=
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {                
@@ -31,16 +38,12 @@ module WebAppHandlers=
                 
                     match feed with
                         | FeedReadResult.Feed feed ->                        
-                            let fi = { FeedInfo.uri = feedUri; 
-                                            title = feed.title;
-                                            lastFetched = DateTimeOffset.UtcNow;
-                                            updated = DateTimeOffset.UtcNow;
-                                            }
+                            let fi = feedInfo feedUri feed.title
                             do! (feedRepo sp).SetFeedInfoAsync fi
                         
                             return! Successful.OK feed next ctx
                         | FeedReadResult.Error msg ->    
-                            let result = { ApiErrorResult.errors = [| msg|]}
+                            let result = { ApiErrorResult.errors = [| msg |]}
                             return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
                         | _ ->  
                             let result = { ApiErrorResult.errors = [| "Internal error" |]}
