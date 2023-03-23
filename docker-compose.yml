@@ -6,5 +6,12 @@ services:
     image: discorss.feeds.service
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-FeedService
       target: discorss.feeds.service
+
+  discorss-messagehubservice:
+    image: discorss.messagehub.service
+    build:
+      context: .
+      dockerfile: Dockerfile-MessageHubService
+      target: discorss.messagehub.service

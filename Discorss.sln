@@ -18,7 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{68B857CC
 		.github\CODEOWNERS = .github\CODEOWNERS
 		.github\workflows\codeql-analysis.yml = .github\workflows\codeql-analysis.yml
 		docker-compose.yml = docker-compose.yml
-		Dockerfile = Dockerfile
+		Dockerfile-MessageHubService = Dockerfile-MessageHubService
+		Dockerfile-FeedService. = Dockerfile-FeedService.
 		paket.dependencies = paket.dependencies
 		.github\workflows\sca.yml = .github\workflows\sca.yml
 	EndProjectSection
