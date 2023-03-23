@@ -18,7 +18,6 @@ open Fake.SystemHelper
 
 let packageDir = "./package"
 let publishDir = "./publish"
-let strykerDir = "./StrykerOutput"
 let benchmarksDir = "./BenchmarkDotNet.Artifacts"
 let mainSolution = "./Discorss.sln"
 
@@ -112,9 +111,6 @@ Target.create "Clean" (fun _ ->
     ++ publishDir
     |> Shell.cleanDirs
 
-    !! strykerDir
-    |> Shell.cleanDirs
-
     !! benchmarksDir
     |> Shell.cleanDirs
 )
@@ -136,14 +132,6 @@ Target.create "Unit Tests" (fun _ ->
     |> Seq.iter (DotNet.test testOptions)    
 )
 
-Target.create "Stryker" (fun _ ->
-    !! "test/**/*.Tests.fsproj"
-    |> Seq.iter (fun p ->   let args = sprintf "-tp %s -b 90" p
-                            let result = DotNet.exec id "dotnet-stryker" args
-                            if not result.OK then failwithf "Stryker failed!"
-                            )
-)
-
 Target.create "Generate code coverage reports" (fun _ ->  
     let args = sprintf @"-reports:""./test/**/coverage.info"" -targetdir:""./%s/codecoverage"" -reporttypes:""Html""" publishDir
     let result = DotNet.exec id "reportgenerator" args
@@ -158,6 +146,25 @@ Target.create "Consolidate code coverage" (fun _ ->
     if not result.OK then failwithf "reportgenerator failed!"  
 )
 
+Target.create "Check Style Rules" (fun _ ->
+    let args = "./src/ ./test/ --recurse --check"
+    let result = DotNet.exec id "fantomas" args
+
+    if result.OK then
+        Trace.log "No files need formatting"
+    elif result.ExitCode = 99 then
+        failwith "Some files need formatting, run build with `Apply Style Rules` to resolve this."
+    else
+        failwithf "Errors while checking formatting: %A" result.Errors)
+
+Target.create "Apply Style Rules" (fun _ ->
+    let args = "./src/ ./test/ --recurse"
+    let result = DotNet.exec id "fantomas" args
+
+    if result.OK then
+        Trace.log "No files need formatting"
+    else
+        failwithf "Errors while applying formatting: %A" result.Errors)
 
 Target.create "Benchmarks" (fun _ ->
     let args = "-f * "
@@ -170,6 +177,7 @@ Target.create "All" ignore
 
 "Clean"
   ==> "Restore"
+  ==> "Check Style Rules"
   ==> "Build"  
   ==> "Unit Tests"
   ==> "Generate code coverage reports"
@@ -179,16 +187,6 @@ Target.create "All" ignore
   ==> "Restore"
   ==> "Build"
   ==> "Publish services"  
-
-(*
-"Clean"
-  ==> "Restore"
-  ==> "Build"
-  ==> "Stryker"
-
-"Stryker"
-  ==> "All"
-*)
 
 "Clean"
   ==> "Restore"
