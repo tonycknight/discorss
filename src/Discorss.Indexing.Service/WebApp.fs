@@ -9,7 +9,7 @@ module WebApp=
 
         subRouteCi "/api/v1" 
             (   
-                Api.isAuthorised sp >=>
+                Api.logClient >=> Api.isAuthorised sp >=>
                     choose [
                             GET >=> choose  [    
                                                 Discorss.Api.heartbeatRoute
