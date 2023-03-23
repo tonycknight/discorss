@@ -8,7 +8,6 @@ open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
-    
 
 type Startup() =
     
@@ -32,8 +31,8 @@ module Program=
     [<EntryPoint>]
     let main _ =
         Host.CreateDefaultBuilder()
-            .ConfigureWebHostDefaults(fun whb -> whb.UseStartup<Startup>() 
-                                                    .UseUrls($"http://+:{ApiPorts.feedServicePort}")
+            .ConfigureWebHostDefaults(fun whb -> whb.UseStartup<Startup>()
+                                                    .UseUrls($"http://*:{ApiPorts.feedServicePort}")
                                                     .ConfigureAppConfiguration(ApiStartup.configureAppConfig)
                                                     |> ignore)
             .Build()

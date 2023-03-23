@@ -1,0 +1,12 @@
+
+version: '3.4'
+
+services:
+  discorss-feedservice:
+    image: Discorss.Feeds.Service
+    build:
+      context: .
+      dockerfile: Dockerfile_FeedsService
+      target: discorss-feedservice
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw

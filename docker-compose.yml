@@ -1,0 +1,10 @@
+
+version: '3.4'
+
+services:
+  discorss-feedservice:
+    image: discorss.feeds.service
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: discorss.feeds.service

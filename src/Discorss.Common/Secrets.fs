@@ -10,7 +10,6 @@ type ISecretProvider=
 
 [<ExcludeFromCodeCoverage>]
 type StubSecretProvider(secrets: (string * string) seq)=
-        
     let secrets = secrets |> Map.ofSeq
 
     new() = StubSecretProvider([ ("apikey", "abc"); ])

@@ -33,7 +33,8 @@ module Api =
 
     let isAuthorised (sp: System.IServiceProvider): HttpHandler =         
         let secrets = sp.GetRequiredService<ISecretProvider>()
-        requiresValidIp >=> requiresApiKey secrets
+        // TODO: requiresValidIp >=> 
+        requiresApiKey secrets
 
     let config (sp: System.IServiceProvider) =
         let c = AppConfiguration.defaultConfig
@@ -47,16 +48,25 @@ module Api =
                 >=> publicResponseCaching 5 None
                 >=> ServerErrors.internalError ( json ( { ApiErrorResult.errors = [| "An unhandled error occurred." |]} ) )
 
+    let logClient : HttpHandler =
+        fun (next : HttpFunc) (ctx : HttpContext) ->            
+            let logger = ctx.GetService<ILoggerFactory>().CreateLogger()
+            logger.LogInformation($"Request remote IP: {ctx.Connection.RemoteIpAddress}:{ctx.Connection.RemotePort}")
+            next ctx
+            
+        
+        
+
 module ApiStartup =
 
     let addApiLogging(services: IServiceCollection)=
         services.AddLogging()
-                .AddHttpLogging(fun lo -> lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.Request)
+                .AddHttpLogging(fun lo -> lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestPropertiesAndHeaders)
 
     let addApiConfig(services: IServiceCollection)=
         services.AddSingleton<AppConfiguration>(fun sp -> Api.config sp)
                 .AddSingleton<IExternalHttpClient, ExternalHttpClient>()
-                .AddSingleton<Discorss.Security.ISecretProvider, Discorss.Security.StubSecretProvider>()
+                .AddSingleton<Discorss.Security.ISecretProvider>(new Discorss.Security.StubSecretProvider())
         
     let addApiHttp(services: IServiceCollection)=
         services.AddHttpClient()
