@@ -6,26 +6,24 @@ open Discorss.Indexing
 open FsUnit
 open Xunit
 
-module TokenisationTests=
-    
+module TokenisationTests =
+
     [<Fact>]
-    let ``wordSplit of empty string is empty``()=
-        ""  |> Tokenisation.wordSplit |> Array.ofSeq
-            |> should haveLength 0
+    let ``wordSplit of empty string is empty`` () =
+        "" |> Tokenisation.wordSplit |> Array.ofSeq |> should haveLength 0
 
 
     [<Theory>]
     [<InlineData(1)>]
     [<InlineData(6)>]
-    let ``wordSplit of equal size``(count)=
+    let ``wordSplit of equal size`` (count) =
         let xs = "aaa" |> Seq.replicate count |> Array.ofSeq
-        
+
         let text = xs |> Strings.join " "
-        
-        let words = text |> Tokenisation.wordSplit |> Array.ofSeq 
-        
-        words   |> Strings.join " "
-                |> should equal text
+
+        let words = text |> Tokenisation.wordSplit |> Array.ofSeq
+
+        words |> Strings.join " " |> should equal text
 
 
     [<Theory>]
@@ -38,13 +36,13 @@ module TokenisationTests=
     [<InlineData(" a  b    c", "a|b|c")>]
     [<InlineData(" a\nb\nc", "a|b|c")>]
     [<InlineData(" a\nb", "a|b")>]
-    let ``wordSplit of arbitrary texts``(text, expected: string)=
-        
-        let expectedWords = expected.Split('|', StringSplitOptions.RemoveEmptyEntries ||| StringSplitOptions.TrimEntries)
-                                    |> Strings.join " "
+    let ``wordSplit of arbitrary texts`` (text, expected: string) =
 
-        text    |> Tokenisation.wordSplit |> Strings.join " "
-                |> should equal expectedWords
+        let expectedWords =
+            expected.Split('|', StringSplitOptions.RemoveEmptyEntries ||| StringSplitOptions.TrimEntries)
+            |> Strings.join " "
+
+        text |> Tokenisation.wordSplit |> Strings.join " " |> should equal expectedWords
 
 
     [<Theory>]
@@ -56,9 +54,8 @@ module TokenisationTests=
     [<InlineData(" .Net", "Net")>]
     [<InlineData(" a! ", "a")>]
     [<InlineData(" a!A ", "aA")>]
-    let ``stripPunctuation has punctuation and whitespace removed``(text, expected)=
-        text |> Tokenisation.stripPunctuation
-            |> should equal expected
+    let ``stripPunctuation has punctuation and whitespace removed`` (text, expected) =
+        text |> Tokenisation.stripPunctuation |> should equal expected
 
     [<Theory>]
     [<InlineData("", "")>]
@@ -69,9 +66,8 @@ module TokenisationTests=
     [<InlineData(" .Net", ".Net")>]
     [<InlineData(" .Net!.", ".Net")>]
     [<InlineData(" a!A ", "a!A")>]
-    let ``stripTrailingPunctuation has punctuation and whitespace removed``(text, expected)=
-        text |> Tokenisation.stripTrailingPunctuation
-            |> should equal expected
+    let ``stripTrailingPunctuation has punctuation and whitespace removed`` (text, expected) =
+        text |> Tokenisation.stripTrailingPunctuation |> should equal expected
 
     [<Theory>]
     [<InlineData("", false)>]
@@ -82,7 +78,5 @@ module TokenisationTests=
     [<InlineData(" =", false)>]
     [<InlineData("=", false)>]
     [<InlineData("=a", true)>]
-    let ``isCandidateWord``(text, expected)=
-        text |> Tokenisation.isCandidateWord
-            |> should equal expected
-        
+    let ``isCandidateWord`` (text, expected) =
+        text |> Tokenisation.isCandidateWord |> should equal expected

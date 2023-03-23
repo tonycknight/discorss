@@ -7,48 +7,49 @@ open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
 
-module WebAppHandlers=
-    let private hc (sp: IServiceProvider) = sp.GetRequiredService<Discorss.IExternalHttpClient>()
-    let private feedRepo (sp: IServiceProvider) = sp.GetRequiredService<IFeedRepository>()
-    let private feedProvider (sp: IServiceProvider) = sp.GetRequiredService<IFeedProvider>()
-        
-    let private feedInfo feedUri title = 
-        { FeedInfo.uri = feedUri; 
-                   title = title;
-                   lastFetched = DateTimeOffset.UtcNow;
-                   updated = DateTimeOffset.UtcNow;
-        }
+module WebAppHandlers =
+    let private hc (sp: IServiceProvider) =
+        sp.GetRequiredService<Discorss.IExternalHttpClient>()
 
-    let getFeeds (sp: IServiceProvider)=
-        fun (next : HttpFunc) (ctx : HttpContext) ->
-            task {                
+    let private feedRepo (sp: IServiceProvider) =
+        sp.GetRequiredService<IFeedRepository>()
+
+    let private feedProvider (sp: IServiceProvider) = sp.GetRequiredService<IFeedProvider>()
+
+    let private feedInfo feedUri title =
+        { FeedInfo.uri = feedUri
+          title = title
+          lastFetched = DateTimeOffset.UtcNow
+          updated = DateTimeOffset.UtcNow }
+
+    let getFeeds (sp: IServiceProvider) =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
                 let! feeds = (feedRepo sp).GetFeedInfosAsync()
-                    
+
                 return! Successful.OK feeds next ctx
             }
 
-    let getFeed (sp: IServiceProvider) feedUri=
-        fun (next : HttpFunc) (ctx : HttpContext) ->
-            task {                                                
+    let getFeed (sp: IServiceProvider) feedUri =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
                 if Uri.tryParse feedUri |> Option.isNone then
-                    let result = { ApiErrorResult.errors = [| "Invalid Uri" |]}
+                    let result = { ApiErrorResult.errors = [| "Invalid Uri" |] }
                     return! RequestErrors.BAD_REQUEST result next ctx
                 else
                     let! feed = (feedProvider sp).GetFeedAsync feedUri
-                
+
                     match feed with
-                        | FeedReadResult.Feed feed ->                        
-                            let fi = feedInfo feedUri feed.title
-                            do! (feedRepo sp).SetFeedInfoAsync fi
-                        
-                            return! Successful.OK feed next ctx
-                        | FeedReadResult.Error msg ->    
-                            let result = { ApiErrorResult.errors = [| msg |]}
-                            return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
-                        | _ ->  
-                            let result = { ApiErrorResult.errors = [| "Internal error" |]}
-                            return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
+                    | FeedReadResult.Feed feed ->
+                        let fi = feedInfo feedUri feed.title
+                        do! (feedRepo sp).SetFeedInfoAsync fi
+
+                        return! Successful.OK feed next ctx
+                    | FeedReadResult.Error msg ->
+                        let result = { ApiErrorResult.errors = [| msg |] }
+                        return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
+                    | _ ->
+                        let result = { ApiErrorResult.errors = [| "Internal error" |] }
+                        return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
 
             }
-
-

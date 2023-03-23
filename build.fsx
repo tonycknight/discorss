@@ -203,7 +203,4 @@ Target.create "All" ignore
 "Consolidate code coverage"
   ==> "All"
 
-"Publish services"
-  ==> "All"
-
 Target.runOrDefault "All"

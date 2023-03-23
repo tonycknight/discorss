@@ -10,27 +10,32 @@ open Microsoft.Extensions.DependencyInjection
 open Giraffe
 
 type Startup() =
-    member __.ConfigureServices (services : IServiceCollection) =
-        services    |> ApiStartup.addApi
-                    |> (fun s -> s.AddSingleton<Ingestion.IngestionActor>())
-                    |> ignore
-        
-    member __.Configure (app : IApplicationBuilder)
-                        (env : IHostEnvironment)
-                        (loggerFactory : ILoggerFactory) =       
-        app.UseGiraffeErrorHandler(Api.errorHandler)
-           .UseHttpLogging()
-           .UseGiraffe (WebApp.webApp app.ApplicationServices)
-        
-    
-module Program=
-    
+    member __.ConfigureServices(services: IServiceCollection) =
+        services
+        |> ApiStartup.addApi
+        |> (fun s -> s.AddSingleton<Ingestion.IngestionActor>())
+        |> ignore
+
+    member __.Configure (app: IApplicationBuilder) (env: IHostEnvironment) (loggerFactory: ILoggerFactory) =
+        app
+            .UseGiraffeErrorHandler(Api.errorHandler)
+            .UseHttpLogging()
+            .UseGiraffe(WebApp.webApp app.ApplicationServices)
+
+
+module Program =
+
     [<EntryPoint>]
     let main _ =
-        Host.CreateDefaultBuilder()
-            .ConfigureWebHostDefaults(fun whb -> whb.UseStartup<Startup>() 
-                                                    .UseUrls($"http://+:{ApiPorts.ingestionServicePort}")
-                                                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig)|> ignore)
+        Host
+            .CreateDefaultBuilder()
+            .ConfigureWebHostDefaults(fun whb ->
+                whb
+                    .UseStartup<Startup>()
+                    .UseUrls($"http://+:{ApiPorts.ingestionServicePort}")
+                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig)
+                |> ignore)
             .Build()
             .Run()
+
         0

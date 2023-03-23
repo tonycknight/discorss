@@ -3,7 +3,7 @@
 open System
 open BenchmarkDotNet.Running
 
-module Program=
+module Program =
 
     [<EntryPoint>]
     let main (args: string[]) =
@@ -12,8 +12,7 @@ module Program=
             let asm = typedefof<Indexing.TokenisationBenchmarks>.Assembly
             BenchmarkSwitcher.FromAssembly(asm).Run(args) |> ignore
             0
-        with
-        | ex -> 
+        with ex ->
             Console.ForegroundColor <- ConsoleColor.Red
             ex.ToString() |> Console.WriteLine
             Console.ResetColor()

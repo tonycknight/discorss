@@ -10,20 +10,17 @@ open Discorss.Indexing
 [<RankColumn>]
 [<JsonExporterAttribute.Full>]
 [<GcServerAttribute(true)>]
-type TokenisationBenchmarks()=
-    
+type TokenisationBenchmarks() =
+
     [<Params(0, 1, 2, 4, 8, 16, 32, 64, 128, 256)>]
     member val Count = 0 with get, set
 
     member val Text = "" with get, set
 
     [<IterationSetup>]
-    member this.Setup()=
-        this.Text <- [0 .. this.Count]
-                        |> Seq.map (fun i -> new String('a', i))
-                        |> Strings.join " "
+    member this.Setup() =
+        this.Text <- [ 0 .. this.Count ] |> Seq.map (fun i -> new String('a', i)) |> Strings.join " "
 
     [<Benchmark>]
     member this.``wordSplit``() =
         this.Text |> Tokenisation.wordSplit |> Array.ofSeq
-        

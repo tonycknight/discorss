@@ -5,9 +5,9 @@ open System.Diagnostics.CodeAnalysis
 open MongoDB.Driver
 
 [<ExcludeFromCodeCoverage>]
-module Mongo=
+module Mongo =
 
-    let dbClient(connection: string)=
+    let dbClient (connection: string) =
         let settings = connection |> MongoClientSettings.FromConnectionString
 
         settings.AllowInsecureTls <- false
@@ -16,7 +16,5 @@ module Mongo=
         settings.ServerSelectionTimeout <- settings.ConnectTimeout
 
         new MongoClient(settings) :> IMongoClient
-        
-    let db (client: IMongoClient) name =
-        client.GetDatabase name
 
+    let db (client: IMongoClient) name = client.GetDatabase name

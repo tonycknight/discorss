@@ -6,7 +6,7 @@ open FsCheck
 open FsCheck.Xunit
 open FsUnit.Xunit
 
-module HtmlTests=
+module HtmlTests =
 
     [<Xunit.Theory>]
     [<Xunit.InlineData("", "")>]
@@ -15,8 +15,8 @@ module HtmlTests=
     [<Xunit.InlineData("<body><table><th>test</th></table>yadda</body>", "testyadda")>]
     [<Xunit.InlineData("<body><script>do nothing</script>yadda</body>", "yadda")>]
     let ``stripHtml returns inner text`` html expected =
-        html 
-            |> Discorss.Html.stripHtml        
-            |> Option.map id
-            |> Option.defaultValue ""
-            |> should equal expected
+        html
+        |> Discorss.Html.stripHtml
+        |> Option.map id
+        |> Option.defaultValue ""
+        |> should equal expected

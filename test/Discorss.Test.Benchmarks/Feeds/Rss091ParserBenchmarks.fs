@@ -9,14 +9,14 @@ open Discorss.Feeds
 [<RankColumn>]
 [<JsonExporterAttribute.Full>]
 [<GcServerAttribute(true)>]
-type Rss091ParserBenchmarks()=
-    
+type Rss091ParserBenchmarks() =
+
 
     [<IterationSetup>]
-    member this.IterationSetup()=
+    member this.IterationSetup() =
         this.Text <- Discorss.Feeds.Test.Unit.TestHelpers.sampleFeedAsString this.SampleFileName
         this.Doc <- this.Text |> XDocument.Parse
-        
+
     [<Params("Rss091Feed.xml")>]
     member val SampleFileName = "" with get, set
 
@@ -24,19 +24,9 @@ type Rss091ParserBenchmarks()=
     member val Doc = new XDocument() with get, set
 
     [<Benchmark>]
-    member this.Parse()=
-        this.Doc
-            |> Rss20Parser.parse "http://url" 
-            |> ignore
+    member this.Parse() =
+        this.Doc |> Rss20Parser.parse "http://url" |> ignore
 
     [<Benchmark>]
-    member this.ParseWithLoad()=
-        this.Text 
-            |> XDocument.Parse
-            |> Rss20Parser.parse "http://url" 
-            |> ignore
-
-
-
-
-
+    member this.ParseWithLoad() =
+        this.Text |> XDocument.Parse |> Rss20Parser.parse "http://url" |> ignore

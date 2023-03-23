@@ -4,14 +4,11 @@ open System.Diagnostics.CodeAnalysis
 open System.Threading.Tasks
 open Discorss
 
-type IDocumentStatsWriter=
-    abstract member Set: stats:DocumentStatistics -> Task
+type IDocumentStatsWriter =
+    abstract member Set: stats: DocumentStatistics -> Task
 
 [<ExcludeFromCodeCoverage>]
-type StubDocumentStatsWriter()=
-    
+type StubDocumentStatsWriter() =
+
     interface IDocumentStatsWriter with
-        member this.Set(stats) =
-            task {
-                do! Task.Delay(0)
-            }
+        member this.Set(stats) = task { do! Task.Delay(0) }

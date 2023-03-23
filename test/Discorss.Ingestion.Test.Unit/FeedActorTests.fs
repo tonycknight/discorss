@@ -8,20 +8,26 @@ open FsUnit
 open NSubstitute
 open Xunit
 
-module FeedActorTests=
+module FeedActorTests =
 
     [<Fact>]
-    let ``Post parent receives Feeds``()=
+    let ``Post parent receives Feeds`` () =
         let parent = Substitute.For<IActor>()
         let config = AppConfiguration.defaultConfig
         let http = Substitute.For<IInternalHttpClient>()
-        http.GetAsync(Arg.Any<string>()).Returns(HttpRequestResponse.HttpOkRequestResponse(Net.HttpStatusCode.OK, "[]") |> Task.fromResult) |> ignore
+
+        http
+            .GetAsync(Arg.Any<string>())
+            .Returns(
+                HttpRequestResponse.HttpOkRequestResponse(Net.HttpStatusCode.OK, "[]")
+                |> Task.fromResult
+            )
+        |> ignore
+
         let feedUri = "test"
 
-        let actor = new FeedActor(parent, config, http, feedUri)  :> IActor
+        let actor = new FeedActor(parent, config, http, feedUri) :> IActor
         ActorMessage.FetchFeed feedUri |> actor.Post
-        
+
         Task.Delay(1000).GetAwaiter().GetResult()
         parent.Received(1).Post(Arg.Any<ActorMessage>())
-        
-    

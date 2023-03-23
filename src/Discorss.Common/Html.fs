@@ -1,17 +1,16 @@
 ﻿namespace Discorss
 
-module Html=
+module Html =
     open HtmlAgilityPack
 
-    let private loadHtml(html:string)=
+    let private loadHtml (html: string) =
         let doc = new HtmlDocument()
         doc.LoadHtml(html)
         doc
 
-    let stripHtml (html:string)=
+    let stripHtml (html: string) =
         try
             let doc = loadHtml html
             doc.DocumentNode.InnerText |> Some
-        with
-        | ex -> None
-        
+        with ex ->
+            None
