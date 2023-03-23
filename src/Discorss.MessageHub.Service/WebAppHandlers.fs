@@ -4,7 +4,6 @@ open System
 open Discorss
 open Discorss.Messaging
 open Microsoft.AspNetCore.Http
-open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
 
@@ -17,7 +16,10 @@ module WebAppHandlers=
                 match! ApiValidation.getRequest<MessageHubMessage> ctx with
                 | Choice1Of2 error ->   return! RequestErrors.BAD_REQUEST error next ctx
                 | Choice2Of2 msg ->     let! q = (qp sp).GetQueueAsync queueName 
-                                        let msg = { msg with created = DateTimeOffset.UtcNow }                                        
+                                        let msg =   if msg.id = Guid.Empty then 
+                                                        { msg with id = Guid.NewGuid(); created = DateTimeOffset.UtcNow } 
+                                                    else 
+                                                        { msg with created = DateTimeOffset.UtcNow }
                                         do! q.PushAsync msg
                                         return! Successful.NO_CONTENT next ctx
             }
