@@ -1,4 +1,4 @@
-﻿namespace Discorss.Feeds.Test.Unit
+﻿namespace Discorss.Html.Test.Unit
 
 open System
 open Discorss

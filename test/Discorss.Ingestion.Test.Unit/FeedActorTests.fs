@@ -29,5 +29,5 @@ module FeedActorTests =
         let actor = new FeedActor(parent, config, http, feedUri) :> IActor
         ActorMessage.FetchFeed feedUri |> actor.Post
 
-        Task.Delay(1000).GetAwaiter().GetResult()
+        Task.Delay(1000).GetAwaiter().GetResult() // TODO: fix
         parent.Received(1).Post(Arg.Any<ActorMessage>())

@@ -10,6 +10,6 @@ module Combinators =
 module Task =
     open System.Threading.Tasks
 
-    let map (f: 'a -> 'b) (x: Task<'a>) = x.GetAwaiter().GetResult() |> f // TODO: ewww
+    let map (f: 'a -> 'b) (x: Task<'a>) = x.GetAwaiter().GetResult() |> f // TODO: fix
 
     let fromResult (value) = Task.FromResult(value)
