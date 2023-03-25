@@ -27,7 +27,7 @@ module WebAppHandlers =
                             { msg with
                                 created = DateTimeOffset.UtcNow }
 
-                    do! q.PushAsync (MessageHubMessage.toQueueMessage msg)
+                    do! q.PushAsync(MessageHubMessage.toQueueMessage msg)
                     return! Successful.NO_CONTENT next ctx
             }
 

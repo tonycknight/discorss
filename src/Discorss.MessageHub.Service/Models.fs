@@ -19,16 +19,18 @@ type MessageHubMessage =
           created = DateTimeOffset.UtcNow
           ttl = None }
 
-    static member ofQueueMessage(msg:QueueMessage)=
-        { MessageHubMessage.id = msg.id; priority = msg.priority; 
-            messageType = msg.messageType;
-            content = msg.content;
-            created = msg.created;
-            ttl = msg.ttl }
+    static member ofQueueMessage(msg: QueueMessage) =
+        { MessageHubMessage.id = msg.id
+          priority = msg.priority
+          messageType = msg.messageType
+          content = msg.content
+          created = msg.created
+          ttl = msg.ttl }
 
-    static member toQueueMessage(msg:MessageHubMessage)=
-        { QueueMessage.id = msg.id; priority = msg.priority; 
-            messageType = msg.messageType;
-            content = msg.content;
-            created = msg.created;
-            ttl = msg.ttl }
+    static member toQueueMessage(msg: MessageHubMessage) =
+        { QueueMessage.id = msg.id
+          priority = msg.priority
+          messageType = msg.messageType
+          content = msg.content
+          created = msg.created
+          ttl = msg.ttl }

@@ -30,8 +30,7 @@ type StubFeedRepository(feedUris) =
               "https://azure.microsoft.com/en-gb/blog/feed/"
               "https://devblogs.microsoft.com/cosmosdb/feed/"
               "https://devblogs.microsoft.com/dotnet/tag/f/feed/"
-              "https://rss.slashdot.org/Slashdot/slashdotMain"
-              ]
+              "https://rss.slashdot.org/Slashdot/slashdotMain" ]
         )
 
     interface IFeedRepository with
