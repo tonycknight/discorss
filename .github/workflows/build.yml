@@ -112,7 +112,7 @@ jobs:
       - name: Set Docker image name
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          echo "docker-image-feedservice-name=${{ env.docker-image-feedservice-name }}:v${{ build-version-number }}" >> $GITHUB_ENV
+          echo "docker-image-feedservice-name=${{ env.docker-image-feedservice-name }}:v${{ env.build-version-number }}" >> $GITHUB_ENV
 
       - name: Set Preview Docker image name
         if: ${{ github.ref != 'refs/heads/main' }}
