@@ -144,12 +144,12 @@ jobs:
       - name: Set Docker image name
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          echo "docker-image-messagehubservice-name=${{ env.docker-image-messagehubservice-name }}:v0.1.${{ env.github.run_number }}" >> $GITHUB_ENV
+          echo "docker-image-messagehubservice-name=${{ env.docker-image-messagehubservice-name }}:v${{ env.build-version-number }}" >> $GITHUB_ENV
 
       - name: Set Preview Docker image name
         if: ${{ github.ref != 'refs/heads/main' }}
         run: |
-          echo "docker-image-messagehubservice-name=${{ env.docker-image-messagehubservice-name }}:v0.1.${{ env.github.run_number }}-preview" >> $GITHUB_ENV
+          echo "docker-image-messagehubservice-name=${{ env.docker-image-messagehubservice-name }}:v${{ env.build-version-number }}-preview" >> $GITHUB_ENV
        
       - name: Build docker image
         run: docker build -f Dockerfile-MessageHubService -t ${{ env.docker-image-messagehubservice-name}} --build-arg BuildVersion=${{ env.build-version-number }} .
