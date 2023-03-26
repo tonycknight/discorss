@@ -3,7 +3,6 @@
 open System
 open Discorss
 open FsCheck
-open FsCheck.Xunit
 open FsUnit.Xunit
 
 module HtmlTests =
@@ -14,9 +13,18 @@ module HtmlTests =
     [<Xunit.InlineData("<body>ya<a href=\"link\">dd</a>ah</body>", "yaddah")>]
     [<Xunit.InlineData("<body><table><th>test</th></table>yadda</body>", "testyadda")>]
     [<Xunit.InlineData("<body><script>do nothing</script>yadda</body>", "yadda")>]
+    [<Xunit.InlineData("<<", "<<")>]
+    [<Xunit.InlineData("<<>", "<<>")>]
     let ``stripHtml returns inner text`` html expected =
         html
         |> Discorss.Html.stripHtml
         |> Option.map id
         |> Option.defaultValue ""
         |> should equal expected
+
+    [<Xunit.Theory>]
+    [<Xunit.InlineData(null)>]
+    let ``stripHtml returns None on error`` html =
+        let r = html |> Discorss.Html.stripHtml
+
+        r |> should equal None
