@@ -10,7 +10,7 @@ on:
 env:
   build-version-number: 0.1.${{ github.run_number }}  
   docker-image-feedservice-name: ghcr.io/tonycknight/discorss.feed.service
-  docker-image-messagehubservice-name: ghcr.io/tonycknight/discorss.messagehub.service:v0.1.${{ github.run_number }}
+  docker-image-messagehubservice-name: ghcr.io/tonycknight/discorss.messagehub.service
   docker-image-ingestionservice-name: ghcr.io/tonycknight/discorss.ingestion.service:v0.1.${{ github.run_number }}
    
 jobs:
@@ -119,7 +119,6 @@ jobs:
         run: |
           echo "docker-image-feedservice-name=${{ env.docker-image-feedservice-name }}:dev" >> $GITHUB_ENV
         
-
       - name: Build docker image
         run: docker build -f Dockerfile-FeedService -t ${{ env.docker-image-feedservice-name }} --build-arg BuildVersion=${{ env.build-version-number }} .
 
@@ -141,13 +140,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+            
+      - name: Set Docker image name
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          echo "docker-image-messagehubservice-name=${{ env.docker-image-messagehubservice-name }}:v0.1.${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Set Preview Docker image name
         if: ${{ github.ref != 'refs/heads/main' }}
         run: |
-          echo "docker-image-messagehubservice-name=${{ env.docker-image-messagehubservice-name }}-preview" >> $GITHUB_ENV
-        
-
+          echo "docker-image-messagehubservice-name=${{ env.docker-image-messagehubservice-name }}:v0.1.${{ github.run_number }}-preview" >> $GITHUB_ENV
+       
       - name: Build docker image
         run: docker build -f Dockerfile-MessageHubService -t ${{ env.docker-image-messagehubservice-name}} --build-arg BuildVersion=${{ env.build-version-number }} .
 
