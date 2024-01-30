@@ -12,12 +12,12 @@ module WebApp =
             (Api.logClient
              >=> Api.isAuthorised sp
              >=> choose
-                 [ GET
-                   >=> choose
-                       [ Discorss.Api.heartbeatRoute
-                         // TODO: hub stats
-                         route "/queue/" >=> WebAppHandlers.getQueueNames sp
-                         routeCif "/queue/%s/head/" (fun name ->
-                             noResponseCaching >=> WebAppHandlers.getNextMessage sp name) ]
-                   POST
-                   >=> choose [ routeCif "/queue/%s/" (fun name -> WebAppHandlers.pushMessage sp name) ] ])
+                     [ GET
+                       >=> choose
+                               [ Discorss.Api.heartbeatRoute
+                                 // TODO: hub stats
+                                 route "/queue/" >=> WebAppHandlers.getQueueNames sp
+                                 routeCif "/queue/%s/head/" (fun name ->
+                                     noResponseCaching >=> WebAppHandlers.getNextMessage sp name) ]
+                       POST
+                       >=> choose [ routeCif "/queue/%s/" (fun name -> WebAppHandlers.pushMessage sp name) ] ])

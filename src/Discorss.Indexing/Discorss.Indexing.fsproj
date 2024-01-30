@@ -9,6 +9,10 @@
     <Compile Include="Lexicons.fs" />
     <Compile Include="Tokenisation.fs" />
     <Compile Include="DocumentAnalyser.fs" />
+    <Compile Include="StatisticsRepositories.fs" />
+    <Compile Include="Actors.fs" />
+    <Compile Include="DocumentStatsActor.fs" />
+    <Compile Include="WordStatsActor.fs" />
     <Compile Include="Documents.fs" />
   </ItemGroup>
   <ItemGroup>

@@ -12,9 +12,9 @@ module WebApp =
             (Api.logClient
              >=> Api.isAuthorised sp
              >=> choose
-                 [ GET
-                   >=> choose
-                       [ Discorss.Api.heartbeatRoute
-                         routeCif "/feeds/%s/" (fun url ->
-                             publicResponseCaching 5 None >=> WebAppHandlers.getFeed sp url)
-                         route "/feeds/" >=> (noResponseCaching >=> WebAppHandlers.getFeeds sp) ] ])
+                     [ GET
+                       >=> choose
+                               [ Discorss.Api.heartbeatRoute
+                                 routeCif "/feeds/%s/" (fun url ->
+                                     publicResponseCaching 5 None >=> WebAppHandlers.getFeed sp url)
+                                 route "/feeds/" >=> (noResponseCaching >=> WebAppHandlers.getFeeds sp) ] ])

@@ -12,8 +12,8 @@ module WebApp =
             (Api.logClient
              >=> Api.isAuthorised sp
              >=> choose
-                 [ GET
-                   >=> choose
-                       [ Discorss.Api.heartbeatRoute
-                         route "/stats" >=> WebAppHandlers.getActorStats sp ]
-                   POST >=> choose [ route "/ingest" >=> WebAppHandlers.testIngestion sp ] ])
+                     [ GET
+                       >=> choose
+                               [ Discorss.Api.heartbeatRoute
+                                 route "/stats" >=> WebAppHandlers.getActorStats sp ]
+                       POST >=> choose [ route "/ingest" >=> WebAppHandlers.testIngestion sp ] ])
