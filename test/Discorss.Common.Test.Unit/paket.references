@@ -1,3 +1,4 @@
+group Tests
 xunit
 FSharp.Core
 coverlet.collector
