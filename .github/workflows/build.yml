@@ -30,7 +30,7 @@ jobs:
         run: dotnet tool restore
               
       - name: Run build
-        run: dotnet run --project .\build\build.fsproj -t "Consolidate code coverage"
+        run: dotnet run --project ./build/build.fsproj -t "Consolidate code coverage"
 
       - name: Archive Test results
         uses: actions/upload-artifact@v2
@@ -85,7 +85,7 @@ jobs:
         run: dotnet tool restore
               
       - name: Run build
-        run: dotnet run --project .\build\build.fsproj -t "Benchmarks"
+        run: dotnet run --project ./build/build.fsproj -t "Benchmarks"
 
       - name: Archive Benchmark results
         uses: actions/upload-artifact@v2
