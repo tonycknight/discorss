@@ -6,6 +6,7 @@ open Fake.Core.TargetOperators
 
 let publishDir = "./publish"
 let mainSolution = "./discorss.sln"
+let benchmarksDir = "./BenchmarkDotNet.Artifacts"
 
 let runNumber =
     (match Fake.BuildServer.GitHubActions.Environment.CI false with
@@ -89,7 +90,11 @@ let initTargets () =
     Target.create "Clean" (fun _ ->
         !! "src/**/bin" ++ "src/**/obj" |> Shell.cleanDirs
 
-        !! "tests/**/bin" ++ "tests/**/obj" ++ "tests/**/TestResults" ++ publishDir
+        !! "test/**/bin"
+        ++ "test/**/obj"
+        ++ "test/**/TestResults"
+        ++ publishDir
+        ++ benchmarksDir
         |> Shell.cleanDirs)
 
     Target.create "Restore" (fun _ -> !!mainSolution |> Seq.iter (DotNet.restore restoreOptions))
@@ -103,12 +108,12 @@ let initTargets () =
             let opts = publishOptions output
             DotNet.publish opts p))
 
-    Target.create "Unit Tests" (fun _ -> !! "tests/**/*.fsproj" |> Seq.iter (DotNet.test testOptions))
+    Target.create "Unit Tests" (fun _ -> !! "test/**/*.fsproj" |> Seq.iter (DotNet.test testOptions))
 
     Target.create "Build code coverage report" (fun _ ->
         let args =
             sprintf
-                @"-reports:""./tests/**/coverage.info"" -targetdir:""./%s/codecoverage"" -reporttypes:""Html"""
+                @"-reports:""./test/**/coverage.info"" -targetdir:""./%s/codecoverage"" -reporttypes:""Html"""
                 publishDir
 
         let result = DotNet.exec id "reportgenerator" args
@@ -119,7 +124,7 @@ let initTargets () =
     Target.create "Consolidate code coverage" (fun _ ->
         let args =
             sprintf
-                @"-reports:""./tests/**/coverage.info"" -targetdir:""./%s/codecoveragedata"" -reporttypes:""Cobertura"""
+                @"-reports:""./test/**/coverage.info"" -targetdir:""./%s/codecoveragedata"" -reporttypes:""Cobertura"""
                 publishDir
 
         let result = DotNet.exec id "reportgenerator" args
@@ -151,6 +156,16 @@ let initTargets () =
         else
             failwith "Error reformatting!")
 
+    Target.create "Benchmarks" (fun _ ->
+        let args = "-f * "
+
+        let result =
+            DotNet.exec id "test/Discorss.Test.Benchmarks/bin/Release/net8.0/Discorss.Test.Benchmarks.dll" args
+
+        if not result.OK then
+            failwithf "Benchmarks failed!")
+
+
     Target.create "Echo variables" (fun _ -> version |> Trace.traceImportantfn "Build number: %s")
 
     Target.create "Build" ignore
@@ -167,6 +182,10 @@ let initTargets () =
     ==> "Consolidate code coverage"
     ==> "Build code coverage report"
     ==>! "Tests"
+
+    "Clean" ==> "Restore" ==> "Build" ==>! "Benchmarks"
+
+    "Benchmarks" ==> "All"
 
     "Restore" ==> "SCA" ==>! "All"
     "Restore" ==> "Check Style Rules" ==>! "All"
