@@ -27,10 +27,10 @@ jobs:
       - name: Restore tools
         run: |
           dotnet tool restore
+          dotnet restore
           
       - name: Vulnerable package checks
-        uses: tonycknight/pkgchk-action@v1.0.15
-        with:
-          trace: true
+        run:
+          dotnet pkgchk --transitive true
       
   

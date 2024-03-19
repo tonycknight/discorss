@@ -19,6 +19,12 @@
       "commands": [
         "fantomas"
       ]
+    },
+    "pkgchk-cli": {
+      "version": "0.2.385",
+      "commands": [
+        "pkgchk"
+      ]
     }
   }
 }
