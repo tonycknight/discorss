@@ -28,5 +28,7 @@ jobs:
           
       - name: Vulnerable package checks
         uses: tonycknight/pkgchk-action@v1.0.15
+        with:
+          trace: true
       
   
