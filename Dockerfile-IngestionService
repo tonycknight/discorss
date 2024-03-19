@@ -9,7 +9,7 @@ EXPOSE 63532
 RUN adduser -u 5678 --disabled-password --gecos "" discorssuser && chown -R discorssuser /app
 USER discorssuser
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0.103 AS build
 ARG BuildVersion
 WORKDIR /src
 
