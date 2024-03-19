@@ -56,7 +56,7 @@ module FeedReaderTests =
 
         let read = "url" |> FeedReader.readAsync client
 
-        let result = read.GetAwaiter().GetResult()
+        let result = read.Result
 
         result |> should be (ofCase <@ FeedReadResult.Error @>)
 
@@ -73,7 +73,7 @@ module FeedReaderTests =
 
         let read = "url" |> FeedReader.readAsync fact
 
-        let result = read.GetAwaiter().GetResult() // TODO: fix
+        let result = read.Result
 
         result |> should be (ofCase <@ FeedReadResult.Error @>)
 
@@ -86,6 +86,6 @@ module FeedReaderTests =
 
         let read = "url" |> FeedReader.readAsync fact
 
-        let result = read.GetAwaiter().GetResult() // TODO: fix
+        let result = read.Result
 
         result |> should be (ofCase <@ FeedReadResult.Error @>)
