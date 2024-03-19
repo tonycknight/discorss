@@ -20,7 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{68B857CC
 		docker-compose.yml = docker-compose.yml
 		Dockerfile-FeedService = Dockerfile-FeedService
 		Dockerfile-IngestionService = Dockerfile-IngestionService
-		Dockerfile-MessageHubService = Dockerfile-MessageHubService
 		paket.dependencies = paket.dependencies
 		.github\workflows\sca.yml = .github\workflows\sca.yml
 	EndProjectSection
