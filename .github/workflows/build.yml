@@ -27,8 +27,23 @@ jobs:
       - name: dotnet tool restore
         run: dotnet tool restore
               
-      - name: Run build
-        run: dotnet run --project ./build/build.fsproj -t "Consolidate code coverage"
+      - name: Run tests
+        run: dotnet run --project ./build/build.fsproj -t "Build"
+
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v4
+                
+      - name: dotnet tool restore
+        run: dotnet tool restore
+              
+      - name: Run tests
+        run: dotnet run --project ./build/build.fsproj -t "Tests"
 
       - name: Archive Test results
         uses: actions/upload-artifact@v4
@@ -82,7 +97,7 @@ jobs:
       - name: dotnet tool restore
         run: dotnet tool restore
               
-      - name: Run build
+      - name: Run benchmarks
         run: dotnet run --project ./build/build.fsproj -t "Benchmarks"
 
       - name: Archive Benchmark results
@@ -95,7 +110,7 @@ jobs:
     
   build-docker-feedservice-image:
     runs-on: ubuntu-latest
-    needs:   [ build, sca ]
+    needs:   [ build, tests, sca ]
 
     steps:
       - uses: actions/checkout@v4
@@ -127,7 +142,7 @@ jobs:
 
   build-docker-ingestionservice-image:
     runs-on: ubuntu-latest
-    needs:   [ build, sca ]
+    needs:   [ build, tests, sca ]
 
     steps:
       - uses: actions/checkout@v4
