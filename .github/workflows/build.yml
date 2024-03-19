@@ -27,7 +27,7 @@ jobs:
       - name: dotnet tool restore
         run: dotnet tool restore
               
-      - name: Run tests
+      - name: Run build
         run: dotnet run --project ./build/build.fsproj -t "Build"
 
   tests:
