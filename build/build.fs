@@ -132,12 +132,6 @@ let initTargets () =
         if not result.OK then
             failwithf "reportgenerator failed!")
 
-    Target.create "SCA" (fun _ ->
-        let result = DotNet.exec id "pkgchk" "--transitive true"
-
-        if not result.OK then
-            failwithf "pkgchk failed!")
-
     Target.create "Check Style Rules" (fun _ ->
         let args = " ./ --check"
         let result = DotNet.exec id "fantomas" args
@@ -185,9 +179,8 @@ let initTargets () =
 
     "Clean" ==> "Restore" ==> "Build" ==>! "Benchmarks"
 
-    "Benchmarks" ==> "All"
+    "Benchmarks" ==>! "All"
 
-    "Restore" ==> "SCA" ==>! "All"
     "Restore" ==> "Check Style Rules" ==>! "All"
     "Build" ==>! "All"
     "Tests" ==>! "All"

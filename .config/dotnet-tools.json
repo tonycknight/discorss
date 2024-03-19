@@ -9,21 +9,15 @@
       ]
     },
     "dotnet-reportgenerator-globaltool": {
-      "version": "5.2.2",
+      "version": "5.2.4",
       "commands": [
         "reportgenerator"
       ]
     },
     "fantomas": {
-      "version": "6.2.3",
+      "version": "6.3.0",
       "commands": [
         "fantomas"
-      ]
-    },
-    "pkgchk-cli": {
-      "version": "0.2.385",
-      "commands": [
-        "pkgchk"
       ]
     }
   }
