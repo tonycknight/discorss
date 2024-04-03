@@ -39,12 +39,18 @@ jobs:
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v4
                 
-      - name: dotnet tool restore
-        run: dotnet tool restore
+      - name: Package restore
+        run: |
+          dotnet tool restore
+          dotnet restore
               
-      - name: Run tests
-        run: dotnet run --project ./build/build.fsproj -t "Tests"
+      - name: Run Tests
+        run: dotnet test -c Debug --filter FullyQualifiedName!~integration /p:CollectCoverage=true /p:CoverletOutput=./TestResults/coverage.info /p:CoverletOutputFormat=cobertura --logger "trx;LogFileName=test_results.trx" 
 
+      - name: Consolidate code coverage
+        if: always()
+        run: dotnet reportgenerator -reports:"./test/**/coverage.info" -targetdir:"./publish/codecoveragedata" -reporttypes:"Cobertura"
+      
       - name: Archive Test results
         uses: actions/upload-artifact@v4
         if: always()
