@@ -177,7 +177,7 @@ let initTargets () =
     ==> "Build code coverage report"
     ==>! "Tests"
 
-    "Clean" ==> "Restore" ==> "Build" ==>! "Benchmarks"
+    "Clean" ==> "Restore" ==> "Compile" ==>! "Benchmarks"
 
     "Benchmarks" ==>! "All"
 
