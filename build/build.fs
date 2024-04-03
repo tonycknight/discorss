@@ -108,7 +108,7 @@ let initTargets () =
             let opts = publishOptions output
             DotNet.publish opts p))
 
-    Target.create "Unit Tests" (fun _ -> !! "test/**/*.fsproj" |> Seq.iter (DotNet.test testOptions))
+    Target.create "Unit Tests" (fun _ -> !! "test/**/*.Test.Unit.fsproj" |> Seq.iter (DotNet.test testOptions))
 
     Target.create "Build code coverage report" (fun _ ->
         let args =
