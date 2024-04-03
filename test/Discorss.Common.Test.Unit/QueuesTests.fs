@@ -16,7 +16,7 @@ module QueueMessageTests =
         let msg =
             { QueueMessage.empty () with
                 content = content
-                priority = 0 }
+                priority = 0.m }
 
         let q = new MemoryQueue("test") :> IQueue
 
@@ -34,7 +34,7 @@ module QueueMessageTests =
         let msg =
             { QueueMessage.empty () with
                 content = content
-                priority = 0 }
+                priority = 0.m }
 
         let q = new MemoryQueue("test") :> IQueue
 
@@ -49,7 +49,7 @@ module QueueMessageTests =
         let msg =
             { QueueMessage.empty () with
                 content = content
-                priority = 0 }
+                priority = 0.m }
 
         let q = new MemoryQueue("test") :> IQueue
 
@@ -72,7 +72,7 @@ module QueueMessageTests =
             |> List.map (fun _ ->
                 { QueueMessage.empty () with
                     content = "content"
-                    priority = 0 })
+                    priority = 0.m })
 
         msgs |> List.map (fun msg -> q.PushAsync(msg).ConfigureAwait(true)) |> ignore
 
