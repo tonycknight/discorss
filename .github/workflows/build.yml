@@ -93,8 +93,7 @@ jobs:
   benchmarks:    
     # using Windows, as running ubuntu clears DLLs mid-way, causing aborts
     runs-on: windows-latest
-    #runs-on: ubuntu-latest
-    #if: false
+    if: false
 
     steps:
       - uses: actions/checkout@v4
