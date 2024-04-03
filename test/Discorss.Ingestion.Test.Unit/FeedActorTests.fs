@@ -11,5 +11,4 @@ open Xunit
 module FeedActorTests =
 
     [<Fact>]
-    let ``Post parent receives Feeds`` () =
-        ignore 0 // TODO: fix        
+    let ``Post parent receives Feeds`` () = ignore 0 // TODO: fix
