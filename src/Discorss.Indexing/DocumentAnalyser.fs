@@ -17,7 +17,7 @@ type DocumentAnalyser(lexicon: ILexicon) =
         |> Seq.append (wordify doc.author)
         |> Seq.append (wordify doc.title)
         |> Seq.map Strings.lower
-        |> Seq.filter ((String.IsNullOrEmpty >> not) >&&> (lexicon.IsStopWord >> not))
+        |> Seq.filter ((String.IsNullOrEmpty >> not) &&>> (lexicon.IsStopWord >> not))
 
     interface IDocumentAnalyser with
         member this.Words(doc: Document) = words doc

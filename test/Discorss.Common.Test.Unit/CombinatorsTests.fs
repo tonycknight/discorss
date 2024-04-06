@@ -13,11 +13,11 @@ module CombinatorsTests =
     [<Xunit.InlineData(false, true, false)>]
     [<Xunit.InlineData(true, false, false)>]
     [<Xunit.InlineData(false, false, false)>]
-    let ``>&&> `` (left, right, expected) =
+    let ``&&>> `` (left, right, expected) =
         let a = fun (x) -> left
         let b = fun (x) -> right
 
-        let f = a >&&> b
+        let f = a &&>> b
 
         let result = f 1
 
@@ -28,11 +28,11 @@ module CombinatorsTests =
     [<Xunit.InlineData(false, true, true)>]
     [<Xunit.InlineData(true, false, true)>]
     [<Xunit.InlineData(false, false, false)>]
-    let ``>||> `` (left, right, expected) =
+    let ``||>> `` (left, right, expected) =
         let a = fun (x) -> left
         let b = fun (x) -> right
 
-        let f = a >||> b
+        let f = a ||>> b
 
         let result = f 1
 

@@ -28,7 +28,7 @@ module Api =
     let private requiresValidIp: HttpHandler = authorizeRequest isHomeIp forbidden
 
     let private requiresApiKey secrets : HttpHandler =
-        authorizeRequest (isValidApiKey secrets >||> isHomeIp) accessDenied
+        authorizeRequest (isValidApiKey secrets ||>> isHomeIp) accessDenied
 
     let heartbeatRoute: HttpHandler =
         route "/heartbeat" >=> noResponseCaching >=> json [ "OK" ]

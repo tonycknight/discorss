@@ -33,7 +33,7 @@ module Tokenisation =
 
     let stripPunctuation (text: string) =
         text
-        |> Seq.filter ((Char.IsPunctuation >> not) >&&> (Char.IsWhiteSpace >> not))
+        |> Seq.filter ((Char.IsPunctuation >> not) &&>> (Char.IsWhiteSpace >> not))
         |> Seq.fold (fun (sb: StringBuilder) c -> sb.Append(c)) (new StringBuilder())
         |> Strings.str
 

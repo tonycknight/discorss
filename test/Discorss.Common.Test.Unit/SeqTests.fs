@@ -26,7 +26,7 @@ module SeqTests =
         let xs = [ 1..count ] |> Seq.collect (fun x -> [ x; x ])
 
         let result = xs |> Seq.counts |> Array.ofSeq
-
+        
         result |> should haveLength count
         result |> Seq.map snd |> Seq.min |> should equal 2
         result |> Seq.map snd |> Seq.max |> should equal 2

@@ -28,13 +28,8 @@ module QueueMessageTests =
         | Some m -> m.content = msg.content && m.id = msg.id
         | _ -> false
 
-    [<Property>]
-    let ``MemoryQueue get returns None`` (content: string) =
-
-        let msg =
-            { QueueMessage.empty () with
-                content = content
-                priority = 0.m }
+    [<Property(MaxTest = 1)>]
+    let ``MemoryQueue get returns None`` () =
 
         let q = new MemoryQueue("test") :> IQueue
 
