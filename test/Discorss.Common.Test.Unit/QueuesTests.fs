@@ -40,9 +40,8 @@ module QueueMessageTests =
 
         let msg2 = q.GetNextAsync().Result
 
-        match msg2 with
-        | None -> true
-        | _ -> false
+        msg2 = None
+        
 
     [<Property>]
     let ``MemoryQueue push repeated get eventually returns None`` (content: string) =
@@ -78,4 +77,4 @@ module QueueMessageTests =
 
         let info = q.GetInfoAsync().Result
 
-        if info.count = count.Get then true else false
+        info.count = count.Get
