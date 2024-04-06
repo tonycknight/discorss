@@ -13,10 +13,10 @@ module SeqTests =
 
         let xs = [ 1..count ] |> Seq.map (fun _ -> 0)
 
-        let result = xs |> Seq.counts |> Array.ofSeq
+        let result = xs |> Seq.counts
 
-        result |> should haveLength 1
-        result |> Seq.head |> snd |> should equal count
+        result |> Map.count |> should equal 1
+        result |> Seq.head |> _.Value |> should equal count
 
         true
 
@@ -25,10 +25,10 @@ module SeqTests =
 
         let xs = [ 1..count ] |> Seq.collect (fun x -> [ x; x ])
 
-        let result = xs |> Seq.counts |> Array.ofSeq
+        let result = xs |> Seq.counts 
         
-        result |> should haveLength count
-        result |> Seq.map snd |> Seq.min |> should equal 2
-        result |> Seq.map snd |> Seq.max |> should equal 2
+        result |> Map.count |> should equal count
+        result |> Seq.map _.Value |> Seq.min |> should equal 2
+        result |> Seq.map _.Value |> Seq.max |> should equal 2
 
         true
