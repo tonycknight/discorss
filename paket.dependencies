@@ -28,6 +28,7 @@ group Tests
     nuget Microsoft.NET.Test.Sdk
     nuget Newtonsoft.Json
     nuget NSubstitute
+    nuget System.Formats.Asn1
     nuget System.Net.Http
     nuget System.Text.RegularExpressions
     nuget xunit

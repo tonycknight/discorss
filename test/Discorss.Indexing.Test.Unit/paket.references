@@ -8,5 +8,6 @@ Microsoft.NET.Test.Sdk
 FsCheck.Xunit
 FluentAssertions
 FsUnit.Xunit
+System.Formats.Asn1
 System.Net.Http
 System.Text.RegularExpressions
