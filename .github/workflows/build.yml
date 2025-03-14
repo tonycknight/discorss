@@ -107,7 +107,7 @@ jobs:
           dotnet restore
               
       - name: Publish benchmarks
-        run: dotnet publish ./test/Discorss.Test.Benchmarks/Discorss.Test.Benchmarks -c Release -o ./publish/
+        run: dotnet publish ./test/Discorss.Test.Benchmarks/Discorss.Test.Benchmarks.fsproj -c Release -o ./publish/
 
       - name: Run benchmarks
         run: dotnet test/Discorss.Test.Benchmarks/bin/Release/net8.0/Discorss.Test.Benchmarks.dll -f "*"
