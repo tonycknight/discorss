@@ -21,14 +21,8 @@ jobs:
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
-        
-      - name: Restore tools
-        run: |
-          dotnet tool restore
-          dotnet restore
-          
+                
       - name: Vulnerable package checks
-        run:
-          dotnet pkgchk --transitive true
+        uses: tonycknight/pkgchk-action@v1.0.19
       
   

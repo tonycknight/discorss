@@ -22,13 +22,6 @@
         "fantomas"
       ],
       "rollForward": false
-    },
-    "pkgchk-cli": {
-      "version": "0.3.410",
-      "commands": [
-        "pkgchk"
-      ],
-      "rollForward": false
     }
   }
 }
