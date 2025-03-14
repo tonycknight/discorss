@@ -381,7 +381,7 @@ NUGET
     FsCheck.Xunit (2.16.6)
       FsCheck (2.16.6)
       xunit.extensibility.execution (>= 2.2 < 3.0)
-    FSharp.Core (8.0.200)
+    FSharp.Core (9.0.201)
     FsUnit.xUnit (6.0)
       FSharp.Core (>= 5.0.2)
       NHamcrest (>= 3.4)
