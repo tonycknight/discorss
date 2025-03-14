@@ -5,18 +5,6 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="SampleFeeds\Rss091Feed.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="SampleFeeds\Rss092Feed.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="SampleFeeds\Rss20Feed.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="SampleFeeds\MsRss20Feed.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Compile Include="Feeds\Rss092ParserBenchmarks.fs" />
     <Compile Include="Feeds\Rss091ParserBenchmarks.fs" />
     <Compile Include="Feeds\Rss20ParserBenchmarks.fs" />
