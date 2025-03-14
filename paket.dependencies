@@ -9,6 +9,7 @@ group Main
     nuget HtmlAgilityPack
     nuget Microsoft.NET.Test.Sdk
     nuget MongoDB.Driver
+    nuget Newtonsoft.Json
     nuget System.Net.Http
     nuget System.Text.RegularExpressions
 

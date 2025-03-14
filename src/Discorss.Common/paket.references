@@ -3,3 +3,4 @@ FSharp.Core
 HtmlAgilityPack
 Giraffe
 MongoDB.Driver
+Newtonsoft.Json
