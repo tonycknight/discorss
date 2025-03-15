@@ -110,7 +110,7 @@ jobs:
         run: dotnet publish ./test/Discorss.Test.Benchmarks/Discorss.Test.Benchmarks.fsproj -c Release -o ./publish/
 
       - name: Run benchmarks
-        run: dotnet test/Discorss.Test.Benchmarks/bin/Release/net8.0/Discorss.Test.Benchmarks.dll -f "*"
+        run: dotnet ./publish/Discorss.Test.Benchmarks.dll -f "*"
 
       - name: Archive Benchmark results
         uses: actions/upload-artifact@v4
