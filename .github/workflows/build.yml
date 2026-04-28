@@ -13,10 +13,8 @@ on:
 
 env:
   build-version-number: 0.1.${{ github.run_number }}  
-  docker-image-feedservice-name: ghcr.io/tonycknight/discorss.feed.service
-  docker-image-messagehubservice-name: ghcr.io/tonycknight/discorss.messagehub.service
-  docker-image-ingestionservice-name: ghcr.io/tonycknight/discorss.ingestion.service
-   
+  docker-image-server: ghcr.io/tonycknight/discorss.server
+     
 jobs:
   sca:
     uses: ./.github/workflows/sca.yml
@@ -126,29 +124,28 @@ jobs:
           path: |
             ./BenchmarkDotNet.Artifacts/**/results/*.html
     
-  build-docker-feedservice-image:
+  build-docker-server-image:
     runs-on: ubuntu-latest
     needs:   [ build, tests, sca ]
-    if: false
-
+    
     steps:
       - uses: actions/checkout@v4
       
       - name: Set Docker image name
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          echo "docker-image-feedservice-name=${{ env.docker-image-feedservice-name }}:v${{ env.build-version-number }}" >> $GITHUB_ENV
+          echo "docker-image-server=${{ env.docker-image-server }}:v${{ env.build-version-number }}" >> $GITHUB_ENV
 
       - name: Set Preview Docker image name
         if: ${{ github.ref != 'refs/heads/main' }}
         run: |
-          echo "docker-image-feedservice-name=${{ env.docker-image-feedservice-name }}:dev" >> $GITHUB_ENV
+          echo "docker-image-server=${{ env.docker-image-server }}:dev" >> $GITHUB_ENV
         
       - name: Build docker image
-        run: docker build -f Dockerfile-FeedService -t ${{ env.docker-image-feedservice-name }} --build-arg BuildVersion=${{ env.build-version-number }} .
+        run: docker build -f Dockerfile-Service -t ${{ env.docker-image-server }} --build-arg BuildVersion=${{ env.build-version-number }} .
 
       - name: Login to GitHub Container Registry
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -156,38 +153,6 @@ jobs:
           password: ${{ secrets.GHCR }}
 
       - name: Push docker image
-        if: ${{ github.event_name != 'pull_request' }}
-        run: docker push ${{ env.docker-image-feedservice-name }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: docker push ${{ env.docker-image-server }}
 
-  build-docker-ingestionservice-image:
-    runs-on: ubuntu-latest
-    needs:   [ build, tests, sca ]
-    if: false
-
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set Docker image name
-        if: ${{ github.ref == 'refs/heads/main' }}
-        run: |
-          echo "docker-image-ingestionservice-name=${{ env.docker-image-ingestionservice-name }}:v${{ env.build-version-number }}" >> $GITHUB_ENV
-
-      - name: Set Preview Docker image name
-        if: ${{ github.ref != 'refs/heads/main' }}
-        run: |
-          echo "docker-image-ingestionservice-name=${{ env.docker-image-ingestionservice-name }}:dev" >> $GITHUB_ENV
-        
-      - name: Build docker image
-        run: docker build -f Dockerfile-IngestionService -t ${{ env.docker-image-ingestionservice-name}} --build-arg BuildVersion=${{ env.build-version-number }} .
-
-      - name: Login to GitHub Container Registry
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR }}
-
-      - name: Push docker image
-        if: ${{ github.event_name != 'pull_request' }}
-        run: docker push ${{ env.docker-image-ingestionservice-name }}
