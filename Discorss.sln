@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.5.11716.220 stable
+VisualStudioVersion = 18.5.11716.220
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{655744F9-3113-4139-9808-F02C0BF9AD7C}"
 EndProject
@@ -12,14 +12,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{68B857CC-5B6E-45DC-ABEE-F9C8279252A1}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build.yml = .github\workflows\build.yml
-		.github\workflows\clean-builds.yml = .github\workflows\clean-builds.yml
 		.github\CODEOWNERS = .github\CODEOWNERS
-		.github\workflows\codeql-analysis.yml = .github\workflows\codeql-analysis.yml
 		docker-compose.debug.yml = docker-compose.debug.yml
 		docker-compose.yml = docker-compose.yml
 		Dockerfile-FeedService = Dockerfile-FeedService
 		Dockerfile-IngestionService = Dockerfile-IngestionService
-		paket.dependencies = paket.dependencies
 		.github\workflows\sca.yml = .github\workflows\sca.yml
 	EndProjectSection
 EndProject
