@@ -126,7 +126,7 @@ jobs:
     
   build-docker-server-image:
     runs-on: ubuntu-latest
-    needs:   [ build, tests, sca ]
+    needs:   [ build, tests, sca, benchmarks ]
     
     steps:
       - uses: actions/checkout@v4
