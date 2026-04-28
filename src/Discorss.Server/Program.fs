@@ -10,7 +10,10 @@ open Giraffe
 
 type Startup() =
 
-    let serviceCollection = Discorss.Feeds.Service.WebApp.services // TODO: append more
+    let serviceCollection = 
+        Discorss.Feeds.Service.WebApp.services
+        >> Discorss.Indexing.Service.WebApp.services
+        >> Discorss.Ingestion.Service.WebApp.services
 
     member __.ConfigureServices(services: IServiceCollection) =
 
