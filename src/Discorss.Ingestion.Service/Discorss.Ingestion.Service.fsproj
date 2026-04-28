@@ -8,7 +8,6 @@
   <ItemGroup>
     <Compile Include="WebAppHandlers.fs" />
     <Compile Include="WebApp.fs" />
-    <None Include="paket.references" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

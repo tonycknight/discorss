@@ -8,7 +8,6 @@
     <Compile Include="TokenisationTests.fs" />
     <Compile Include="LexiconsTests.fs" />
     <Compile Include="DocumentAnalyserTests.fs" />
-    <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Discorss.Common\Discorss.Common.fsproj" />
