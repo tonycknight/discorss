@@ -12,7 +12,7 @@ module Mongo =
 
         settings.AllowInsecureTls <- false
         settings.UseTls <- true
-        settings.ConnectTimeout <- TimeSpan.FromSeconds(15)
+        settings.ConnectTimeout <- System.TimeSpan.FromSeconds(15.0)
         settings.ServerSelectionTimeout <- settings.ConnectTimeout
 
         new MongoClient(settings) :> IMongoClient
