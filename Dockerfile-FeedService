@@ -1,6 +1,6 @@
 ARG BuildVersion
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
 EXPOSE 63530
 
@@ -9,7 +9,7 @@ EXPOSE 63530
 RUN adduser -u 5678 --disabled-password --gecos "" discorssuser && chown -R discorssuser /app
 USER discorssuser
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BuildVersion
 WORKDIR /src
 
