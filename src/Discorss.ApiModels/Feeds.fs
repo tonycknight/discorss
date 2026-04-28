@@ -7,7 +7,7 @@ type FeedType =
     | Rss20 = 1
     | Rss091 = 2
     | Rss092 = 3
-    | Atom  = 4
+    | Atom = 4
 
 [<CLIMutable>]
 type FeedInfo =

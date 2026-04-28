@@ -7,14 +7,15 @@ open Microsoft.Extensions.DependencyInjection
 
 module WebApp =
     let services (services: IServiceCollection) =
-        services.AddSingleton<Discorss.Indexing.ILexicon, Discorss.Indexing.Lexicon>()
-                .AddSingleton<Discorss.Indexing.IDocumentAnalyser, Discorss.Indexing.DocumentAnalyser>()
-                .AddSingleton<Discorss.Indexing.IDocumentStatsWriter, Discorss.Indexing.StubDocumentStatsWriter>()
+        services
+            .AddSingleton<Discorss.Indexing.ILexicon, Discorss.Indexing.Lexicon>()
+            .AddSingleton<Discorss.Indexing.IDocumentAnalyser, Discorss.Indexing.DocumentAnalyser>()
+            .AddSingleton<Discorss.Indexing.IDocumentStatsWriter, Discorss.Indexing.StubDocumentStatsWriter>()
 
-    let webApp (sp: IServiceProvider) =
+    let webApp path (sp: IServiceProvider) =
 
         subRouteCi
-            "/api/v1/indexing"
+            path
             (Api.logClient
              >=> Api.isAuthorised sp
              >=> choose

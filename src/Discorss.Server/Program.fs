@@ -15,6 +15,15 @@ type Startup() =
         >> Discorss.Indexing.Service.WebApp.services
         >> Discorss.Ingestion.Service.WebApp.services
 
+    let routes (app: IApplicationBuilder) = 
+        subRouteCi
+            "/api/v1"
+            (choose [
+                    Discorss.Feeds.Service.WebApp.webApp "/feeds" app.ApplicationServices
+                    Discorss.Indexing.Service.WebApp.webApp "/indexing" app.ApplicationServices
+                    Discorss.Ingestion.Service.WebApp.webApp "/ingestion" app.ApplicationServices
+                ])
+
     member __.ConfigureServices(services: IServiceCollection) =
 
         services
@@ -23,11 +32,10 @@ type Startup() =
         |> ignore
 
     member __.Configure (app: IApplicationBuilder) (env: IHostEnvironment) (loggerFactory: ILoggerFactory) =
-        let apis = Discorss.Feeds.Service.WebApp.webApp app.ApplicationServices // TODO: merge from all
         
         app.UseGiraffeErrorHandler(Api.errorHandler)
            .UseHttpLogging()
-           .UseGiraffe(apis)
+           .UseGiraffe(routes app)
 
 
 module Program =

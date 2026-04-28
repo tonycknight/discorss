@@ -8,4 +8,3 @@ type ArticleRequest =
       author: string
       content: string
       categories: string[] }
-

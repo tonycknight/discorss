@@ -9,10 +9,10 @@ module WebApp =
     let services (services: IServiceCollection) =
         services.AddSingleton<Ingestion.IngestionActor>()
 
-    let webApp (sp: IServiceProvider) =
+    let webApp path (sp: IServiceProvider) =
 
         subRouteCi
-            "/api/v1/ingestion"
+            path
             (Api.logClient
              >=> Api.isAuthorised sp
              >=> choose
