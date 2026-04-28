@@ -7,11 +7,11 @@
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Models.fs" />
     <Compile Include="WebAppHandlers.fs" />
     <Compile Include="WebApp.fs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Discorss.ApiModels\Discorss.ApiModels.fsproj" />
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
     <ProjectReference Include="..\Discorss.Feeds\Discorss.Feeds.fsproj" />
     <ProjectReference Include="..\Discorss.Indexing\Discorss.Indexing.fsproj" />

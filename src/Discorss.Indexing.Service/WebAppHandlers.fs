@@ -12,7 +12,7 @@ module WebAppHandlers =
     let getDocumentWords (sp: IServiceProvider) =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                match! ApiValidation.getRequest<ArticleRequest> ctx with
+                match! ApiValidation.getRequest<Discorss.ApiModels.ArticleRequest> ctx with
                 | Choice1Of2 error -> return! RequestErrors.BAD_REQUEST error next ctx
                 | Choice2Of2 req ->
                     let da = sp.GetRequiredService<Indexing.IDocumentAnalyser>()
@@ -32,7 +32,7 @@ module WebAppHandlers =
     let getDocumentStatistics (sp: IServiceProvider) =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                match! ApiValidation.getRequest<ArticleRequest> ctx with
+                match! ApiValidation.getRequest<Discorss.ApiModels.ArticleRequest> ctx with
                 | Choice1Of2 error -> return! RequestErrors.BAD_REQUEST error next ctx
                 | Choice2Of2 req ->
                     let da = sp.GetRequiredService<Indexing.IDocumentAnalyser>()
@@ -52,7 +52,7 @@ module WebAppHandlers =
     let setDocument (sp: IServiceProvider) =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                match! ApiValidation.getRequest<ArticleRequest> ctx with
+                match! ApiValidation.getRequest<Discorss.ApiModels.ArticleRequest> ctx with
                 | Choice1Of2 error -> return! RequestErrors.BAD_REQUEST error next ctx
                 | Choice2Of2 req ->
                     let doc =
