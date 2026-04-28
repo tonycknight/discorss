@@ -36,7 +36,7 @@ module QueueMessageTests =
         let msg2 = q.GetNextAsync().Result
 
         msg2 = None
-        
+
 
     [<Property>]
     let ``MemoryQueue push repeated get eventually returns None`` (content: string) =
