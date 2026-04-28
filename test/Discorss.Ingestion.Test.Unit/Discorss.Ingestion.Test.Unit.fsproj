@@ -12,6 +12,5 @@
     <ProjectReference Include="..\..\src\Discorss.Common\Discorss.Common.fsproj" />
     <ProjectReference Include="..\..\src\Discorss.Ingestion\Discorss.Ingestion.fsproj" />
   </ItemGroup>
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
 
 </Project>
