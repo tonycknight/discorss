@@ -1,6 +1,5 @@
-﻿namespace Discorss.Feeds.Service
+﻿namespace Discorss.Server
 
-open System
 open Discorss
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
@@ -11,18 +10,21 @@ open Giraffe
 
 type Startup() =
 
+    let serviceCollection = Discorss.Feeds.Service.WebApp.services // TODO: append more
+
     member __.ConfigureServices(services: IServiceCollection) =
 
         services
         |> ApiStartup.addApi
-        |> (fun s ->
-            s
-                .AddSingleton<Discorss.Feeds.IFeedRepository, Discorss.Feeds.StubFeedRepository>()
-                .AddSingleton<Discorss.Feeds.IFeedProvider, Discorss.Feeds.FeedProvider>())
+        |> serviceCollection
         |> ignore
 
     member __.Configure (app: IApplicationBuilder) (env: IHostEnvironment) (loggerFactory: ILoggerFactory) =
-        app.UseGiraffeErrorHandler(Api.errorHandler).UseHttpLogging().UseGiraffe(WebApp.webApp app.ApplicationServices)
+        let apis = Discorss.Feeds.Service.WebApp.webApp app.ApplicationServices // TODO: merge from all
+        
+        app.UseGiraffeErrorHandler(Api.errorHandler)
+           .UseHttpLogging()
+           .UseGiraffe(apis)
 
 
 module Program =
@@ -34,7 +36,7 @@ module Program =
             .ConfigureWebHostDefaults(fun whb ->
                 whb
                     .UseStartup<Startup>()
-                    .UseUrls($"http://*:{ApiPorts.feedServicePort}")
+                    .UseUrls($"http://*:{ApiPorts.servicePort}")
                     .ConfigureAppConfiguration(ApiStartup.configureAppConfig)
                 |> ignore)
             .Build()

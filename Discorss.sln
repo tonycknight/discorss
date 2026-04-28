@@ -44,6 +44,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Discorss.Test.Benchmarks", 
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Discorss.ApiModels", "src\Discorss.ApiModels\Discorss.ApiModels.fsproj", "{50AB162E-829E-4D70-89D8-78EB62C15E0B}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Discorss.Server", "src\Discorss.Server\Discorss.Server.fsproj", "{3117D749-A1B3-414C-AF83-9BDD2A614766}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -102,6 +104,10 @@ Global
 		{50AB162E-829E-4D70-89D8-78EB62C15E0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50AB162E-829E-4D70-89D8-78EB62C15E0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50AB162E-829E-4D70-89D8-78EB62C15E0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3117D749-A1B3-414C-AF83-9BDD2A614766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3117D749-A1B3-414C-AF83-9BDD2A614766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3117D749-A1B3-414C-AF83-9BDD2A614766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3117D749-A1B3-414C-AF83-9BDD2A614766}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +126,7 @@ Global
 		{CB792DA8-4D4D-42E6-A721-7675EF5B375B} = {2C02BE88-7375-4DAD-9CEA-D580938B5971}
 		{76E354EB-BF0F-78FA-ED6B-4B640FF77C53} = {2C02BE88-7375-4DAD-9CEA-D580938B5971}
 		{50AB162E-829E-4D70-89D8-78EB62C15E0B} = {655744F9-3113-4139-9808-F02C0BF9AD7C}
+		{3117D749-A1B3-414C-AF83-9BDD2A614766} = {655744F9-3113-4139-9808-F02C0BF9AD7C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {885B064D-58C3-4A8F-9235-9D51F72CD0D6}
