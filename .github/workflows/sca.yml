@@ -9,8 +9,6 @@ on:
     secrets:
       token:
         required: false
-  schedule:
-    - cron: '16 2 * * 4'
 
 jobs:
   sca:
@@ -23,6 +21,6 @@ jobs:
         uses: actions/setup-dotnet@v4
                 
       - name: Vulnerable package checks
-        uses: tonycknight/pkgchk-action@v1.0.19
+        uses: tonycknight/pkgchk-action@v1
       
   
