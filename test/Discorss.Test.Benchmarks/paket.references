@@ -1,4 +1,0 @@
-group Tests
-FSharp.Core
-BenchmarkDotNet
-System.Formats.Asn1
