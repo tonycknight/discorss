@@ -1,2 +1,2 @@
 # discorss
-A Discord RSS reader
+An RSS reader

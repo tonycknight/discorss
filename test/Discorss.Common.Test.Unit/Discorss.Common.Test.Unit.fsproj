@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="ConfigurationTests.fs" />
+    <Compile Include="CombinatorsTests.fs" />
+    <Compile Include="StringsTests.fs" />
+    <Compile Include="SeqTests.fs" />
+    <Compile Include="HtmlTests.fs" />
+    <Compile Include="QueuesTests.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Discorss.Common\Discorss.Common.fsproj" />
+  </ItemGroup>
+  
+</Project>

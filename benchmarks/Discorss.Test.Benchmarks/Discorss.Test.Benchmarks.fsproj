@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Feeds\Rss092ParserBenchmarks.fs" />
+    <Compile Include="Feeds\Rss091ParserBenchmarks.fs" />
+    <Compile Include="Feeds\Rss20ParserBenchmarks.fs" />
+    <Compile Include="Indexing\TokenisationBenchmarks.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Discorss.Common\Discorss.Common.fsproj" />
+    <ProjectReference Include="..\..\src\Discorss.Feeds\Discorss.Feeds.fsproj" />
+    <ProjectReference Include="..\..\src\Discorss.Indexing\Discorss.Indexing.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />    
+  </ItemGroup>  
+</Project>

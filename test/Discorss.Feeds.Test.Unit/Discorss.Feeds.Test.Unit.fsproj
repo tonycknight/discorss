@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="TestHelpers.fs" />
+    <Compile Include="FeedReaderTests.fs" />
+    <None Include="SampleFeeds\Rss091Feed.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="SampleFeeds\Rss092Feed.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="SampleFeeds\Rss20Feed.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="SampleFeeds\MsRss20Feed.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Compile Include="Rss091ParserTests.fs" />
+    <Compile Include="Rss092ParserTests.fs" />
+    <Compile Include="Rss20ParserTests.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Discorss.Feeds\Discorss.Feeds.fsproj" />
+  </ItemGroup>
+  
+</Project>

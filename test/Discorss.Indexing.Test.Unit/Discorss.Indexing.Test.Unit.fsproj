@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="TokenisationTests.fs" />
+    <Compile Include="LexiconsTests.fs" />
+    <Compile Include="DocumentAnalyserTests.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Discorss.Common\Discorss.Common.fsproj" />
+    <ProjectReference Include="..\..\src\Discorss.Indexing\Discorss.Indexing.fsproj" />
+  </ItemGroup>
+  
+</Project>

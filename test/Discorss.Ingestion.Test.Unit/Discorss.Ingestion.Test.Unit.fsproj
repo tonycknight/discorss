@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="FeedActorTests.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Discorss.Common\Discorss.Common.fsproj" />
+    <ProjectReference Include="..\..\src\Discorss.Ingestion\Discorss.Ingestion.fsproj" />
+  </ItemGroup>
+
+</Project>

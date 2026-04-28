@@ -1,0 +1,32 @@
+ARG BuildVersion
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+WORKDIR /app
+EXPOSE 63532
+
+RUN apt-get update && apt-get install -y adduser
+
+# Creates a non-root user with an explicit UID and adds permission to access the /app folder
+# For more info, please refer to https://aka.ms/vscode-docker-dotnet-configure-containers
+RUN adduser -u 5678 --disabled-password --gecos "" discorssuser && chown -R discorssuser /app
+USER discorssuser
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+ARG BuildVersion
+WORKDIR /src
+
+COPY ["src/Discorss.Ingestion.Service/Discorss.Ingestion.Service.fsproj", "src/Discorss.Ingestion.Service/"]
+RUN dotnet restore "src/Discorss.Ingestion.Service/Discorss.Ingestion.Service.fsproj"
+COPY . .
+WORKDIR "/src/src/Discorss.Ingestion.Service"
+RUN dotnet tool restore
+RUN dotnet build "Discorss.Ingestion.Service.fsproj" -c Release -o /app/build /p:AssemblyInformationalVersion=${BuildVersion} /p:AssemblyFileVersion=${BuildVersion}
+
+FROM build AS publish
+ARG BuildVersion
+RUN dotnet publish "Discorss.Ingestion.Service.fsproj" -c Release -o /app/publish /p:UseAppHost=false /p:AssemblyInformationalVersion=${BuildVersion} /p:AssemblyFileVersion=${BuildVersion} /p:Version=${BuildVersion}
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Discorss.Ingestion.Service.dll", ""]

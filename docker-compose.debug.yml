@@ -1,0 +1,21 @@
+
+version: '3.4'
+
+services:
+  discorss-feedservice:
+    image: discorss.feeds.service
+    build:
+      context: .
+      dockerfile: Dockerfile-FeedService
+      target: discorss.feeds.service
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw
+  discorss-messagehubservice:
+    image: discorss.messagehub.service
+    build:
+      context: .
+      dockerfile: Dockerfile-MessageHubService
+      target: discorss.messagehub.service
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw
+
