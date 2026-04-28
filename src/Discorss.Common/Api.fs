@@ -41,10 +41,7 @@ module Api =
     let config (sp: System.IServiceProvider) =
         let c = AppConfiguration.defaultConfig
 
-        sp
-            .GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>()
-            .GetSection("Discorss")
-            .Bind(c)
+        sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>().GetSection("Discorss").Bind(c)
 
         c
 
@@ -95,9 +92,7 @@ module ApiStartup =
         addApiLogging >> addApiConfig >> addApiHttp >> addWebFramework
 
     let configureAppConfig (whbc: IConfigurationBuilder) =
-        whbc
-            .AddJsonFile("appsettings.json", false, true)
-            .AddEnvironmentVariables("Discorss_")
+        whbc.AddJsonFile("appsettings.json", false, true).AddEnvironmentVariables("Discorss_")
         |> ignore
 
 module ApiValidation =

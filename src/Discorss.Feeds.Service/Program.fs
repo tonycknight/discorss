@@ -22,10 +22,7 @@ type Startup() =
         |> ignore
 
     member __.Configure (app: IApplicationBuilder) (env: IHostEnvironment) (loggerFactory: ILoggerFactory) =
-        app
-            .UseGiraffeErrorHandler(Api.errorHandler)
-            .UseHttpLogging()
-            .UseGiraffe(WebApp.webApp app.ApplicationServices)
+        app.UseGiraffeErrorHandler(Api.errorHandler).UseHttpLogging().UseGiraffe(WebApp.webApp app.ApplicationServices)
 
 
 module Program =
