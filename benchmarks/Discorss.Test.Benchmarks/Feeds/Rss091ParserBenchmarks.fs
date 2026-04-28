@@ -14,7 +14,7 @@ type Rss091ParserBenchmarks() =
 
     [<IterationSetup>]
     member this.IterationSetup() =
-        this.Text <- Discorss.Feeds.Test.Unit.TestHelpers.sampleFeedAsString this.SampleFileName
+        this.Text <- "<xml></xml>" // TODO: Discorss.Feeds.Test.Unit.TestHelpers.sampleFeedAsString this.SampleFileName
         this.Doc <- this.Text |> XDocument.Parse
 
     [<Params("Rss091Feed.xml")>]

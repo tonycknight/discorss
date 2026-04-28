@@ -18,6 +18,5 @@
     <ProjectReference Include="..\Discorss.Feeds\Discorss.Feeds.fsproj" />
     <ProjectReference Include="..\Discorss.Indexing\Discorss.Indexing.fsproj" />
   </ItemGroup>
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
 
 </Project>

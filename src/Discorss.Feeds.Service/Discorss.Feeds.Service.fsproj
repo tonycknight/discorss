@@ -16,5 +16,8 @@
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
     <ProjectReference Include="..\Discorss.Feeds\Discorss.Feeds.fsproj" />
   </ItemGroup>
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
+  <ItemGroup>
+    <PackageReference Include="Giraffe" Version="8.2.0" />
+  </ItemGroup>
+  
 </Project>

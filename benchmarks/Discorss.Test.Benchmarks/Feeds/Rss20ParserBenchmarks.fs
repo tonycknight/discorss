@@ -14,7 +14,7 @@ type Rss20ParserBenchmarks() =
 
     [<IterationSetup>]
     member this.IterationSetup() =
-        this.Text <- Discorss.Feeds.Test.Unit.TestHelpers.sampleFeedAsString this.SampleFileName
+        this.Text <- "<xml></xml>" // TODO: Discorss.Feeds.Test.Unit.TestHelpers.sampleFeedAsString this.SampleFileName
         this.Doc <- this.Text |> XDocument.Parse
 
     [<Params("MsRss20Feed.xml", "Rss20Feed.xml")>]
