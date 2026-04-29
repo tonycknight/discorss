@@ -43,6 +43,7 @@ module WebAppHandlers =
 
                     match feed with
                     | FeedReadResult.Feed feed ->
+                        // TODO: review this: this is not an idempotent operation on GET
                         let fi = feedInfo feedUri feed.title
                         do! (feedRepo sp).SetFeedInfoAsync fi
 
