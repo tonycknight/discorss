@@ -27,7 +27,9 @@ module WebAppHandlers =
             task {
                 let! feeds = (feedRepo sp).GetFeedInfosAsync()
 
-                return! Successful.OK feeds next ctx
+                let result = feeds |> Seq.map Mapping.toFeedInfoApiModel |> Array.ofSeq
+                
+                return! Successful.OK result next ctx
             }
 
     let getFeed (sp: IServiceProvider) feedUri =
