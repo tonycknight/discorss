@@ -1,17 +1,12 @@
 ﻿namespace Discorss
 
-open System.Net
 open Discorss
-open Discorss.Security
+open Discorss.ApiModels
 open Giraffe
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Logging
-
-[<CLIMutable>]
-type ApiErrorResult = { errors: string[] }
-
 
 module Api =
 

@@ -2,6 +2,7 @@
 
 open System
 open Discorss
+open Discorss.ApiModels
 open Discorss.Feeds
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
