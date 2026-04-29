@@ -7,12 +7,8 @@ open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
 
-module WebAppHandlers =
-    let private hc (sp: IServiceProvider) =
-        sp.GetRequiredService<Discorss.IExternalHttpClient>()
-
-    let private feedRepo (sp: IServiceProvider) =
-        sp.GetRequiredService<IFeedRepository>()
+module WebAppHandlers =    
+    let private feedRepo (sp: IServiceProvider) = sp.GetRequiredService<IFeedRepository>()
 
     let private feedProvider (sp: IServiceProvider) = sp.GetRequiredService<IFeedProvider>()
     

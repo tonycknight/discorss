@@ -1,7 +1,5 @@
 ﻿namespace Discorss.Feeds
 
-open System
-open System.Diagnostics.CodeAnalysis
 open System.Threading.Tasks
 
 type IFeedProvider =

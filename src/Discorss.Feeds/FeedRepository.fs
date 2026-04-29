@@ -30,6 +30,8 @@ type StubFeedRepository(feedUris) =
               "https://azure.microsoft.com/en-gb/blog/feed/"
               "https://devblogs.microsoft.com/cosmosdb/feed/"
               "https://devblogs.microsoft.com/dotnet/tag/f/feed/"
+              "https://github.blog/changelog/feed/"
+              "https://github.blog/latest/feed/"
               "https://rss.slashdot.org/Slashdot/slashdotMain" ]
         )
 
