@@ -30,7 +30,7 @@ module WebAppHandlers =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 if Uri.tryParse feedUri |> Option.isNone then
-                    let result = { ApiErrorResult.errors = [| "Invalid Uri" |] }
+                    let result = json { ApiErrorResult.errors = [| "Invalid Uri" |] }
                     return! RequestErrors.BAD_REQUEST result next ctx
                 else
                     let! feed = (feedProvider sp).GetFeedAsync feedUri
@@ -43,9 +43,9 @@ module WebAppHandlers =
 
                     | FeedReadResult.Error msg ->
                         let result = json { ApiErrorResult.errors = [| msg |] }
-                        return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
+                        return! RequestErrors.unprocessableEntity result next ctx
                     | _ ->
                         let result = json { ApiErrorResult.errors = [| "Internal error" |] }
-                        return! ServerErrors.INTERNAL_ERROR result next ctx                        
+                        return! ServerErrors.internalError result next ctx                        
 
             }
