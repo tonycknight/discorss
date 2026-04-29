@@ -3,6 +3,7 @@
 open Discorss
 open Discorss.ApiModels
 open Giraffe
+open Microbroker.Client
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
@@ -56,13 +57,22 @@ module ApiStartup =
             .AddHttpClient()
             .AddSingleton<IInternalHttpClient, InternalHttpClient>()
             .AddSingleton<IExternalHttpClient, ExternalHttpClient>()
-            .AddSingleton<Discorss.Messaging.IMessageHubClient, Discorss.Messaging.MessageHubClient>()
+            
+    let addMicrobroker (services: IServiceCollection) = 
+        let config (sp: System.IServiceProvider) =
+            let appConfig = sp.GetRequiredService<AppConfiguration>()
+            let throttle = System.TimeSpan.FromSeconds 5.
 
-
+            { MicrobrokerConfiguration.brokerBaseUrl = appConfig.messageBrokerServiceUrl
+              throttleMaxTime = throttle }
+        
+        DependencyInjection.addServices services
+        |> DependencyInjection.addConfiguration config 
+        
     let addWebFramework (services: IServiceCollection) = services.AddGiraffe()
 
     let addApi<'a when 'a :> IServiceCollection> =
-        addApiLogging >> addApiConfig >> addApiHttp >> addWebFramework
+        addApiLogging >> addApiConfig >> addApiHttp >> addWebFramework >> addMicrobroker
 
     let configureAppConfig (whbc: IConfigurationBuilder) =
         whbc.AddJsonFile("appsettings.json", false, true).AddEnvironmentVariables("Discorss_")

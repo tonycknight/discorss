@@ -5,16 +5,13 @@ module ApiPorts =
     [<Literal>]
     let servicePort = 63529
 
-    [<Literal>]
-    let msgHubServicePort = 63533
-
 [<CLIMutable>]
 type AppConfiguration =
-    { messageHubServiceUrl: string
+    { messageBrokerServiceUrl: string
       secretsConnection: string }
 
     static member defaultConfig =
-        { AppConfiguration.messageHubServiceUrl = $"http://localhost:{ApiPorts.msgHubServicePort}"
+        { AppConfiguration.messageBrokerServiceUrl = "http://localhost:8080"
           secretsConnection = "" }
 
 module Configuration =
