@@ -2,35 +2,19 @@
 
 module ApiPorts =
 
-
     [<Literal>]
     let servicePort = 63529
-
-    [<Literal>]
-    let feedServicePort = 63530
-
-    [<Literal>]
-    let indexServicePort = 63531
-
-    [<Literal>]
-    let ingestionServicePort = 63532
 
     [<Literal>]
     let msgHubServicePort = 63533
 
 [<CLIMutable>]
 type AppConfiguration =
-    { indexServiceUrl: string
-      feedServiceUrl: string
-      ingestionServiceUrl: string
-      messageHubServiceUrl: string
+    { messageHubServiceUrl: string
       secretsConnection: string }
 
     static member defaultConfig =
-        { AppConfiguration.indexServiceUrl = $"http://localhost:{ApiPorts.indexServicePort}"
-          feedServiceUrl = $"http://localhost:{ApiPorts.feedServicePort}"
-          ingestionServiceUrl = $"http://localhost:{ApiPorts.ingestionServicePort}"
-          messageHubServiceUrl = $"http://localhost:{ApiPorts.msgHubServicePort}"
+        { AppConfiguration.messageHubServiceUrl = $"http://localhost:{ApiPorts.msgHubServicePort}"
           secretsConnection = "" }
 
 module Configuration =

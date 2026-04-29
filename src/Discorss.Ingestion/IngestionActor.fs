@@ -6,17 +6,11 @@ open Discorss
 [<ExcludeFromCodeCoverage>]
 type IngestionActor(config: AppConfiguration, http: IInternalHttpClient) as self =
 
-    let feedsActor = new FeedsActor(self, config, http) :> IActor
-
     let getStats inbox =
         async {
             let myStats = Actor.getStats $"{self.GetType()}" inbox
-
-            let! feedsStats = feedsActor.GetStats()
-
-            return
-                { myStats with
-                    childStats = [ feedsStats ] }
+                        
+            return myStats
         }
 
     let actor =
@@ -30,7 +24,7 @@ type IngestionActor(config: AppConfiguration, http: IInternalHttpClient) as self
                     | ActorMessage.AddFeed _
                     | ActorMessage.RemoveFeed _
                     | ActorMessage.FetchFeed _
-                    | ActorMessage.Feeds _ -> msg |> feedsActor.Post
+                    | ActorMessage.Feeds _ -> ignore 0
                     | ActorMessage.IngestFeeds -> ignore 0
                     | ActorMessage.Documents _
                     | ActorMessage.IndexDoc _ -> ignore 0 // TODO:

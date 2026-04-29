@@ -15,31 +15,25 @@ module ConfigurationTests =
 
         let c =
             { AppConfiguration.defaultConfig with
-                feedServiceUrl = value }
+                messageHubServiceUrl = value }
 
         let dc = AppConfiguration.defaultConfig
 
         let c2 = Configuration.mergeDefaults c
 
-        c2.feedServiceUrl |> should equal dc.feedServiceUrl
-        c2.ingestionServiceUrl |> should equal dc.ingestionServiceUrl
         c2.messageHubServiceUrl |> should equal dc.messageHubServiceUrl
-        c2.indexServiceUrl |> should equal dc.indexServiceUrl
         c2.secretsConnection |> should equal dc.secretsConnection
 
 
-    [<Property(Verbose = true, Replay = "(196509574, 297096319)")>]
+    [<Property(Verbose = true)>]
     let ``mergeDefaults yields new value`` (value: NonWhiteSpaceString) =
         let c =
             { AppConfiguration.defaultConfig with
-                feedServiceUrl = value.Get }
+                messageHubServiceUrl = value.Get }
 
         let dc = AppConfiguration.defaultConfig
 
         let c2 = Configuration.mergeDefaults c
 
-        c2.feedServiceUrl |> should equal value.Get
-        c2.ingestionServiceUrl |> should equal dc.ingestionServiceUrl
         c2.messageHubServiceUrl |> should equal dc.messageHubServiceUrl
-        c2.indexServiceUrl |> should equal dc.indexServiceUrl
         c2.secretsConnection |> should equal dc.secretsConnection

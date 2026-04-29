@@ -1,49 +1,46 @@
 ﻿namespace Discorss.Ingestion
 
+open System
 open System.Diagnostics.CodeAnalysis
 open Discorss
+open Discorss.Feeds
+
+
+type private FeedActorState = { feed: FeedInfo; lastRead: DateTime;  }
 
 [<ExcludeFromCodeCoverage>]
-type FeedActor(parent: IActor, config: AppConfiguration, http: IInternalHttpClient, feedUri) as self =
+type FeedActor(parent: IActor, feed: FeedInfo, feedProvider: IFeedProvider) as self =
 
-    let feedServiceUrl = $"{config.feedServiceUrl}/api/v1/feeds/"
-
-    let queryFeed () =
-        task {
-            let! r = $"{feedServiceUrl}{feedUri}/" |> http.GetAsync
-
-            return
-                match r with
-                | HttpRequestResponse.HttpOkRequestResponse(_, body) -> Some body
-                | _ -> None
-        }
-
-    let toDocs (body: string) =
-        Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.Indexing.Document[]>(body)
-
+    
     let getFeedDocuments () =
         task {
-            let! r = queryFeed ()
-            return r |> Option.map (toDocs >> ActorMessage.Documents)
+            let! r = feedProvider.GetFeedAsync feed.uri
+            return
+                match r with
+                | FeedReadResult.Feed feed ->
+                     // TODO: feed.entries |> toDocs |> ActorMessage.Documents |> Some
+                     None
+                | FeedReadResult.Error msg -> None
+                | FeedReadResult.Xml xml -> None
+        }
+
+
+    let rec loop (inbox: MailboxProcessor<ActorMessage>) =
+        task {
+
+            match! inbox.Receive() with
+            | ActorMessage.FetchFeed uri when feed.uri = uri ->
+                let! m = getFeedDocuments ()
+                m |> Option.iter parent.Post
+            | ActorMessage.GetActorStats rc ->
+                inbox |> Actor.getStats $"{self.GetType()} - {feed.uri}" |> rc.Reply
+            | m -> parent.Post m
+
+            return! loop inbox
         }
 
     let actor =
-        MailboxProcessor<ActorMessage>.Start(fun inbox ->
-            let rec loop () =
-                async {
-
-                    match! inbox.Receive() with
-                    | ActorMessage.FetchFeed uri when feedUri = uri ->
-                        let! m = getFeedDocuments () |> Async.AwaitTask
-                        m |> Option.iter parent.Post
-                    | ActorMessage.GetActorStats rc ->
-                        inbox |> Actor.getStats $"{self.GetType()} - {feedUri}" |> rc.Reply
-                    | m -> parent.Post m
-
-                    return! loop ()
-                }
-
-            loop ())
+        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask) // TODO:
 
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg

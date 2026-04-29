@@ -9,7 +9,6 @@
     <Compile Include="ActorMessages.fs" />
     <Compile Include="Actors.fs" />
     <Compile Include="FeedActor.fs" />
-    <Compile Include="FeedsActor.fs" />
     <Compile Include="IngestionActor.fs" />
   </ItemGroup>
 
