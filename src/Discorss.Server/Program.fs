@@ -16,9 +16,11 @@ type Startup() =
         >> Discorss.Ingestion.Service.WebApp.services
 
     let routes (app: IApplicationBuilder) = 
+        // TODO: all response content types must be application/json - at present they're application/xml
         subRouteCi
             "/api/v1"
             (choose [
+                    GET >=> Discorss.Api.heartbeatRoute
                     Discorss.Feeds.Service.WebApp.webApp "/feeds" app.ApplicationServices
                     Discorss.Indexing.Service.WebApp.webApp "/indexing" app.ApplicationServices
                     Discorss.Ingestion.Service.WebApp.webApp "/ingestion" app.ApplicationServices

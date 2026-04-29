@@ -20,7 +20,6 @@ module WebApp =
              >=> choose
                      [ GET
                        >=> choose
-                               [ Discorss.Api.heartbeatRoute
-                                 routeCif "/%s/" (fun url ->
+                               [ routeCif "/%s/" (fun url ->
                                      publicResponseCaching 5 None >=> WebAppHandlers.getFeed sp url)
                                  route "/" >=> (noResponseCaching >=> WebAppHandlers.getFeeds sp) ] ])

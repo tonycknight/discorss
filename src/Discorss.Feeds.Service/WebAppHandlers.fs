@@ -15,19 +15,13 @@ module WebAppHandlers =
         sp.GetRequiredService<IFeedRepository>()
 
     let private feedProvider (sp: IServiceProvider) = sp.GetRequiredService<IFeedProvider>()
-
-    let private feedInfo feedUri title =
-        { FeedInfo.uri = feedUri
-          title = title
-          lastFetched = DateTimeOffset.UtcNow
-          updated = DateTimeOffset.UtcNow }
-
+    
     let getFeeds (sp: IServiceProvider) =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 let! feeds = (feedRepo sp).GetFeedInfosAsync()
 
-                let result = feeds |> Seq.map Mapping.toFeedInfoApiModel |> Array.ofSeq
+                let result = feeds |> Seq.map Mapping.toFeedInfoApiModel |> Array.ofSeq // TODO: |> json
                 
                 return! Successful.OK result next ctx
             }
@@ -42,17 +36,14 @@ module WebAppHandlers =
                     let! feed = (feedProvider sp).GetFeedAsync feedUri
 
                     match feed with
-                    | FeedReadResult.Feed feed ->
-                        // TODO: review this: this is not an idempotent operation on GET
-                        let fi = feedInfo feedUri feed.title
-                        do! (feedRepo sp).SetFeedInfoAsync fi
-
-                        return! Successful.OK feed next ctx
+                    | FeedReadResult.Feed feed ->       
+                        let result = Mapping.toFeedApiModel feed
+                        return! Successful.OK result next ctx // TODO: need to map to an ApiModel as json, causes "FSharp.Core v11 not found".... 
                     | FeedReadResult.Error msg ->
-                        let result = { ApiErrorResult.errors = [| msg |] }
+                        let result = json { ApiErrorResult.errors = [| msg |] }
                         return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
                     | _ ->
-                        let result = { ApiErrorResult.errors = [| "Internal error" |] }
-                        return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
+                        let result = json { ApiErrorResult.errors = [| "Internal error" |] }
+                        return! ServerErrors.INTERNAL_ERROR result next ctx                        
 
             }

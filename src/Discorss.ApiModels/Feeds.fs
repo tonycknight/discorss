@@ -20,3 +20,9 @@ type FeedEntry =
       author: string
       content: string
       categories: string list }
+
+[<CLIMutable>]
+type Feed =
+    { feed: FeedInfo
+      entries: FeedEntry[] }
+     

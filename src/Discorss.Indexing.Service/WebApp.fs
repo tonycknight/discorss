@@ -19,8 +19,7 @@ module WebApp =
             (Api.logClient
              >=> Api.isAuthorised sp
              >=> choose
-                     [ GET >=> choose [ Discorss.Api.heartbeatRoute ]
-                       POST
+                     [ POST
                        >=> choose
                                [ route "/stats" >=> WebAppHandlers.getDocumentStatistics sp
                                  route "/words" >=> WebAppHandlers.getDocumentWords sp ]
