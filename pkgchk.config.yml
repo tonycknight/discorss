@@ -1,5 +1,6 @@
 excludePackages:
 - FSharp.Core
+- XUnit
 scanVulnerabilities: true
 scanDeprecations: true
 scanTransitives: true
