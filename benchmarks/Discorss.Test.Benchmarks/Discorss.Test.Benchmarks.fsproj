@@ -17,7 +17,6 @@
     <ProjectReference Include="..\..\src\Discorss.Indexing\Discorss.Indexing.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />    
-    <PackageReference Include="FSharp.Core" Version="10.1.203" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />        
   </ItemGroup>  
 </Project>
