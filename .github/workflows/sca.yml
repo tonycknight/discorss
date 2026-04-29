@@ -28,7 +28,12 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
                 
-      - name: Vulnerable package checks
+      - name: Package checks
         uses: tonycknight/pkgchk-action@v1
-      
+        with:
+          scan-issues: true
+          scan-upgrades: true
+          scan-vulnerabilities: true
+          scan-deprecations: true
+          config: pkgchk.config.yml
   

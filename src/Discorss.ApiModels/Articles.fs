@@ -1,4 +1,4 @@
-﻿namespace Discorss.Indexing.Service
+﻿namespace Discorss.ApiModels
 
 [<CLIMutable>]
 type ArticleRequest =

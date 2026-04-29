@@ -25,5 +25,8 @@
     <PackageReference Include="MongoDB.Driver" Version="3.8.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Discorss.ApiModels\Discorss.ApiModels.fsproj" />
+  </ItemGroup>
   
 </Project>

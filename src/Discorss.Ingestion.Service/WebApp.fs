@@ -3,17 +3,16 @@
 open System
 open Discorss
 open Giraffe
+open Microsoft.Extensions.DependencyInjection
 
 module WebApp =
-    let webApp (sp: IServiceProvider) =
+    let services (services: IServiceCollection) =
+        services.AddSingleton<Ingestion.IngestionActor>()
+
+    let webApp path (sp: IServiceProvider) =
 
         subRouteCi
-            "/api/v1"
-            (Api.logClient
-             >=> Api.isAuthorised sp
-             >=> choose
-                     [ GET
-                       >=> choose
-                               [ Discorss.Api.heartbeatRoute
-                                 route "/stats" >=> WebAppHandlers.getActorStats sp ]
-                       POST >=> choose [ route "/ingest" >=> WebAppHandlers.testIngestion sp ] ])
+            path
+            (choose
+                [ GET >=> choose [ route "/stats" >=> WebAppHandlers.getActorStats sp ]
+                  POST >=> choose [ route "/ingest" >=> WebAppHandlers.testIngestion sp ] ])

@@ -3,18 +3,22 @@
 open System
 open Discorss
 open Giraffe
+open Microsoft.Extensions.DependencyInjection
 
 module WebApp =
-    let webApp (sp: IServiceProvider) =
+    let services (services: IServiceCollection) =
+        services
+            .AddSingleton<Discorss.Feeds.IFeedRepository, Discorss.Feeds.StubFeedRepository>()
+            .AddSingleton<Discorss.Feeds.IFeedProvider, Discorss.Feeds.FeedProvider>()
+
+    let webApp path (sp: IServiceProvider) =
 
         subRouteCi
-            "/api/v1"
+            path
             (Api.logClient
-             >=> Api.isAuthorised sp
              >=> choose
                      [ GET
                        >=> choose
-                               [ Discorss.Api.heartbeatRoute
-                                 routeCif "/feeds/%s/" (fun url ->
+                               [ routeCif "/%s/" (fun url ->
                                      publicResponseCaching 5 None >=> WebAppHandlers.getFeed sp url)
-                                 route "/feeds/" >=> (noResponseCaching >=> WebAppHandlers.getFeeds sp) ] ])
+                                 route "/" >=> (noResponseCaching >=> WebAppHandlers.getFeeds sp) ] ])

@@ -2,6 +2,10 @@
 
 module ApiPorts =
 
+
+    [<Literal>]
+    let servicePort = 63529
+
     [<Literal>]
     let feedServicePort = 63530
 
