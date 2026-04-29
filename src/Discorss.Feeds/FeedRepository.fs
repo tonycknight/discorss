@@ -5,7 +5,7 @@ open System.Diagnostics.CodeAnalysis
 open System.Threading.Tasks
 
 type IFeedRepository =
-    abstract member GetFeedInfosAsync: unit -> Task<seq<FeedInfo>>
+    abstract member GetFeedInfosAsync: unit -> Task<FeedInfo[]>
     abstract member SetFeedInfoAsync: FeedInfo -> Task
 
 [<ExcludeFromCodeCoverage>]
@@ -36,7 +36,7 @@ type StubFeedRepository(feedUris) =
         )
 
     interface IFeedRepository with
-        member this.GetFeedInfosAsync() = task { return feedCache.Values }
+        member this.GetFeedInfosAsync() = task { return feedCache.Values |> Seq.toArray }
 
         member this.SetFeedInfoAsync(feed: FeedInfo) =
             task {
