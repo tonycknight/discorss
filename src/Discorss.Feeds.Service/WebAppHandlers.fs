@@ -21,9 +21,9 @@ module WebAppHandlers =
             task {
                 let! feeds = (feedRepo sp).GetFeedInfosAsync()
 
-                let result = feeds |> Seq.map Mapping.toFeedInfoApiModel |> Array.ofSeq // TODO: |> json
+                let result = feeds |> Seq.map Mapping.toFeedInfoApiModel |> Array.ofSeq |> json
                 
-                return! Successful.OK result next ctx
+                return! Successful.ok result next ctx
             }
 
     let getFeed (sp: IServiceProvider) feedUri =
@@ -37,8 +37,10 @@ module WebAppHandlers =
 
                     match feed with
                     | FeedReadResult.Feed feed ->       
-                        let result = Mapping.toFeedApiModel feed
-                        return! Successful.OK result next ctx // TODO: need to map to an ApiModel as json, causes "FSharp.Core v11 not found".... 
+                        let result = feed |> Mapping.toFeedApiModel |> json 
+                        
+                        return! Successful.ok result next ctx 
+
                     | FeedReadResult.Error msg ->
                         let result = json { ApiErrorResult.errors = [| msg |] }
                         return! RequestErrors.UNPROCESSABLE_ENTITY result next ctx
