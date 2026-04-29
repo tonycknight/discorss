@@ -5,13 +5,13 @@ open Discorss.ApiModels
 
 module Mapping =
     let toFeedInfoApiModel (value: Discorss.Feeds.FeedInfo) =
-        { Discorss.ApiModels.FeedInfo.uri = value.uri;
-          title = value.title;
-          description = "";
-          updated = value.updated;
-          lastFetched = value.lastFetched; }
+        { Discorss.ApiModels.FeedInfo.uri = value.uri
+          title = value.title
+          description = ""
+          updated = value.updated
+          lastFetched = value.lastFetched }
 
-    let toFeedApiModel (value: Discorss.Feeds.Feed ) =
+    let toFeedApiModel (value: Discorss.Feeds.Feed) =
         { Discorss.ApiModels.Feed.feed =
             { uri = value.uri
               title = value.title

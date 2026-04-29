@@ -23,6 +23,4 @@ type FeedEntry =
 
 [<CLIMutable>]
 type Feed =
-    { feed: FeedInfo
-      entries: FeedEntry[] }
-     
+    { feed: FeedInfo; entries: FeedEntry[] }

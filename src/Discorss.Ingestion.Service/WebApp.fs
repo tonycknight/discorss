@@ -13,10 +13,6 @@ module WebApp =
 
         subRouteCi
             path
-            (Api.logClient
-             >=> Api.isAuthorised sp
-             >=> choose
-                     [ GET
-                       >=> choose
-                               [ route "/stats" >=> WebAppHandlers.getActorStats sp ]
-                       POST >=> choose [ route "/ingest" >=> WebAppHandlers.testIngestion sp ] ])
+            (choose
+                [ GET >=> choose [ route "/stats" >=> WebAppHandlers.getActorStats sp ]
+                  POST >=> choose [ route "/ingest" >=> WebAppHandlers.testIngestion sp ] ])

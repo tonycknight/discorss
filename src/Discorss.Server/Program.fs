@@ -10,34 +10,28 @@ open Giraffe
 
 type Startup() =
 
-    let serviceCollection = 
+    let serviceCollection =
         Discorss.Feeds.Service.WebApp.services
         >> Discorss.Indexing.Service.WebApp.services
         >> Discorss.Ingestion.Service.WebApp.services
 
-    let routes (app: IApplicationBuilder) = 
-        // TODO: all response content types must be application/json - at present they're application/xml
+    let routes (app: IApplicationBuilder) =
         subRouteCi
             "/api/v1"
-            (choose [
-                    GET >=> Discorss.Api.heartbeatRoute
-                    Discorss.Feeds.Service.WebApp.webApp "/feeds" app.ApplicationServices
-                    Discorss.Indexing.Service.WebApp.webApp "/indexing" app.ApplicationServices
-                    Discorss.Ingestion.Service.WebApp.webApp "/ingestion" app.ApplicationServices
-                ])
+            (Api.logClient
+             >=> choose
+                     [ GET >=> Discorss.Api.heartbeatRoute
+                       Discorss.Feeds.Service.WebApp.webApp "/feeds" app.ApplicationServices
+                       Discorss.Indexing.Service.WebApp.webApp "/indexing" app.ApplicationServices
+                       Discorss.Ingestion.Service.WebApp.webApp "/ingestion" app.ApplicationServices ])
 
     member __.ConfigureServices(services: IServiceCollection) =
 
-        services
-        |> ApiStartup.addApi
-        |> serviceCollection
-        |> ignore
+        services |> ApiStartup.addApi |> serviceCollection |> ignore
 
     member __.Configure (app: IApplicationBuilder) (env: IHostEnvironment) (loggerFactory: ILoggerFactory) =
-        
-        app.UseGiraffeErrorHandler(Api.errorHandler)
-           .UseHttpLogging()
-           .UseGiraffe(routes app)
+
+        app.UseGiraffeErrorHandler(Api.errorHandler).UseHttpLogging().UseGiraffe(routes app)
 
 
 module Program =

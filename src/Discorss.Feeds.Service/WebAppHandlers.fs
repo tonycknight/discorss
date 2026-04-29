@@ -7,18 +7,19 @@ open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
 
-module WebAppHandlers =    
-    let private feedRepo (sp: IServiceProvider) = sp.GetRequiredService<IFeedRepository>()
+module WebAppHandlers =
+    let private feedRepo (sp: IServiceProvider) =
+        sp.GetRequiredService<IFeedRepository>()
 
     let private feedProvider (sp: IServiceProvider) = sp.GetRequiredService<IFeedProvider>()
-    
+
     let getFeeds (sp: IServiceProvider) =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 let! feeds = (feedRepo sp).GetFeedInfosAsync()
 
                 let result = feeds |> Seq.map Mapping.toFeedInfoApiModel |> Array.ofSeq |> json
-                
+
                 return! Successful.ok result next ctx
             }
 
@@ -32,16 +33,16 @@ module WebAppHandlers =
                     let! feed = (feedProvider sp).GetFeedAsync feedUri
 
                     match feed with
-                    | FeedReadResult.Feed feed ->       
-                        let result = feed |> Mapping.toFeedApiModel |> json 
-                        
-                        return! Successful.ok result next ctx 
+                    | FeedReadResult.Feed feed ->
+                        let result = feed |> Mapping.toFeedApiModel |> json
+
+                        return! Successful.ok result next ctx
 
                     | FeedReadResult.Error msg ->
                         let result = json { ApiErrorResult.errors = [| msg |] }
                         return! RequestErrors.unprocessableEntity result next ctx
                     | _ ->
                         let result = json { ApiErrorResult.errors = [| "Internal error" |] }
-                        return! ServerErrors.internalError result next ctx                        
+                        return! ServerErrors.internalError result next ctx
 
             }

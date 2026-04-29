@@ -14,29 +14,9 @@ type ApiErrorResult = { errors: string[] }
 
 
 module Api =
-    let private isHomeIp (ctx: HttpContext) =
-        ctx.Connection.RemoteIpAddress |> IPAddress.IsLoopback
-
-    let private isValidApiKey (secrets: ISecretProvider) (ctx: HttpContext) =
-        match ctx.TryGetRequestHeader "x-api-key" with
-        | Some k -> secrets.IsSecretValueEqual "apikey" k
-        | None -> false
-
-    let private accessDenied: HttpHandler = setStatusCode 401 >=> setBody [||]
-    let private forbidden: HttpHandler = setStatusCode 403 >=> setBody [||]
-
-    let private requiresValidIp: HttpHandler = authorizeRequest isHomeIp forbidden
-
-    let private requiresApiKey secrets : HttpHandler =
-        authorizeRequest (isValidApiKey secrets ||>> isHomeIp) accessDenied
 
     let heartbeatRoute: HttpHandler =
         route "/heartbeat" >=> noResponseCaching >=> json [ "OK" ]
-
-    let isAuthorised (sp: System.IServiceProvider) : HttpHandler =
-        let secrets = sp.GetRequiredService<ISecretProvider>()
-        // TODO: requiresValidIp >=>
-        requiresApiKey secrets
 
     let config (sp: System.IServiceProvider) =
         let c = AppConfiguration.defaultConfig
@@ -60,8 +40,6 @@ module Api =
             let logger = ctx.GetService<ILoggerFactory>().CreateLogger()
             logger.LogInformation($"Request remote IP: {ctx.Connection.RemoteIpAddress}:{ctx.Connection.RemotePort}")
             next ctx
-
-
 
 
 module ApiStartup =

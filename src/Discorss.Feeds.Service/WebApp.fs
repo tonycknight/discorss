@@ -16,7 +16,6 @@ module WebApp =
         subRouteCi
             path
             (Api.logClient
-             >=> Api.isAuthorised sp
              >=> choose
                      [ GET
                        >=> choose
