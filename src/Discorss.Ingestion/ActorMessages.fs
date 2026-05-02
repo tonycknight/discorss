@@ -16,8 +16,8 @@ type ActorMessage =
     | IngestFeed of url: string
     | IngestFeeds
     | FeedEntry of entry: Discorss.Feeds.FeedEntry
-    | Documents of docs: Discorss.Indexing.Document[]
-    | IndexDoc of doc: Discorss.Indexing.Document
+    | Document of docs: Discorss.Documents.Document
+    | IndexDocument of doc: Discorss.Documents.Document
     | GetActorStats of rc: AsyncReplyChannel<ActorStats>
     | ActorStats of stats: ActorStats
     | PollQueue of queueName: string

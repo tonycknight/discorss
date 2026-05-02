@@ -1,6 +1,7 @@
 ﻿namespace Discorss.Indexing.Tests.Unit
 
 open System
+open Discorss.Documents
 open Discorss.Indexing
 open FsCheck
 open FsUnit.Xunit

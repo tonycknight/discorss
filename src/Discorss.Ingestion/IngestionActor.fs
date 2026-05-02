@@ -32,8 +32,8 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
             | ActorMessage.RemoveFeed _
             | ActorMessage.IngestFeed _ -> msg |> Actor.post feedActor
             | ActorMessage.Feeds _ -> ignore 0
-            | ActorMessage.Documents _
-            | ActorMessage.IndexDoc _ -> ignore 0 // TODO:
+            | ActorMessage.Document _
+            | ActorMessage.IndexDocument _ -> ignore 0 // TODO:
             | ActorMessage.FeedEntry e ->
                 log.LogTrace $"Received feedentry {e.title}..."
                 ignore 0 // TODO: forward to...?

@@ -53,6 +53,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ingestion", "ingestion", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{F2B2C62A-10E5-490A-9709-D98993A5D0B1}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Discorss.Documents", "src\Discorss.Documents\Discorss.Documents.fsproj", "{D4F62768-1B19-29C5-3747-3BF242977670}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +117,10 @@ Global
 		{3117D749-A1B3-414C-AF83-9BDD2A614766}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3117D749-A1B3-414C-AF83-9BDD2A614766}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3117D749-A1B3-414C-AF83-9BDD2A614766}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4F62768-1B19-29C5-3747-3BF242977670}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4F62768-1B19-29C5-3747-3BF242977670}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4F62768-1B19-29C5-3747-3BF242977670}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4F62768-1B19-29C5-3747-3BF242977670}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -138,6 +144,7 @@ Global
 		{E17A4C2E-6484-41F6-93B5-A46D31018F26} = {655744F9-3113-4139-9808-F02C0BF9AD7C}
 		{7362D428-3A7A-47C9-8505-5C35CC1B4FF0} = {655744F9-3113-4139-9808-F02C0BF9AD7C}
 		{F2B2C62A-10E5-490A-9709-D98993A5D0B1} = {655744F9-3113-4139-9808-F02C0BF9AD7C}
+		{D4F62768-1B19-29C5-3747-3BF242977670} = {BF21E92C-B13A-41FD-982A-FD411162D32D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {885B064D-58C3-4A8F-9235-9D51F72CD0D6}

@@ -2,7 +2,7 @@
 
 open System
 open Discorss
-open Discorss.Indexing
+open Discorss.Documents
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
