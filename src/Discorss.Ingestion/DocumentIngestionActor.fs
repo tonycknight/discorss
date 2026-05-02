@@ -3,13 +3,27 @@ namespace Discorss.Ingestion
 open System.Diagnostics.CodeAnalysis
 open Discorss
 open Microbroker.Client
+open Microsoft.Extensions.Caching.Memory
 open Microsoft.Extensions.Logging
 
 [<ExcludeFromCodeCoverage>]
-type DocumentIngestionActor(logFactory: ILoggerFactory, docRepo: Documents.IDocumentRepository, broker: IMicrobrokerProxy) as self =
+type DocumentIngestionActor(logFactory: ILoggerFactory, cache: IMemoryCache, docRepo: Documents.IDocumentRepository, broker: IMicrobrokerProxy) as self =
 
     let log = logFactory.CreateLogger<DocumentIngestionActor>()
+        
+    let cacheKey (document: Documents.Document) =
+        $"{document.GetType().Name}:{document.uri}"
 
+    let setCachedDocHash document =
+        let key = cacheKey document
+        let options = Caching.cacheOptions () |> Caching.expiry (System.TimeSpan.FromMinutes 5.) // TODO: 
+        cache.Set(key, document.sha512, options) |> ignore
+
+    let hasCacheDelta document = 
+        match cacheKey document |> cache.TryGetValue with
+        | true, x -> (x :?> string) <> document.sha512
+        | _ -> true
+        
     let writeDocument (document: Documents.Document) =
         task {
             try
@@ -25,23 +39,23 @@ type DocumentIngestionActor(logFactory: ILoggerFactory, docRepo: Documents.IDocu
                 return None
         }
             
-    let forwardDocument (document: Documents.Document option) = 
+    let forwardDocument (document: Documents.Document) = 
         task {
-            match document with
-            | Some document -> 
-                let message = ActorMessage.Document document |> Queues.Messages.toQueueMessage
+            let message = ActorMessage.Document document |> Queues.Messages.toQueueMessage
                 
-                do! broker.PostAsync (Queues.QueueNames.documents, message)
-            | _ -> ignore 0
+            do! broker.PostAsync (Queues.QueueNames.documents, message)
         }
 
     let rec loop (inbox: MailboxProcessor<ActorMessage>) =
         task {
             match! inbox.Receive() with
             | ActorMessage.Document d -> 
-                // TODO: check for deltas to the doc - skip if no change
-                let! d = writeDocument d
-                do! forwardDocument d
+                if hasCacheDelta d then
+                    match! writeDocument d with
+                    | Some d -> 
+                        do! forwardDocument d
+                        setCachedDocHash d
+                    | _ -> ignore 0
                 
             | ActorMessage.GetActorStats rc -> inbox |> Actor.getStats (self.GetType().Name) |> rc.Reply
             | _ -> ignore 0

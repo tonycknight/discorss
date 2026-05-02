@@ -71,8 +71,10 @@ module ApiStartup =
 
     let addWebFramework (services: IServiceCollection) = services.AddGiraffe()
 
+    let addCaching (services: IServiceCollection) = services.AddMemoryCache()
+
     let addApi<'a when 'a :> IServiceCollection> =
-        addApiLogging >> addApiConfig >> addApiHttp >> addWebFramework >> addMicrobroker
+        addApiLogging >> addApiConfig >> addApiHttp >> addWebFramework >> addMicrobroker >> addCaching
 
     let configureAppConfig (whbc: IConfigurationBuilder) =
         whbc.AddJsonFile("appsettings.json", false, true).AddEnvironmentVariables("Discorss_")
