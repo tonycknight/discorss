@@ -9,22 +9,25 @@ open Microbroker.Client
 open Microsoft.Extensions.Logging
 
 [<ExcludeFromCodeCoverage>]
-type FeedIngestionActor(logFactory: ILoggerFactory, feedRepo: IFeedRepository, feedProvider: IFeedProvider, broker: IMicrobrokerProxy) as self =
+type FeedIngestionActor
+    (logFactory: ILoggerFactory, feedRepo: IFeedRepository, feedProvider: IFeedProvider, broker: IMicrobrokerProxy) as self
+    =
     let log = logFactory.CreateLogger<FeedIngestionActor>()
-        
+
     let getFeedInfo uri = feedRepo.GetFeedInfoAsync uri
 
     let getFeed feed =
         task {
             let! r = feedProvider.GetFeedAsync feed.uri
+
             return!
                 match r with
-                | FeedReadResult.Feed fr -> 
+                | FeedReadResult.Feed fr ->
                     task {
                         do! feedRepo.SetFeedLastUpdateAsync feed
                         return Some fr
                     }
-                | FeedReadResult.Error msg -> 
+                | FeedReadResult.Error msg ->
                     task {
                         log.LogError msg
                         return None
@@ -35,43 +38,43 @@ type FeedIngestionActor(logFactory: ILoggerFactory, feedRepo: IFeedRepository, f
                         return None
                     }
         }
-    
+
     let forwardEntries (feedEntries: FeedEntry list) =
-        task {            
-            let msgs = feedEntries |> Seq.map (ActorMessage.FeedEntry >> Messages.toQueueMessage)
-                
-            do! broker.PostManyAsync (QueueNames.feedEntries, msgs)
+        task {
+            let msgs =
+                feedEntries |> Seq.map (ActorMessage.FeedEntry >> Messages.toQueueMessage)
+
+            do! broker.PostManyAsync(QueueNames.feedEntries, msgs)
         }
-        
+
     let ingestFeed uri =
         task {
             try
                 log.LogTrace $"Starting feed ingestion for {uri}..."
+
                 match! getFeedInfo uri with
-                | Some feedInfo -> 
+                | Some feedInfo ->
                     let! feed = getFeed feedInfo
 
-                    let feedEntries = feed |> Option.map _.entries |> Option.defaultValue [] 
-                
+                    let feedEntries = feed |> Option.map _.entries |> Option.defaultValue []
+
                     do! forwardEntries feedEntries
 
                     log.LogTrace $"Completed feed ingestion for {uri}."
-                | None -> 
-                    log.LogWarning $"Cannot find feed for {uri}"
-            with
-            | ex ->
-                log.LogError (ex, $"Error ingesting feed {uri}")
+                | None -> log.LogWarning $"Cannot find feed for {uri}"
+            with ex ->
+                log.LogError(ex, $"Error ingesting feed {uri}")
         }
 
     let startIngestion () =
         task {
             log.LogTrace "Starting feed ingestion..."
-            let! feeds = feedRepo.GetFeedInfosAsync()                
-            
-            let xs = 
-                feeds 
+            let! feeds = feedRepo.GetFeedInfosAsync()
+
+            let xs =
+                feeds
                 |> Array.map (fun f -> f.uri |> ActorMessage.IngestFeed |> (Actor.post self))
-            
+
             log.LogTrace $"Initiated {xs.Length} feed ingestions."
         }
 
@@ -83,7 +86,7 @@ type FeedIngestionActor(logFactory: ILoggerFactory, feedRepo: IFeedRepository, f
             | ActorMessage.IngestFeeds -> do! startIngestion ()
             | ActorMessage.IngestFeed uri -> do! ingestFeed uri
             | ActorMessage.AddFeed uri -> uri |> ActorMessage.IngestFeed |> inbox.Post
-            | ActorMessage.RemoveFeed uri -> ignore 0 // TODO: 
+            | ActorMessage.RemoveFeed uri -> ignore 0 // TODO:
             | ActorMessage.GetActorStats rc -> inbox |> Actor.getStats (self.GetType().Name) |> rc.Reply
             | m -> ignore m // TODO: parent.Post m
 

@@ -17,6 +17,8 @@ module DocumentAnalyserTests =
               author = ""
               title = ""
               description = ""
+              publication = DateTimeOffset.UtcNow
+              categories = [||]
               content = "" }
 
         let words = analyser.Words(doc) |> Array.ofSeq
@@ -35,6 +37,8 @@ module DocumentAnalyserTests =
               author = expected.[1]
               title = expected.[0]
               description = expected.[2]
+              publication = DateTimeOffset.UtcNow
+              categories = [||]
               content = expected.[3] }
 
         let words = analyser.Words(doc) |> Array.ofSeq
@@ -52,6 +56,8 @@ module DocumentAnalyserTests =
               author = ""
               title = ""
               description = ""
+              publication = DateTimeOffset.UtcNow
+              categories = [||]
               content = "" }
 
         let stats = analyser.Statistics(doc)
@@ -71,6 +77,8 @@ module DocumentAnalyserTests =
               author = words.[0]
               title = words.[0]
               description = words.[0]
+              publication = DateTimeOffset.UtcNow
+              categories = [||]
               content = words.[0] }
 
         let stats = analyser.Statistics(doc)

@@ -20,8 +20,10 @@ module WebAppHandlers =
                     let words =
                         { Document.uri = req.uri
                           title = req.title
+                          publication = req.publication
                           description = req.description
                           content = req.content
+                          categories = req.categories
                           author = req.author }
                         |> da.Words
 
@@ -39,6 +41,8 @@ module WebAppHandlers =
 
                     let doc =
                         { Document.uri = req.uri
+                          publication = req.publication
+                          categories = req.categories
                           title = req.title
                           description = req.description
                           content = req.content
@@ -58,8 +62,10 @@ module WebAppHandlers =
                     let doc =
                         { Document.uri = req.uri
                           title = req.title
+                          publication = req.publication
                           description = req.description
                           content = req.content
+                          categories = req.categories
                           author = req.author }
 
                     let stats = doc |> sp.GetRequiredService<Indexing.IDocumentAnalyser>().Statistics

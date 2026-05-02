@@ -8,14 +8,14 @@ open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 
 type ServiceStartup(logFactory: ILoggerFactory, ingestionActor: IngestionActor, queueMonitorActor: QueueMonitorActor) =
-    
+
     inherit BackgroundService()
 
     let log = logFactory.CreateLogger<ServiceStartup>()
 
     override this.ExecuteAsync(cancellationToken: CancellationToken) : Task =
         task {
-            
+
             log.LogTrace $"Starting ingestion..."
 
             ActorMessage.Start |> Actor.post ingestionActor

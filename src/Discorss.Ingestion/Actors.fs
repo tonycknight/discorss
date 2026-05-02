@@ -3,13 +3,12 @@
 type IActor =
     abstract member Post: ActorMessage -> unit
     abstract member ReplyAsync: ActorMessage -> Async<ActorMessage>
-    abstract member GetStats: unit -> Async<ActorStats>    
+    abstract member GetStats: unit -> Async<ActorStats>
 
 module Actor =
     open System
 
-    let post<'a> actor message =
-        (actor :> IActor).Post message
+    let post<'a> actor message = (actor :> IActor).Post message
 
     let getStats name (mailbox: MailboxProcessor<ActorMessage>) =
         { ActorStats.name = name
@@ -32,16 +31,17 @@ module Actor =
 
             return
                 match msg with
-                | Some m -> m |> Discorss.Queues.Messages.fromQueueMessage<ActorMessage> 
+                | Some m -> m |> Discorss.Queues.Messages.fromQueueMessage<ActorMessage>
                 | None -> None
         }
 
-    let rec pollEntryQueue (broker: Microbroker.Client.IMicrobrokerProxy) queueName (post: ActorMessage -> unit)= 
+    let rec pollEntryQueue (broker: Microbroker.Client.IMicrobrokerProxy) queueName (post: ActorMessage -> unit) =
         task {
             let! msg = pullActorMessage broker queueName
+
             match msg with
             | None -> ignore 0
             | Some msg ->
-                post msg 
+                post msg
                 return! pollEntryQueue broker queueName post
         }

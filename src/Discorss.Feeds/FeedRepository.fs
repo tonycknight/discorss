@@ -38,13 +38,14 @@ type StubFeedRepository(feedUris) =
         )
 
     interface IFeedRepository with
-        member this.GetFeedInfoAsync (uri) =
+        member this.GetFeedInfoAsync(uri) =
             task {
                 let (ok, feed) = feedCache.TryGetValue(uri)
                 return if ok then Some feed else None
             }
 
-        member this.GetFeedInfosAsync() = task { return feedCache.Values |> Seq.toArray }
+        member this.GetFeedInfosAsync() =
+            task { return feedCache.Values |> Seq.toArray }
 
         member this.SetFeedInfoAsync(feed: FeedInfo) =
             task {
@@ -52,12 +53,15 @@ type StubFeedRepository(feedUris) =
                     { feed with
                         updated = DateTimeOffset.UtcNow }
             }
+
         member this.SetFeedLastUpdateAsync(feed: FeedInfo) =
             task {
                 let (ok, feed2) = feedCache.TryGetValue(feed.uri)
                 let feed = if ok then feed2 else feed
-                
-                let feed = { feed with updated = DateTimeOffset.UtcNow }
+
+                let feed =
+                    { feed with
+                        updated = DateTimeOffset.UtcNow }
 
                 feedCache.[feed.uri] <- feed
             }

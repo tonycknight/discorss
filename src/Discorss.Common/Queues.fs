@@ -4,7 +4,7 @@ open System
 open Microbroker.Client
 
 module QueueNames =
-    
+
     [<Literal>]
     let feedEntries = "discorss_feedentries"
 

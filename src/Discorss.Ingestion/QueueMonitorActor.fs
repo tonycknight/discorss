@@ -7,26 +7,24 @@ open Microsoft.Extensions.Logging
 
 [<ExcludeFromCodeCoverage>]
 type QueueMonitorActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, ingestionActor: IngestionActor) as self =
-    
+
     let log = logFactory.CreateLogger<QueueMonitorActor>()
 
-    let timers = 
+    let timers =
         ingestionActor.QueueNames
-        |> List.map (fun queueName -> fun args -> queueName |> ActorMessage.PollQueue |> Actor.post self) 
-        |> List.map (Actor.createTimer (TimeSpan.FromSeconds 5.) )
+        |> List.map (fun queueName -> fun args -> queueName |> ActorMessage.PollQueue |> Actor.post self)
+        |> List.map (Actor.createTimer (TimeSpan.FromSeconds 5.))
 
     let rec loop (inbox: MailboxProcessor<ActorMessage>) =
         task {
             let! msg = inbox.Receive()
 
             match msg with
-            | ActorMessage.PollQueue queueName -> 
+            | ActorMessage.PollQueue queueName ->
                 log.LogTrace $"Polling queue {queueName}..."
                 do! Actor.pollEntryQueue broker queueName (Actor.post ingestionActor)
-            | ActorMessage.Start ->
-                do timers |> List.iter (fun t -> t.Enabled <- true)
-            | ActorMessage.Stop ->
-                do timers |> List.iter (fun t -> t.Enabled <- false)
+            | ActorMessage.Start -> do timers |> List.iter (fun t -> t.Enabled <- true)
+            | ActorMessage.Stop -> do timers |> List.iter (fun t -> t.Enabled <- false)
             | _ -> ignore msg
 
             return! loop inbox

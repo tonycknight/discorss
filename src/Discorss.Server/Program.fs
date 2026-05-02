@@ -11,8 +11,7 @@ open Giraffe
 type Startup() =
 
     let backgroundServices (services: IServiceCollection) =
-        services
-            .AddHostedService<ServiceStartup>()
+        services.AddHostedService<ServiceStartup>()
 
     let serviceCollection =
         Discorss.Feeds.Service.WebApp.services
@@ -49,9 +48,9 @@ module Program =
                 whb
                     .UseStartup<Startup>()
                     .UseUrls($"http://*:{ApiPorts.servicePort}")
-                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig)                    
+                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig)
                 |> ignore)
             .Build()
             .Run()
-        
+
         0
