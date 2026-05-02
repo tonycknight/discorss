@@ -44,9 +44,9 @@ module Program =
                 whb
                     .UseStartup<Startup>()
                     .UseUrls($"http://*:{ApiPorts.servicePort}")
-                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig)
+                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig)                    
                 |> ignore)
             .Build()
             .Run()
-
+        
         0
