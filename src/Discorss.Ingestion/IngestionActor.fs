@@ -12,21 +12,11 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
     
     let log = logFactory.CreateLogger<IngestionActor>()
     let cancellation = new System.Threading.CancellationTokenSource()
-    
-    let postIngest args = ActorMessage.IngestFeeds |> Actor.post self
-    let rec pollEntryQueue () = 
-        task {
-            let! msg = Actor.pullActorMessage broker QueueNames.feedEntries
-            match msg with
-            | None -> ignore 0
-            | Some msg ->
-                msg |> (Actor.post self)
-                return! pollEntryQueue ()
-        }
-
-    let postIngestTimer = postIngest |> Actor.createTimer (TimeSpan.FromSeconds 15.) 
-    let postPollTimer = (fun args -> ActorMessage.PollQueue |> Actor.post self)
-                        |> Actor.createTimer (TimeSpan.FromSeconds 5.)
+        
+    let postIngestTimer = (fun args -> ActorMessage.IngestFeeds |> Actor.post self) 
+                            |> Actor.createTimer (TimeSpan.FromSeconds 15.) 
+    let postPollTimer = (fun args -> ActorMessage.PollQueue QueueNames.feedEntries |> Actor.post self)
+                            |> Actor.createTimer (TimeSpan.FromSeconds 5.)
 
     let getStats inbox = Actor.getStats (self.GetType().Name) inbox
 
@@ -35,9 +25,9 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
             let! msg = inbox.Receive()
 
             match msg with
-            | ActorMessage.PollQueue ->
-                log.LogTrace $"Polling queue {QueueNames.feedEntries}..."
-                do! pollEntryQueue ()
+            | ActorMessage.PollQueue queueName -> // TODO: should be on a different thread/actor as polling blocks this
+                log.LogTrace $"Polling queue {queueName}..."
+                do! Actor.pollEntryQueue broker queueName (Actor.post self)
             | ActorMessage.Start ->
                 do postIngestTimer.Enabled <- true
                 do postPollTimer.Enabled <-  true

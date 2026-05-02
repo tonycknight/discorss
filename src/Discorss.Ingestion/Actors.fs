@@ -35,3 +35,13 @@ module Actor =
                 | Some m -> m |> Discorss.Queues.Messages.fromQueueMessage<ActorMessage> 
                 | None -> None
         }
+
+    let rec pollEntryQueue (broker: Microbroker.Client.IMicrobrokerProxy) queueName (post: ActorMessage -> unit)= 
+        task {
+            let! msg = pullActorMessage broker queueName
+            match msg with
+            | None -> ignore 0
+            | Some msg ->
+                post msg 
+                return! pollEntryQueue broker queueName post
+        }
