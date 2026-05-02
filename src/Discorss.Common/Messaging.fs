@@ -18,5 +18,3 @@ type QueueMessage =
           content = null
           created = DateTimeOffset.UtcNow
           ttl = None }
-
-

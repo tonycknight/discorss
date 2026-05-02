@@ -57,18 +57,18 @@ module ApiStartup =
             .AddHttpClient()
             .AddSingleton<IInternalHttpClient, InternalHttpClient>()
             .AddSingleton<IExternalHttpClient, ExternalHttpClient>()
-            
-    let addMicrobroker (services: IServiceCollection) = 
+
+    let addMicrobroker (services: IServiceCollection) =
         let config (sp: System.IServiceProvider) =
             let appConfig = sp.GetRequiredService<AppConfiguration>()
             let throttle = System.TimeSpan.FromSeconds 5.
 
             { MicrobrokerConfiguration.brokerBaseUrl = appConfig.messageBrokerServiceUrl
               throttleMaxTime = throttle }
-        
+
         DependencyInjection.addServices services
-        |> DependencyInjection.addConfiguration config 
-        
+        |> DependencyInjection.addConfiguration config
+
     let addWebFramework (services: IServiceCollection) = services.AddGiraffe()
 
     let addApi<'a when 'a :> IServiceCollection> =

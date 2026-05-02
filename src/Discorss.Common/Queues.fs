@@ -3,6 +3,29 @@
 open System
 open System.Threading.Tasks
 open Discorss.Messaging
+open Microbroker.Client
+
+module QueueNames =
+    
+    [<Literal>]
+    let feedEntries = "discorss_feedentries"
+
+    [<Literal>]
+    let feedIngest = "discorss_feedingest"
+
+module Messages =
+    let toQueueMessage (value: 'a) =
+        { MicrobrokerMessage.messageType = value.GetType().AssemblyQualifiedName
+          content = System.Text.Json.JsonSerializer.Serialize value
+          created = DateTimeOffset.UtcNow
+          active = DateTimeOffset.UtcNow
+          expiry = DateTimeOffset.MaxValue }
+
+    let fromQueueMessage<'a> (msg: MicrobrokerMessage) =
+        if msg.messageType = typeof<'a>.AssemblyQualifiedName then
+            msg.content |> System.Text.Json.JsonSerializer.Deserialize<'a> |> Some
+        else
+            None
 
 type QueueInfo = { name: string; count: int }
 

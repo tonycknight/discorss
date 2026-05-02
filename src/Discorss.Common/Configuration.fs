@@ -3,7 +3,7 @@
 module ApiPorts =
 
     [<Literal>]
-    let servicePort = 63529
+    let servicePort = 8081
 
 [<CLIMutable>]
 type AppConfiguration =

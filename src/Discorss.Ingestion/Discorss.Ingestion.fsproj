@@ -8,7 +8,7 @@
   <ItemGroup>
     <Compile Include="ActorMessages.fs" />
     <Compile Include="Actors.fs" />
-    <Compile Include="FeedActor.fs" />
+    <Compile Include="FeedIngestionActor.fs" />
     <Compile Include="IngestionActor.fs" />
   </ItemGroup>
 

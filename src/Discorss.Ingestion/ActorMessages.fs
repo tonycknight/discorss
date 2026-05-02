@@ -13,9 +13,9 @@ type ActorMessage =
     | Feeds of urls: Discorss.Feeds.FeedInfo[]
     | AddFeed of url: string
     | RemoveFeed of url: string
-    | FetchFeed of url: string
+    | IngestFeed of url: string
     | IngestFeeds
-    // TODO: | IngestFeed
+    | FeedEntry of entry: Discorss.Feeds.FeedEntry
     | Documents of docs: Discorss.Indexing.Document[]
     | IndexDoc of doc: Discorss.Indexing.Document
     | GetActorStats of rc: AsyncReplyChannel<ActorStats>
