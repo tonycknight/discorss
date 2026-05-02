@@ -30,3 +30,15 @@ module StringsTests =
         let result = value |> Strings.upper
 
         value.ToUpper() |> should equal result
+
+    [<Property(Verbose = true)>]
+    let ``sha256 is idempotent`` (NonEmptyString value) =
+        Strings.sha256 value = Strings.sha256 value
+
+    [<Property(Verbose = true)>]
+    let ``sha256 produces non-empty string`` (NonEmptyString value) =
+        Strings.sha256 value |> String.IsNullOrWhiteSpace |> not
+
+    [<Property(Verbose = true)>]
+    let ``sha256 produces base64 string`` (NonEmptyString value) =
+        Strings.sha256 value |> System.Convert.FromBase64String |> (<>) Array.empty
