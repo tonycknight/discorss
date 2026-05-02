@@ -13,7 +13,7 @@ type Startup() =
     let serviceCollection =
         Discorss.Feeds.Service.WebApp.services
         >> Discorss.Indexing.Service.WebApp.services
-        >> Discorss.Ingestion.Service.WebApp.services
+        >> Discorss.Ingestion.Bootstrap.services
 
     let routes (app: IApplicationBuilder) =
         subRouteCi

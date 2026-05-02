@@ -10,6 +10,7 @@
     <Compile Include="Actors.fs" />
     <Compile Include="FeedIngestionActor.fs" />
     <Compile Include="IngestionActor.fs" />
+    <Compile Include="Bootstrap.fs" />
   </ItemGroup>
 
   <ItemGroup>

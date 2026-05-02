@@ -1,15 +1,9 @@
 ﻿namespace Discorss.Ingestion.Service
 
 open System
-open Discorss
 open Giraffe
-open Microsoft.Extensions.DependencyInjection
 
 module WebApp =
-    let services (services: IServiceCollection) =
-        services
-            .AddSingleton<Ingestion.IngestionActor>()
-            .AddSingleton<Ingestion.FeedIngestionActor>()
 
     let webApp path (sp: IServiceProvider) =
 
