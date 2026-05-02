@@ -20,3 +20,4 @@ type ActorMessage =
     | IndexDoc of doc: Discorss.Indexing.Document
     | GetActorStats of rc: AsyncReplyChannel<ActorStats>
     | ActorStats of stats: ActorStats
+    | PollQueue

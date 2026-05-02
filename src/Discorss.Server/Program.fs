@@ -11,7 +11,8 @@ open Giraffe
 type Startup() =
 
     let backgroundServices (services: IServiceCollection) =
-        services.AddHostedService<ServiceStartup>()
+        services
+            .AddHostedService<ServiceStartup>()
 
     let serviceCollection =
         Discorss.Feeds.Service.WebApp.services

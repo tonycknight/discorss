@@ -10,9 +10,6 @@ module QueueNames =
     [<Literal>]
     let feedEntries = "discorss_feedentries"
 
-    [<Literal>]
-    let feedIngest = "discorss_feedingest"
-
 module Messages =
     let toQueueMessage (value: 'a) =
         { MicrobrokerMessage.messageType = value.GetType().AssemblyQualifiedName
@@ -22,11 +19,13 @@ module Messages =
           expiry = DateTimeOffset.MaxValue }
 
     let fromQueueMessage<'a> (msg: MicrobrokerMessage) =
-        if msg.messageType = typeof<'a>.AssemblyQualifiedName then
+        try
             msg.content |> Newtonsoft.Json.JsonConvert.DeserializeObject<'a> |> Some
-        else
-            None
+        with
+        | :? Newtonsoft.Json.JsonReaderException as ex -> None
+        | :? Newtonsoft.Json.JsonSerializationException as ex -> None
 
+// TODO: obsolete
 type QueueInfo = { name: string; count: int }
 
 type IQueue =
@@ -55,3 +54,4 @@ type MemoryQueue(name: string) =
             }
 
         member this.PushAsync message = task { queue.Enqueue message }
+

@@ -26,13 +26,12 @@ module Actor =
         result.AutoReset <- true
         result
 
-    let pullMessage (broker: Microbroker.Client.IMicrobrokerProxy) queueName =
+    let pullActorMessage (broker: Microbroker.Client.IMicrobrokerProxy) queueName =
         task {
             let! msg = broker.GetNextAsync queueName
 
             return
                 match msg with
-                | Some m -> 
-                    m |> Discorss.Queues.Messages.fromQueueMessage<ActorMessage> 
+                | Some m -> m |> Discorss.Queues.Messages.fromQueueMessage<ActorMessage> 
                 | None -> None
         }

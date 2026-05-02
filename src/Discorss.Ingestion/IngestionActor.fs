@@ -13,57 +13,61 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
     let log = logFactory.CreateLogger<IngestionActor>()
     let cancellation = new System.Threading.CancellationTokenSource()
     
-    let postIngest args =
-        ActorMessage.IngestFeeds |> Actor.post self
-
-    let pollMicrobroker queueName  =
+    let postIngest args = ActorMessage.IngestFeeds |> Actor.post self
+    let rec pollEntryQueue () = 
         task {
-            while (not cancellation.IsCancellationRequested) do
-                let! m = broker.GetNextAsync queueName
-
-                match m |> Option.bind Messages.fromQueueMessage<ActorMessage> with
-                | None -> ignore m
-                | Some m -> m |> Actor.post self            
+            let! msg = Actor.pullActorMessage broker QueueNames.feedEntries
+            match msg with
+            | None -> ignore 0
+            | Some msg ->
+                msg |> (Actor.post self)
+                return! pollEntryQueue ()
         }
 
-    let postIngestTimer = postIngest |> Actor.createTimer (TimeSpan.FromMinutes 1.) 
-    
+    let postIngestTimer = postIngest |> Actor.createTimer (TimeSpan.FromSeconds 15.) 
+    let postPollTimer = (fun args -> ActorMessage.PollQueue |> Actor.post self)
+                        |> Actor.createTimer (TimeSpan.FromSeconds 5.)
+
     let getStats inbox = Actor.getStats (self.GetType().Name) inbox
 
+    let rec loop (inbox: MailboxProcessor<ActorMessage>) =
+        task {
+            let! msg = inbox.Receive()
+
+            match msg with
+            | ActorMessage.PollQueue ->
+                log.LogTrace $"Polling queue {QueueNames.feedEntries}..."
+                do! pollEntryQueue ()
+            | ActorMessage.Start ->
+                do postIngestTimer.Enabled <- true
+                do postPollTimer.Enabled <-  true
+            | ActorMessage.Stop ->
+                do postIngestTimer.Enabled <- false
+                do postPollTimer.Enabled <- false
+                do cancellation.Cancel()                        
+            | ActorMessage.IngestFeeds
+            | ActorMessage.AddFeed _
+            | ActorMessage.RemoveFeed _
+            | ActorMessage.IngestFeed _ ->
+                msg |> Actor.post feedActor
+            | ActorMessage.Feeds _ -> ignore 0
+            | ActorMessage.Documents _
+            | ActorMessage.IndexDoc _ -> 
+                ignore 0 // TODO:
+            | ActorMessage.FeedEntry e ->                
+                log.LogTrace $"Received feedentry {e.title}..."
+                ignore 0 // TODO: forward to...?
+
+            | ActorMessage.GetActorStats rc -> 
+                inbox |> getStats |> rc.Reply // TODO: ewww
+            // TODO: need to pull messages from microbroker queues
+            | m -> ignore 0
+
+            return! loop inbox
+        }
+
     let actor =
-        MailboxProcessor<ActorMessage>.Start(fun inbox ->
-            let rec loop () =
-                async {
-                    let! msg = inbox.Receive()
-
-                    match msg with                    
-                    | ActorMessage.Start ->
-                        do postIngestTimer.Enabled <- true
-                    | ActorMessage.Stop ->
-                        do postIngestTimer.Enabled <- false
-                        do cancellation.Cancel()                        
-                    | ActorMessage.IngestFeeds
-                    | ActorMessage.AddFeed _
-                    | ActorMessage.RemoveFeed _
-                    | ActorMessage.IngestFeed _ ->
-                        msg |> Actor.post feedActor
-                    | ActorMessage.Feeds _ -> ignore 0
-                    | ActorMessage.Documents _
-                    | ActorMessage.IndexDoc _ -> 
-                        ignore 0 // TODO:
-                    | ActorMessage.FeedEntry e ->
-                        // do! broker.PostAsync (QueueNames.feedEntries, (e |> Messages.toQueueMessage))
-                        ignore 0 // TODO: forward to...?
-
-                    | ActorMessage.GetActorStats rc -> 
-                        inbox |> getStats |> rc.Reply // TODO: ewww
-                    // TODO: need to pull messages from microbroker queues
-                    | m -> ignore 0
-
-                    return! loop ()
-                }
-
-            loop ())
+        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
 
     interface IActor with
         member this.GetStats() =
