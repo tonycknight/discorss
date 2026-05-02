@@ -38,7 +38,7 @@ type FeedIngestionActor(logFactory: ILoggerFactory, feedRepo: IFeedRepository, f
     
     let forwardEntries (feedEntries: FeedEntry list) =
         task {            
-            let msgs = feedEntries |> List.map (ActorMessage.FeedEntry >> Messages.toQueueMessage)
+            let msgs = feedEntries |> Seq.map (ActorMessage.FeedEntry >> Messages.toQueueMessage)
                 
             do! broker.PostManyAsync (QueueNames.feedEntries, msgs)
         }
@@ -46,6 +46,7 @@ type FeedIngestionActor(logFactory: ILoggerFactory, feedRepo: IFeedRepository, f
     let ingestFeed uri =
         task {
             try
+                log.LogTrace $"Starting feed ingestion for {uri}..."
                 match! getFeedInfo uri with
                 | Some feedInfo -> 
                     let! feed = getFeed feedInfo
@@ -53,6 +54,8 @@ type FeedIngestionActor(logFactory: ILoggerFactory, feedRepo: IFeedRepository, f
                     let feedEntries = feed |> Option.map _.entries |> Option.defaultValue [] 
                 
                     do! forwardEntries feedEntries
+
+                    log.LogTrace $"Completed feed ingestion for {uri}."
                 | None -> 
                     log.LogWarning $"Cannot find feed for {uri}"
             with
@@ -62,10 +65,14 @@ type FeedIngestionActor(logFactory: ILoggerFactory, feedRepo: IFeedRepository, f
 
     let startIngestion () =
         task {
+            log.LogTrace "Starting feed ingestion..."
             let! feeds = feedRepo.GetFeedInfosAsync()                
-            feeds 
-            |> Array.map (fun f -> f.uri |> ActorMessage.IngestFeed |> (Actor.post self))
-            |> ignore
+            
+            let xs = 
+                feeds 
+                |> Array.map (fun f -> f.uri |> ActorMessage.IngestFeed |> (Actor.post self))
+            
+            log.LogTrace $"Initiated {xs.Length} feed ingestions."
         }
 
     let rec loop (inbox: MailboxProcessor<ActorMessage>) =

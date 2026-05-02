@@ -14,7 +14,7 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
     let cancellation = new System.Threading.CancellationTokenSource()
     
     let postIngest args =
-        ActorMessage.IngestFeeds |> Actor.post self        
+        ActorMessage.IngestFeeds |> Actor.post self
 
     let pollMicrobroker queueName  =
         task {

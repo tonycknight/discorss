@@ -16,14 +16,14 @@ module QueueNames =
 module Messages =
     let toQueueMessage (value: 'a) =
         { MicrobrokerMessage.messageType = value.GetType().AssemblyQualifiedName
-          content = System.Text.Json.JsonSerializer.Serialize value
+          content = Newtonsoft.Json.JsonConvert.SerializeObject value
           created = DateTimeOffset.UtcNow
           active = DateTimeOffset.UtcNow
           expiry = DateTimeOffset.MaxValue }
 
     let fromQueueMessage<'a> (msg: MicrobrokerMessage) =
         if msg.messageType = typeof<'a>.AssemblyQualifiedName then
-            msg.content |> System.Text.Json.JsonSerializer.Deserialize<'a> |> Some
+            msg.content |> Newtonsoft.Json.JsonConvert.DeserializeObject<'a> |> Some
         else
             None
 
