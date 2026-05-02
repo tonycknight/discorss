@@ -7,7 +7,7 @@ open Microsoft.Extensions.Caching.Memory
 open Microsoft.Extensions.Logging
 
 [<ExcludeFromCodeCoverage>]
-type DocumentIngestionActor(logFactory: ILoggerFactory, cache: IMemoryCache, docRepo: Documents.IDocumentRepository, broker: IMicrobrokerProxy) as self =
+type DocumentIngestionActor(logFactory: ILoggerFactory, config: AppConfiguration, cache: IMemoryCache, docRepo: Documents.IDocumentRepository, broker: IMicrobrokerProxy) as self =
 
     let log = logFactory.CreateLogger<DocumentIngestionActor>()
         
@@ -16,7 +16,7 @@ type DocumentIngestionActor(logFactory: ILoggerFactory, cache: IMemoryCache, doc
 
     let setCachedDocHash document =
         let key = cacheKey document
-        let options = Caching.cacheOptions () |> Caching.expiry (System.TimeSpan.FromMinutes 5.) // TODO: 
+        let options = Caching.cacheOptions () |> Caching.expiry config.documentIngestionWindow
         cache.Set(key, document.sha512, options) |> ignore
 
     let hasCacheDelta document = 

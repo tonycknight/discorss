@@ -15,13 +15,13 @@ module ConfigurationTests =
 
         let c =
             { AppConfiguration.defaultConfig with
-                messageBrokerServiceUrl = value }
+                microbrokerServiceUrl = value }
 
         let dc = AppConfiguration.defaultConfig
 
         let c2 = Configuration.mergeDefaults c
 
-        c2.messageBrokerServiceUrl |> should equal dc.messageBrokerServiceUrl
+        c2.microbrokerServiceUrl |> should equal dc.microbrokerServiceUrl
         c2.secretsConnection |> should equal dc.secretsConnection
 
 
@@ -29,11 +29,11 @@ module ConfigurationTests =
     let ``mergeDefaults yields new value`` (value: NonWhiteSpaceString) =
         let c =
             { AppConfiguration.defaultConfig with
-                messageBrokerServiceUrl = value.Get }
+                microbrokerServiceUrl = value.Get }
 
         let dc = AppConfiguration.defaultConfig
 
         let c2 = Configuration.mergeDefaults c
 
-        c2.messageBrokerServiceUrl |> should equal dc.messageBrokerServiceUrl
+        c2.microbrokerServiceUrl |> should equal dc.microbrokerServiceUrl
         c2.secretsConnection |> should equal dc.secretsConnection

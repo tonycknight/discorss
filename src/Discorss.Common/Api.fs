@@ -61,10 +61,9 @@ module ApiStartup =
     let addMicrobroker (services: IServiceCollection) =
         let config (sp: System.IServiceProvider) =
             let appConfig = sp.GetRequiredService<AppConfiguration>()
-            let throttle = System.TimeSpan.FromSeconds 5.
-
-            { MicrobrokerConfiguration.brokerBaseUrl = appConfig.messageBrokerServiceUrl
-              throttleMaxTime = throttle }
+            
+            { MicrobrokerConfiguration.brokerBaseUrl = appConfig.microbrokerServiceUrl
+              throttleMaxTime = appConfig.microbrokerThrottle }
 
         DependencyInjection.addServices services
         |> DependencyInjection.addConfiguration config

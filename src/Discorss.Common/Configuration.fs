@@ -1,5 +1,7 @@
 ﻿namespace Discorss
 
+open System
+
 module ApiPorts =
 
     [<Literal>]
@@ -7,12 +9,20 @@ module ApiPorts =
 
 [<CLIMutable>]
 type AppConfiguration =
-    { messageBrokerServiceUrl: string
-      secretsConnection: string }
+    { microbrokerServiceUrl: string
+      microbrokerThrottle: TimeSpan
+      secretsConnection: string
+      documentIngestionWindow: TimeSpan 
+      queuePollFrequency: TimeSpan 
+      feedIngestionFrequency: TimeSpan }
 
     static member defaultConfig =
-        { AppConfiguration.messageBrokerServiceUrl = "http://localhost:8080"
-          secretsConnection = "" }
+        { AppConfiguration.microbrokerServiceUrl = "http://localhost:8080"
+          microbrokerThrottle = TimeSpan.FromSeconds 2.
+          secretsConnection = "" 
+          documentIngestionWindow = TimeSpan.FromMinutes 60.
+          queuePollFrequency = TimeSpan.FromSeconds 5. 
+          feedIngestionFrequency = TimeSpan.FromSeconds 15. } // TODO: 
 
 module Configuration =
     open System.Reflection

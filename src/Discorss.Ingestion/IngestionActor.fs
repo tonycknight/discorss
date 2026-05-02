@@ -2,18 +2,18 @@
 
 open System
 open System.Diagnostics.CodeAnalysis
-open Microbroker.Client
+open Discorss
 open Microsoft.Extensions.Logging
 
 [<ExcludeFromCodeCoverage>]
-type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedActor: FeedIngestionActor, docActor: DocumentIngestionActor) as self =
+type IngestionActor(logFactory: ILoggerFactory, config: AppConfiguration, feedActor: FeedIngestionActor, docActor: DocumentIngestionActor) as self =
 
     let log = logFactory.CreateLogger<IngestionActor>()
     let cancellation = new System.Threading.CancellationTokenSource()
 
     let postIngestTimer =
         (fun args -> ActorMessage.IngestFeeds |> Actor.post self)
-        |> Actor.createTimer (TimeSpan.FromSeconds 15.)
+        |> Actor.createTimer config.feedIngestionFrequency
 
     let getStats inbox =
         Actor.getStats (self.GetType().Name) inbox
@@ -36,7 +36,6 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
                 log.LogTrace $"Received document {d.uri}..."
                 ignore 0 // TODO: 
             | ActorMessage.GetActorStats rc -> inbox |> getStats |> rc.Reply
-            // TODO: need to pull messages from microbroker queues
             | _ -> ignore 0
 
             return! loop inbox

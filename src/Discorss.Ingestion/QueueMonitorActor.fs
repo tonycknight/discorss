@@ -2,18 +2,19 @@ namespace Discorss.Ingestion
 
 open System
 open System.Diagnostics.CodeAnalysis
+open Discorss
 open Microbroker.Client
 open Microsoft.Extensions.Logging
 
 [<ExcludeFromCodeCoverage>]
-type QueueMonitorActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, ingestionActor: IngestionActor) as self =
+type QueueMonitorActor(logFactory: ILoggerFactory, config: AppConfiguration, broker: IMicrobrokerProxy, ingestionActor: IngestionActor) as self =
 
     let log = logFactory.CreateLogger<QueueMonitorActor>()
 
     let timers =
         ingestionActor.QueueNames
         |> List.map (fun queueName -> fun args -> queueName |> ActorMessage.PollQueue |> Actor.post self)
-        |> List.map (Actor.createTimer (TimeSpan.FromSeconds 5.))
+        |> List.map (Actor.createTimer config.queuePollFrequency)
 
     let rec loop (inbox: MailboxProcessor<ActorMessage>) =
         task {
