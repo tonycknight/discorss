@@ -15,7 +15,6 @@
     <Compile Include="Http.fs" />
     <Compile Include="Html.fs" />
     <Compile Include="Mongo.fs" />
-    <Compile Include="Messaging.fs" />
     <Compile Include="Queues.fs" />
     <Compile Include="Api.fs" />
   </ItemGroup>

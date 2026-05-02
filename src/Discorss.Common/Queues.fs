@@ -1,8 +1,6 @@
 ﻿namespace Discorss.Queues
 
 open System
-open System.Threading.Tasks
-open Discorss.Messaging
 open Microbroker.Client
 
 module QueueNames =
