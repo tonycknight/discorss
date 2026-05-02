@@ -1,6 +1,5 @@
 namespace Discorss.Server
 
-open System
 open System.Threading
 open System.Threading.Tasks
 open Discorss
@@ -8,7 +7,7 @@ open Discorss.Ingestion
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 
-type ServiceStartup(logFactory: ILoggerFactory, config: AppConfiguration, ingestionActor: IngestionActor) =
+type ServiceStartup(logFactory: ILoggerFactory, ingestionActor: IngestionActor, queueMonitorActor: QueueMonitorActor) =
     
     inherit BackgroundService()
 
@@ -20,4 +19,5 @@ type ServiceStartup(logFactory: ILoggerFactory, config: AppConfiguration, ingest
             log.LogTrace $"Starting ingestion..."
 
             ActorMessage.Start |> Actor.post ingestionActor
+            ActorMessage.Start |> Actor.post queueMonitorActor
         }

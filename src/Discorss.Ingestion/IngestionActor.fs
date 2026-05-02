@@ -2,8 +2,6 @@
 
 open System
 open System.Diagnostics.CodeAnalysis
-open Discorss
-open Discorss.Queues
 open Microbroker.Client
 open Microsoft.Extensions.Logging
 
@@ -15,9 +13,7 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
         
     let postIngestTimer = (fun args -> ActorMessage.IngestFeeds |> Actor.post self) 
                             |> Actor.createTimer (TimeSpan.FromSeconds 15.) 
-    let postPollTimer = (fun args -> ActorMessage.PollQueue QueueNames.feedEntries |> Actor.post self)
-                            |> Actor.createTimer (TimeSpan.FromSeconds 5.)
-
+    
     let getStats inbox = Actor.getStats (self.GetType().Name) inbox
 
     let rec loop (inbox: MailboxProcessor<ActorMessage>) =
@@ -25,15 +21,10 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
             let! msg = inbox.Receive()
 
             match msg with
-            | ActorMessage.PollQueue queueName -> // TODO: should be on a different thread/actor as polling blocks this
-                log.LogTrace $"Polling queue {queueName}..."
-                do! Actor.pollEntryQueue broker queueName (Actor.post self)
             | ActorMessage.Start ->
-                do postIngestTimer.Enabled <- true
-                do postPollTimer.Enabled <-  true
+                do postIngestTimer.Enabled <- true                
             | ActorMessage.Stop ->
                 do postIngestTimer.Enabled <- false
-                do postPollTimer.Enabled <- false
                 do cancellation.Cancel()                        
             | ActorMessage.IngestFeeds
             | ActorMessage.AddFeed _
@@ -58,6 +49,8 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
 
     let actor =
         MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
+
+    member this.QueueNames = [ Discorss.Queues.QueueNames.feedEntries ]
 
     interface IActor with
         member this.GetStats() =

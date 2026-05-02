@@ -8,3 +8,4 @@ module Bootstrap =
         services
             .AddSingleton<Ingestion.IngestionActor>()
             .AddSingleton<Ingestion.FeedIngestionActor>()
+            .AddSingleton<Ingestion.QueueMonitorActor>()
