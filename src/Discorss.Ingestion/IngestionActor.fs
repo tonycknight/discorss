@@ -32,6 +32,7 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
             | ActorMessage.FeedEntry e ->
                 log.LogTrace $"Received feedentry {e.uri}..."
                 e |> Models.toDocument |> ActorMessage.Document |> (Actor.post docActor)                
+            | ActorMessage.Document d -> ignore 0 // TODO: 
             | ActorMessage.GetActorStats rc -> inbox |> getStats |> rc.Reply
             // TODO: need to pull messages from microbroker queues
             | _ -> ignore 0
@@ -42,7 +43,7 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
     let actor =
         MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
 
-    member this.QueueNames = [ Discorss.Queues.QueueNames.feedEntries ]
+    member this.QueueNames = [ Discorss.Queues.QueueNames.feedEntries; Discorss.Queues.QueueNames.documents ]
 
     interface IActor with
         member this.GetStats() =

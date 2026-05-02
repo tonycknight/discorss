@@ -2,10 +2,11 @@ namespace Discorss.Ingestion
 
 open System.Diagnostics.CodeAnalysis
 open Discorss
+open Microbroker.Client
 open Microsoft.Extensions.Logging
 
 [<ExcludeFromCodeCoverage>]
-type DocumentIngestionActor(logFactory: ILoggerFactory, docRepo: Documents.IDocumentRepository) as self =
+type DocumentIngestionActor(logFactory: ILoggerFactory, docRepo: Documents.IDocumentRepository, broker: IMicrobrokerProxy) as self =
 
     let log = logFactory.CreateLogger<DocumentIngestionActor>()
 
@@ -24,12 +25,23 @@ type DocumentIngestionActor(logFactory: ILoggerFactory, docRepo: Documents.IDocu
                 return None
         }
             
+    let forwardDocument (document: Documents.Document option) = 
+        task {
+            match document with
+            | Some document -> 
+                let message = ActorMessage.Document document |> Queues.Messages.toQueueMessage
+                
+                do! broker.PostAsync (Queues.QueueNames.documents, message)
+            | _ -> ignore 0
+        }
+
     let rec loop (inbox: MailboxProcessor<ActorMessage>) =
         task {
             match! inbox.Receive() with
             | ActorMessage.Document d -> 
-                let! d = writeDocument d 
-                ignore d
+                let! d = writeDocument d
+                do! forwardDocument d
+                
             | ActorMessage.GetActorStats rc -> inbox |> Actor.getStats (self.GetType().Name) |> rc.Reply
             | _ -> ignore 0
 

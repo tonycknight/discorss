@@ -8,6 +8,9 @@ module QueueNames =
     [<Literal>]
     let feedEntries = "discorss_feedentries"
 
+    [<Literal>]
+    let documents = "discorss_documents"
+
 module Messages =
     let toQueueMessage (value: 'a) =
         { MicrobrokerMessage.messageType = value.GetType().AssemblyQualifiedName
