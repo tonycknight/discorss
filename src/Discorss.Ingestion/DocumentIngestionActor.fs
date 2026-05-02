@@ -39,6 +39,7 @@ type DocumentIngestionActor(logFactory: ILoggerFactory, docRepo: Documents.IDocu
         task {
             match! inbox.Receive() with
             | ActorMessage.Document d -> 
+                // TODO: check for deltas to the doc - skip if no change
                 let! d = writeDocument d
                 do! forwardDocument d
                 

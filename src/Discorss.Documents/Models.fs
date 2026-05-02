@@ -9,4 +9,5 @@ type Document =
       title: string
       description: string
       content: string
-      categories: string[] }
+      categories: string[] 
+      sha512: string }

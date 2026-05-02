@@ -24,7 +24,8 @@ module WebAppHandlers =
                           description = req.description
                           content = req.content
                           categories = req.categories
-                          author = req.author }
+                          author = req.author
+                          sha512 = "" }
                         |> da.Words
 
                     return! Successful.OK words next ctx
@@ -46,7 +47,8 @@ module WebAppHandlers =
                           title = req.title
                           description = req.description
                           content = req.content
-                          author = req.author }
+                          author = req.author
+                          sha512 = "" }
 
                     let stats = da.Statistics doc
 
@@ -66,7 +68,8 @@ module WebAppHandlers =
                           description = req.description
                           content = req.content
                           categories = req.categories
-                          author = req.author }
+                          author = req.author
+                          sha512 = "" }
 
                     let stats = doc |> sp.GetRequiredService<Indexing.IDocumentAnalyser>().Statistics
 

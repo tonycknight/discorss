@@ -20,7 +20,8 @@ module DocumentAnalyserTests =
               description = ""
               publication = DateTimeOffset.UtcNow
               categories = [||]
-              content = "" }
+              content = ""
+              sha512 = "" }
 
         let words = analyser.Words(doc) |> Array.ofSeq
 
@@ -40,7 +41,8 @@ module DocumentAnalyserTests =
               description = expected.[2]
               publication = DateTimeOffset.UtcNow
               categories = [||]
-              content = expected.[3] }
+              content = expected.[3]
+              sha512 = "" }
 
         let words = analyser.Words(doc) |> Array.ofSeq
 
@@ -59,7 +61,8 @@ module DocumentAnalyserTests =
               description = ""
               publication = DateTimeOffset.UtcNow
               categories = [||]
-              content = "" }
+              content = ""
+              sha512 = "" }
 
         let stats = analyser.Statistics(doc)
 
@@ -80,7 +83,8 @@ module DocumentAnalyserTests =
               description = words.[0]
               publication = DateTimeOffset.UtcNow
               categories = [||]
-              content = words.[0] }
+              content = words.[0]
+              sha512 = "" }
 
         let stats = analyser.Statistics(doc)
 

@@ -1,9 +1,21 @@
 namespace Discorss.Ingestion
 
+open Discorss
 open Discorss.Documents
 open Discorss.Feeds
 
 module Models =
+    let sha512 (value: FeedEntry) =
+        let xs = 
+            seq {
+                value.author
+                value.title
+                value.description
+                value.content
+            } |> Strings.join ""
+
+        Strings.sha512 xs
+
     let toDocument (value: FeedEntry) =
         { Document.uri = value.uri
           author = value.author
@@ -11,4 +23,5 @@ module Models =
           title = value.title
           description = value.description
           content = value.content
-          categories = value.categories }
+          categories = value.categories
+          sha512 = sha512 value }
