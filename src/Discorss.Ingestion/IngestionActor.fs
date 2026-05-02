@@ -28,8 +28,6 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
                 do postIngestTimer.Enabled <- false
                 do cancellation.Cancel()
             | ActorMessage.IngestFeeds
-            | ActorMessage.AddFeed _
-            | ActorMessage.RemoveFeed _
             | ActorMessage.IngestFeed _ -> msg |> Actor.post feedActor
             | ActorMessage.FeedEntry e ->
                 log.LogTrace $"Received feedentry {e.uri}..."

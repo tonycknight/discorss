@@ -85,8 +85,6 @@ type FeedIngestionActor
             | ActorMessage.Start -> ignore 0
             | ActorMessage.IngestFeeds -> do! startIngestion ()
             | ActorMessage.IngestFeed uri -> do! ingestFeed uri
-            | ActorMessage.AddFeed uri -> uri |> ActorMessage.IngestFeed |> inbox.Post
-            | ActorMessage.RemoveFeed uri -> ignore 0 // TODO:
             | ActorMessage.GetActorStats rc -> inbox |> Actor.getStats (self.GetType().Name) |> rc.Reply
             | _ -> ignore 0
 
