@@ -32,7 +32,9 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
             | ActorMessage.FeedEntry e ->
                 log.LogTrace $"Received feedentry {e.uri}..."
                 e |> Models.toDocument |> ActorMessage.Document |> (Actor.post docActor)                
-            | ActorMessage.Document d -> ignore 0 // TODO: 
+            | ActorMessage.Document d -> 
+                log.LogTrace $"Received document {d.uri}..."
+                ignore 0 // TODO: 
             | ActorMessage.GetActorStats rc -> inbox |> getStats |> rc.Reply
             // TODO: need to pull messages from microbroker queues
             | _ -> ignore 0
