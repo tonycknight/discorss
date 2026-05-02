@@ -7,6 +7,8 @@
 
   <ItemGroup>
     <Compile Include="Models.fs" />
+    <Compile Include="DocumentRepository.fs" />
+    <Compile Include="Bootstrap.fs" />
   </ItemGroup>
 
   <ItemGroup>

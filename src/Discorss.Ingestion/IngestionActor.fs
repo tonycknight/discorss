@@ -6,7 +6,7 @@ open Microbroker.Client
 open Microsoft.Extensions.Logging
 
 [<ExcludeFromCodeCoverage>]
-type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedActor: FeedIngestionActor) as self =
+type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedActor: FeedIngestionActor, docActor: DocumentIngestionActor) as self =
 
     let log = logFactory.CreateLogger<IngestionActor>()
     let cancellation = new System.Threading.CancellationTokenSource()
@@ -31,16 +31,12 @@ type IngestionActor(logFactory: ILoggerFactory, broker: IMicrobrokerProxy, feedA
             | ActorMessage.AddFeed _
             | ActorMessage.RemoveFeed _
             | ActorMessage.IngestFeed _ -> msg |> Actor.post feedActor
-            | ActorMessage.Feeds _ -> ignore 0
-            | ActorMessage.Document _
-            | ActorMessage.IndexDocument _ -> ignore 0 // TODO:
             | ActorMessage.FeedEntry e ->
-                log.LogTrace $"Received feedentry {e.title}..."
-                ignore 0 // TODO: forward to...?
-
-            | ActorMessage.GetActorStats rc -> inbox |> getStats |> rc.Reply // TODO: ewww
+                log.LogTrace $"Received feedentry {e.uri}..."
+                e |> Models.toDocument |> ActorMessage.Document |> (Actor.post docActor)                
+            | ActorMessage.GetActorStats rc -> inbox |> getStats |> rc.Reply
             // TODO: need to pull messages from microbroker queues
-            | m -> ignore 0
+            | _ -> ignore 0
 
             return! loop inbox
         }

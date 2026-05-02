@@ -88,13 +88,12 @@ type FeedIngestionActor
             | ActorMessage.AddFeed uri -> uri |> ActorMessage.IngestFeed |> inbox.Post
             | ActorMessage.RemoveFeed uri -> ignore 0 // TODO:
             | ActorMessage.GetActorStats rc -> inbox |> Actor.getStats (self.GetType().Name) |> rc.Reply
-            | m -> ignore m // TODO: parent.Post m
+            | _ -> ignore 0
 
             return! loop inbox
         }
 
-    let actor =
-        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask) // TODO: ??
+    let actor = MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
 
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg

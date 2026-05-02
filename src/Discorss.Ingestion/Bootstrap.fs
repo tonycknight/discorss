@@ -9,3 +9,4 @@ module Bootstrap =
             .AddSingleton<Ingestion.IngestionActor>()
             .AddSingleton<Ingestion.FeedIngestionActor>()
             .AddSingleton<Ingestion.QueueMonitorActor>()
+            .AddSingleton<Ingestion.DocumentIngestionActor>()

@@ -8,7 +8,9 @@
   <ItemGroup>
     <Compile Include="ActorMessages.fs" />
     <Compile Include="Actors.fs" />
+    <Compile Include="Models.fs" />
     <Compile Include="FeedIngestionActor.fs" />
+    <Compile Include="DocumentIngestionActor.fs" />
     <Compile Include="IngestionActor.fs" />
     <Compile Include="QueueMonitorActor.fs" />
     <Compile Include="Bootstrap.fs" />

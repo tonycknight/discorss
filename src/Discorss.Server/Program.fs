@@ -17,6 +17,7 @@ type Startup() =
         Discorss.Feeds.Service.WebApp.services
         >> Discorss.Indexing.Service.WebApp.services
         >> Discorss.Ingestion.Bootstrap.services
+        >> Discorss.Documents.Bootstrap.services
         >> backgroundServices
 
     let routes (app: IApplicationBuilder) =
