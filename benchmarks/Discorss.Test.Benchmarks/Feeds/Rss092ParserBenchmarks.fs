@@ -3,6 +3,7 @@
 open System.Xml.Linq
 open BenchmarkDotNet.Attributes
 open Discorss.Feeds
+open Discorss.Test.Benchmarks
 
 [<MemoryDiagnoserAttribute>]
 [<AllStatisticsColumnAttribute>]
@@ -11,10 +12,9 @@ open Discorss.Feeds
 [<GcServerAttribute(true)>]
 type Rss092ParserBenchmarks() =
 
-
-    [<IterationSetup>]
-    member this.IterationSetup() =
-        this.Text <- "<xml></xml>" // TODO: Discorss.Feeds.Test.Unit.TestHelpers.sampleFeedAsString this.SampleFileName
+    [<GlobalSetup>]
+    member this.GlobalSetup() =
+        this.Text <- TestHelpers.sampleFeedAsString this.SampleFileName
         this.Doc <- this.Text |> XDocument.Parse
 
     [<Params("Rss092Feed.xml")>]

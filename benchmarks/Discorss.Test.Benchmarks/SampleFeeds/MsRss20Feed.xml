@@ -1,0 +1,1787 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>.NET Blog</title>
+	<atom:link href="https://devblogs.microsoft.com/dotnet/feed/" rel="self" type="application/rss+xml" />
+	<link>https://devblogs.microsoft.com/dotnet/</link>
+	<description>Free. Cross-platform. Open source. A developer platform for building all your apps.</description>
+	<lastBuildDate>Mon, 03 Oct 2022 08:13:43 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	
+
+<image>
+	<url>https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2018/10/Microsoft-Favicon.png</url>
+	<title>.NET Blog</title>
+	<link>https://devblogs.microsoft.com/dotnet/</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Migrating from ASP.NET to ASP.NET Core (Part 4)</title>
+		<link>https://devblogs.microsoft.com/dotnet/migrating-from-asp-net-to-asp-net-core-part-4/</link>
+					<comments>https://devblogs.microsoft.com/dotnet/migrating-from-asp-net-to-asp-net-core-part-4/#comments</comments>
+		
+		<dc:creator><![CDATA[Sayed Ibrahim Hashimi]]></dc:creator>
+		<pubDate>Thu, 29 Sep 2022 18:55:07 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[ASP.NET]]></category>
+		<category><![CDATA[ASP.NET Core]]></category>
+		<category><![CDATA[Visual Studio]]></category>
+		<guid isPermaLink="false">https://devblogs.microsoft.com/dotnet/?p=42576</guid>
+
+					<description><![CDATA[<p>In this post we discuss updates to the Project Migrations tool for incrementally migrating ASP.NET apps to ASP.NET Core.</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/migrating-from-asp-net-to-asp-net-core-part-4/">Migrating from ASP.NET to ASP.NET Core (Part 4)</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>ASP.NET Core is a unified and modern web framework for .NET. Migrating existing ASP.NET apps to ASP.NET Core has many advantages, including better performance, cross-platform support (Windows, macOS, Linux), and access to all the latest improvements to the modern .NET web platform. But migrating from ASP.NET to ASP.NET Core can be very challenging and time consuming due to the many differences between the two frameworks. That&#8217;s why we&#8217;ve been working to provide libraries and tooling for performing incremental migrations from ASP.NET to ASP.NET Core so that you can slowly migrate existing ASP.NET apps a piece at a time while still enabling ongoing app development. We&#8217;ve been working on tooling in Visual Studio to simplify the migration experience, and a new update to the incremental ASP.NET migration tooling is now available.</p>
+<p><a href="https://marketplace.visualstudio.com/items?itemName=WebToolsTeam.aspnetprojectmigrations">Download and install the extension</a></p>
+<p>In this series we&#8217;ve previously posted the following posts related to project migrations:</p>
+<ul>
+<li><a href="https://devblogs.microsoft.com/dotnet/incremental-asp-net-to-asp-net-core-migration/">Incremental ASP.NET to ASP.NET Core Migration</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/incremental-asp-net-migration-tooling-preview-2/">Incremental ASP.NET Migration Tooling Preview 2</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/introducing-project-migrations-visual-studio-extension/">Migrating from ASP.NET to ASP.NET Core in Visual Studio</a></li>
+</ul>
+<p>In this blog post we&#8217;ll cover the significant updates to the Project Migrations Extension as well as updates to the System.Web Adapters. </p>
+<h2 id="updates-to-visual-studio-tooling">Updates to Visual Studio tooling</h2>
+<p>We&#8217;ve made the following improvements to the incremental migration tooling:</p>
+<ul>
+<li>Incrementally migrate class library projects, including both C# and VB.</li>
+<li>Incrementally migrate ASP.NET Framework projects with references to class library project(s).</li>
+<li>Incrementally migrate VB ASP.NET Framework projects, excluding VB view files.</li>
+<li>Various UX improvements across the extension.</li>
+</ul>
+<p>We&#8217;ll expand on each of these topics under the headings below.</p>
+<h3 id="support-for-class-library-projects">Support for Class Library projects</h3>
+<p>The extension now has support for incrementally migrating .NET Framework class library projects to .NET 6 or 7. This includes both C# and VB class library projects.</p>
+<p>Migrating class library projects is typically much simpler than migrating ASP.NET projects. However, class library projects may contain lots of code that needs to be migrated. This may make it difficult to migrate the entire project at once. And while the class library is being migrated, projects that reference the class library still need to function.</p>
+<p>Incrementally migrating class library projects enables you to migrate to the latest .NET versions in manageable steps. In addition, when you migrate items from an ASP.NET project that depends on code in a class library, the extension can determine those dependencies and migrate them as needed. With this approach the original .NET Framework project is not modified and can still be referenced by other projects. </p>
+<p>If you&#8217;re planning to incrementally migrate an ASP.NET Framework project that depends on one or more class library projects, it&#8217;s recommended to use the Migrate Project feature on all the class library projects first. When you migrate a .NET Framework class library project, a new class library project will be created targeting .NET 6/7. You&#8217;ll be prompted to select the version of .NET to target. The class library projects do not need to be fully migrated before the web project. At that point, none of the content from the original project will be migrated. Items will be migrated as you migrate items in the ASP.NET Framework project. From here, you can start to incrementally migrate code directly from the original class library to the new .NET Core class library, or you can migrate code from the web project which will automatically migrate dependent code from the original class library to the new class library project. In the section below we&#8217;ll describe how to migrate ASP.NET Framework projects that depend on class library projects.</p>
+<h3 id="incrementally-migrate-asp-net-framework-projects-with-references-to-class-library-projects">Incrementally migrate ASP.NET Framework projects with references to class library project(s)</h3>
+<p>Now that the extension can migrate class library projects, that has been integrated into the process of migrating content from ASP.NET Framework projects to ASP.NET Core projects. For example, if you migrate an MVC controller from your ASP.NET Framework project and the controller being migrated depends on code in a dependent class library project, the dependent code will be migrated as well as long as the code lives in a project with a corresponding migration project. Note that this means you must perform Migrate Project on each .NET Framework class library project that the ASP.NET Framework project depends on. Once this association has been made, the extension can automatically migrate items across projects as needed. This works best for C# ASP.NET Framework projects. Support for VB Framework project have some special considerations which we&#8217;ll expand on in the next section.</p>
+<p>If you&#8217;ve already migrated some items from the ASP.NET Framework project before migrating the class library project(s), you can migrate the class library project(s) and then re-run the migrations for the items which have already been migrated. On the next run, the dependencies in the class library project(s) will be detected and migrated.</p>
+<h3 id="incrementally-migrate-vb-asp-net-framework-projects">Incrementally migrate VB ASP.NET Framework projects</h3>
+<p>In previous releases we didn&#8217;t have any support for VB ASP.NET Framework projects. In this release we added support for incrementally migrating VB projects. You can incrementally migrate VB class library projects to .NET 6 or 7.</p>
+<p>When migrating a VB ASP.NET Framework project, a new C# ASP.NET Core project will be created. Razor (.cshtml, .razor) support in ASP.NET Core is based on C# and requires a C# project. ASP.NET Core doesn&#8217;t support VB views (.vbhtml), so they need to be manually migrated.  The tool also cannot automatically migrate VB code to C#. If the amount of VB code in the ASP.NET project is large, it&#8217;s recommended to move the code to a new VB class library targeting .NET Framework and then use the new class library incremental migration experience. The migrated VB class library can then be referenced from the ASP.NET Core project.</p>
+<h3 id="user-experience-improvements">User experience improvements</h3>
+<p>In this release we&#8217;ve made several user experience (UX) improvements to the incremental migration tooling. We&#8217;ll briefly go over the significant updates here.</p>
+<p>We improved the dialog for selecting whether to create a new migration project or use an existing one. You can see the improved dialog in the following image:</p>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/01-select-new-or-existing.png" alt="select to create a new project or select an existing project" /></p>
+<p>In previous releases the selection for a New Project or Existing Project was a radio button. We have also significantly updated the Summary page which appears after you migrate items. The updated dialog is shown next.</p>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/02-summary-of-changes.png" alt="summary of changes" /></p>
+<p>We feel that with the updates to this page, its much clearer what actions have taken place as well as being easier to read. We&#8217;ve also made several smaller UX improvements that you may notice as you use the new version of this extension.</p>
+<h3 id="known-tooling-issues">Known tooling issues</h3>
+<p>This extension is still in the early stages, so you may run into some issues. Here are the significant known issues that exist in the current version of the extension.</p>
+<ul>
+<li>Web content files (CSS/JS/etc.) are not migrated.</li>
+<li>Limited number of code updates currently. Migrated code may need manual updates.</li>
+<li>No migration support for ASP.NET Identity related files.</li>
+<li>No migration support for ASP.NET Web Forms (.aspx) files.</li>
+<li>Limited support for migrating Razor (.cshtml) views migration. No support for partial views currently.</li>
+<li>No migration support for MVC areas.</li>
+</ul>
+<p>This is not a complete list of known issues, but these are the most important ones that we&#8217;ve identified.</p>
+<p>Please give this new extension a try and please provide feedback so that we can improve this feature as we proceed.</p>
+<h2 id="system-web-adapters-updates">System.Web Adapters Updates</h2>
+<p>We&#8217;ve also released an updated version of the System.Web adapters for ASP.NET Core. This release of the System.Web adapters is mostly a stabilization of APIs and functionality that was available in previous previews. The main change for this release is that the NuGet package structure has been modified:</p>
+<ul>
+<li><code>Microsoft.AspNetCore.SystemWebAdapters</code>: Subset of the APIs from <code>System.Web.dll</code> backed by <code>Microsoft.AspNetCore.Http</code> types. This is available for .NET 4.5+, .NET Standard 2.0, and .NET 6+ and is intended for libraries. This package contains the APIs from <code>System.Web</code>.</li>
+<li><code>Microsoft.AspNetCore.SystemWebAdapters.CoreServices</code>: Support for adding services to ASP.NET Core applications to enable migration efforts. This is available for .NET 6+. This package contains services that can be added to your ASP.NET Core application to enable scenarios exposed by the <code>System.Web</code> APIs.</li>
+<li><code>Microsoft.AspNetCore.SystemWebAdapters.FrameworkServices</code>: Support for adding services to ASP.NET Framework applications to enable migration efforts. This is available for .NET 4.7.2+. This package contains services that can be added to your ASP.NET Framework application to enable incremental migration.</li>
+</ul>
+<h3 id="update-to-latest-version">Update to latest version</h3>
+<p>To upgrade to the latest version:</p>
+<ol>
+<li>Uninstall <code>Microsoft.AspNetCore.SystemWebAdapters.SessionState</code>. This is no longer necessary.</li>
+<li>Upgrade <code>Microsoft.AspNetCore.SystemWebAdapters</code> to the latest version (1.0.0-rc.1.22477.1) in library projects.</li>
+<li>Install <code>Microsoft.AspNetCore.SystemWebAdapters.FrameworkServices</code> to your ASP.NET Framework application</li>
+<li>Install <code>Microsoft.AspNetCore.SystemWebAdapters.CoreServices</code> in your ASP.NET Core projects.</li>
+</ol>
+<h3 id="configuration-changes">Configuration Changes</h3>
+<p>This release adds adapters for a few more APIs from <code>HttpContext</code>, <code>HttpRuntime</code>, and others that should help with migrating code that relies on these types.</p>
+<p>Beyond these changes, the main change to the APIs is that the builders used to construct the services have been separated for ASP.NET Core vs Framework. This results in changes to what packages you use where and how you register services.</p>
+<p>For example, in ASP.NET Core you now register services for the System.Web adapters as follows:</p>
+<pre><code class="language-csharp">var builder = WebApplication.CreateBuilder();
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+builder.Services.AddSystemWebAdapters()
+    .AddJsonSessionKeySerializer(options =&gt; 
+    {
+      options.RegisterKey&lt;int&gt;("key1");
+    })
+    .AddRemoteAppClient(options =&gt;
+    {
+        options.RemoteAppUrl = new(builder.Configuration["ReverseProxy:Clusters:fallbackCluster:Destinations:fallbackApp:Address"]);
+        options.ApiKey = builder.Configuration("RemoteAppApiKey");
+    })
+    .AddSessionClient();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthorization();
+app.UseSystemWebAdapters();
+app.MapDefaultControllerRoute()
+    .BufferResponseStream()
+    .PreBufferRequestStream()
+    .RequireSystemWebAdapterSession();
+
+app.Run();</code></pre>
+<p>The new ASP.NET Framework registration looks like this:</p>
+<pre><code class="language-csharp">protected void Application_Start()
+{
+    ...
+
+    SystemWebAdapterConfiguration.AddSystemWebAdapters(this)
+        .AddProxySupport(options =&gt; options.UseForwardedHeaders = true)
+        .AddJsonSessionSerializer(options =&gt; 
+        {
+          options.RegisterKey&lt;int&gt;("key1");
+        })
+        .AddRemoteAppServer(options =&gt; options.ApiKey = ConfigurationManager.AppSettings["RemoteAppApiKey"])
+        .AddSessionServer();
+}</code></pre>
+<p>These registrations allow you to build up the services that you need for your migration process. This process is often a slow one that allows you to move functionality from your ASP.NET Framework application to the ASP.NET Core application. Please see the previous blog posts and the <a href="https://github.com/dotnet/systemweb-adapters/tree/main/docs">documentation</a> for the project to see features that these libraries enable.</p>
+<h3 id="new-apis">New APIs</h3>
+<p>This release brings in a number of API changes. Some of them are:</p>
+<ul>
+<li>Implicit casting to <code>HttpContextBase</code>, <code>HttpRequestBase</code>, and <code>HttpResponseBase</code> in addition to the existing casts available for code that make use of these abstract base classes</li>
+<li><code>HttpRequest.GetBufferedStream()</code> and <code>HttpRequest.GetBufferlessStream()</code> have been added</li>
+<li>Better logging and diagnostics have been added for session key/value serialization for cases where the type is not known</li>
+<li><code>VirtualPathUtility</code> has been added</li>
+</ul>
+<p>For the full changelog, please see the <a href="https://github.com/dotnet/systemweb-adapters/releases/tag/v1.0.0-rc.1">release on GitHub</a>.</p>
+<h2 id="give-feedback">Give feedback</h2>
+<p>We want to hear from you how we can best improve the incremental ASP.NET migration experience. The best place to share your feedback with us is on GitHub in the <a href="https://github.com/dotnet/systemweb-adapters">dotnet/systemweb-adapters</a> repo. Use the <img src="https://s.w.org/images/core/emoji/14.0.0/72x72/1f44d.png" alt="👍" class="wp-smiley" style="height: 1em; max-height: 1em;" /> reaction to indicate features or improvements that are most important to you.</p>
+<p>This is a brief overview of this new extension and the System.Web adapters for ASP.NET Core. For more details you can check out the additional related resources listed below. Please try it out on your existing ASP.NET projects and share feedback so that we can continue to improve the incremental ASP.NET migration experience.</p>
+<p>Thanks, and happy coding!</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=WebToolsTeam.aspnetprojectmigrations">Microsoft Project Migrations (Experimental) – Visual Studio Marketplace</a></li>
+<li><a href="https://github.com/dotnet/systemweb-adapters">dotnet/systemweb-adapters (github.com)</a></li>
+<li><a href="https://microsoft.github.io/reverse-proxy/">YARP Documentation (microsoft.github.io)</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/incremental-asp-net-to-asp-net-core-migration/">Incremental ASP.NET to ASP.NET Core Migration – .NET Blog (microsoft.com)</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/incremental-asp-net-migration-tooling-preview-2/">Incremental ASP.NET Migration Tooling Preview 2 – .NET Blog (microsoft.com)</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/introducing-project-migrations-visual-studio-extension/">Migrating from ASP.NET to ASP.NET Core in Visual Studio</a></li>
+</ul>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/migrating-from-asp-net-to-asp-net-core-part-4/">Migrating from ASP.NET to ASP.NET Core (Part 4)</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://devblogs.microsoft.com/dotnet/migrating-from-asp-net-to-asp-net-core-part-4/feed/</wfw:commentRss>
+			<slash:comments>2</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Experimental WebTransport over HTTP/3 support in Kestrel</title>
+		<link>https://devblogs.microsoft.com/dotnet/experimental-webtransport-over-http-3-support-in-kestrel/</link>
+					<comments>https://devblogs.microsoft.com/dotnet/experimental-webtransport-over-http-3-support-in-kestrel/#comments</comments>
+		
+		<dc:creator><![CDATA[Chris R]]></dc:creator>
+		<pubDate>Thu, 29 Sep 2022 17:05:00 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[ASP.NET Core]]></category>
+		<category><![CDATA[http]]></category>
+		<category><![CDATA[kestrel]]></category>
+		<category><![CDATA[networking]]></category>
+		<category><![CDATA[webtransport]]></category>
+		<guid isPermaLink="false">https://devblogs.microsoft.com/dotnet/?p=42564</guid>
+
+					<description><![CDATA[<p>ASP.NET Core now has experimental support for WebTransport over HTTP/3, a new secure multiplexed transport protocol for the web. Learn how to try out this new transport protocol in your app.</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/experimental-webtransport-over-http-3-support-in-kestrel/">Experimental WebTransport over HTTP/3 support in Kestrel</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>We’re excited to announce experimental support for the WebTransport over HTTP/3 protocol as part of .NET 7 RC1.</p>
+<p>This feature and blog post were written by our excellent intern <a href="https://github.com/Daniel-Genkin-MS-2">Daniel Genkin</a>!</p>
+<h2 id="what-is-webtransport">What is WebTransport</h2>
+<p>WebTransport is a new <a href="https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http3/draft-ietf-webtrans-http3.html">draft specification</a> for a transport protocol similar to WebSockets that allows the usage of multiple streams per connection.</p>
+<p><a href="https://www.rfc-editor.org/rfc/rfc6455.html">WebSockets</a> allowed upgrading a whole HTTP TCP/TLS connection to a bidirectional data stream. If you needed to open more streams you&#8217;d spend additional time and resources establishing new TCP and TLS sessions. <a href="https://www.rfc-editor.org/rfc/rfc8441">WebSockets over HTTP/2</a> streamlined this by allowing multiple WebSocket streams to be established over one HTTP/2 TCP/TLS session. The downside here is that because this was still based on TCP, any packets lost from one stream would cause delays for every stream on the connection.</p>
+<p>With the introduction of HTTP/3 and QUIC, which uses UDP rather than TCP, WebTransport can be used to establish multiple streams on one connection without them blocking each other. For example, consider an online game where the game state is transmitted on one bidirectional stream, the players&#8217; voices for the game&#8217;s voice chat feature on another bidirectional stream, and the player&#8217;s controls are transmitted on a unidirectional stream. With WebSockets, these would all need to be put on separate connections or squashed into a single stream. With WebTransport, you can keep all the traffic on one connection but separate them into their own streams and, if one stream were to drop network packets, the others could continue uninterrupted.</p>
+<h2 id="enabling-webtransport">Enabling WebTransport</h2>
+<p>You can enable WebTransport support in ASP.NET Core by setting <code>EnablePreviewFeatures</code> to <code>True</code> and adding the following <code>RuntimeHostConfigurationOption</code> item in your project&#8217;s <code>.csproj</code> file:</p>
+<pre><code class="language-xml">&lt;Project Sdk="Microsoft.NET.Sdk.Web"&gt;
+  &lt;PropertyGroup&gt;
+    &lt;EnablePreviewFeatures&gt;True&lt;/EnablePreviewFeatures&gt;
+  &lt;/PropertyGroup&gt;
+
+  &lt;ItemGroup&gt;
+    &lt;RuntimeHostConfigurationOption Include="Microsoft.AspNetCore.Server.Kestrel.Experimental.WebTransportAndH3Datagrams" Value="true" /&gt;
+  &lt;/ItemGroup&gt;
+&lt;/Project&gt;</code></pre>
+<h2 id="setting-up-a-server">Setting up a Server</h2>
+<p>To setup a WebTransport connection, you first need to configure a web host to listen on a port over HTTP/3:</p>
+<pre><code class="language-C#">var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.ConfigureKestrel((context, options) =&gt;
+{
+    // Port configured for WebTransport
+    options.ListenAnyIP([SOME PORT], listenOptions =&gt;
+    {
+        listenOptions.UseHttps(GenerateManualCertificate());
+        listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+    });
+});
+var app = builder.Build();</code></pre>
+<p>WebTransport uses HTTP/3, so you must select the <code>listenOptions.UseHttps</code> setting as well as set the <code>listenOptions.Protocols</code> to include HTTP/3.</p>
+<p>The default Kestrel development certificate cannot be used for WebTransport connections. For local testing you can use the workaround described in the <a href="#obtaining-a-test-certificate">Obtaining a test certificate section</a>.</p>
+<p>Next, we define the code that will run when Kestrel receives a connection.</p>
+<pre><code class="language-C#">app.Run(async (context) =&gt;
+{
+    var feature = context.Features.GetRequiredFeature&lt;IHttpWebTransportFeature&gt;();
+    if (!feature.IsWebTransportRequest)
+    {
+        return;
+    }
+    var session = await feature.AcceptAsync(CancellationToken.None);
+
+    // Use WebTransport via the newly established session.
+});
+
+await app.RunAsync();</code></pre>
+<p>The <code>Run</code> method is triggered every time there is a connection request. The <code>IsWebTransportRequest</code> property on the <code>IHttpWebTransportFeature</code> indicates if the current request is a WebTransport request. Once a WebTransport request is received, calling <code>IHttpWebTransportFeature.AcceptAsync()</code> accepts the WebTransport session so you can interact with the client. This original request must be kept alive for the durration of the session or else all streams associated with that session will be closed.</p>
+<p>Calling <code>await app.RunAsync()</code> starts the server, which can then start accepting connections.</p>
+<h2 id="interacting-with-a-webtransport-session">Interacting with a WebTransport Session</h2>
+<p>Once the session has been established both the client and server can create streams for that session.</p>
+<p>This example accepts a session, waits for a bidirectional stream, reads some data, reverse it, and then writes it back to the stream.</p>
+<pre><code class="language-C#">app.Run(async (context) =&gt;
+{
+    var feature = context.Features.GetRequiredFeature&lt;IHttpWebTransportFeature&gt;();
+    if (!feature.IsWebTransportRequest)
+    {
+        return;
+    }
+    var session = await feature.AcceptAsync(CancellationToken.None);
+
+    ConnectionContext? stream = null;
+    IStreamDirectionFeature? direction = null;
+    while (true)
+    {
+        // wait until we get a stream
+        stream = await session.AcceptStreamAsync(CancellationToken.None);
+        if (stream is null)
+        {
+            // if a stream is null, this means that the session failed to get the next one.
+            // Thus, the session has ended, or some other issue has occurred. We end the
+            // connection in this case.
+            return;
+        }
+
+        // check that the stream is bidirectional. If yes, keep going, otherwise
+        // dispose its resources and keep waiting.
+        direction = stream.Features.GetRequiredFeature&lt;IStreamDirectionFeature&gt;();
+        if (direction.CanRead &amp;&amp; direction.CanWrite)
+        {
+            break;
+        }
+        else
+        {
+            await stream.DisposeAsync();
+        }
+    }
+
+    var inputPipe = stream!.Transport.Input;
+    var outputPipe = stream!.Transport.Output;
+
+    // read some data from the stream into the memory
+    var length = await inputPipe.AsStream().ReadAsync(memory);
+
+    // slice to only keep the relevant parts of the memory
+    var outputMemory = memory[..length];
+
+    // do some operations on the contents of the data
+    outputMemory.Span.Reverse();
+
+    // write back the data to the stream
+    await outputPipe.WriteAsync(outputMemory);
+});
+
+await app.RunAsync();</code></pre>
+<p>This example opens a new stream from the server side and then sends data.</p>
+<pre><code class="language-C#">app.Run(async (context) =&gt;
+{
+    var feature = context.Features.GetRequiredFeature&lt;IHttpWebTransportFeature&gt;();
+    if (!feature.IsWebTransportRequest)
+    {
+        return;
+    }
+    var session = await feature.AcceptAsync(CancellationToken.None);
+
+    // open a new stream from the server to the client
+    var stream = await session.OpenUnidirectionalStreamAsync(CancellationToken.None);
+
+    if (stream is not null)
+    {
+        // write data to the stream
+        var outputPipe = stream.Transport.Output;
+        await outputPipe.WriteAsync(new Memory&lt;byte&gt;(new byte[] { 65, 66, 67, 68, 69 }), CancellationToken.None);
+        await outputPipe.FlushAsync(CancellationToken.None);
+    }
+});
+
+await app.RunAsync();</code></pre>
+<h2 id="sample-apps">Sample Apps</h2>
+<p>To showcase the functionality of the WebTransport support in Kestrel, we also created two sample apps: an <a href="https://github.com/dotnet/aspnetcore/tree/main/src/Servers/Kestrel/samples/WebTransportInteractiveSampleApp">interactive</a> one and a <a href="https://github.com/dotnet/aspnetcore/tree/main/src/Servers/Kestrel/samples/WebTransportSampleApp">console-based</a> one. You can run them in Visual Studio via the F5 run options.</p>
+<h2 id="obtaining-a-test-certificate">Obtaining a test certificate</h2>
+<p>The current Kestrel development certificate cannot be used for WebTransport connections as it does not meet the requirements needed for WebTransport over HTTP/3. You can generate a new certificate for testing via the following C# (this function will also automatically handle certificate rotation every time one expires):</p>
+<pre><code class="language-C#">static X509Certificate2 GenerateManualCertificate()
+{
+    X509Certificate2 cert = null;
+    var store = new X509Store("KestrelWebTransportCertificates", StoreLocation.CurrentUser);
+    store.Open(OpenFlags.ReadWrite);
+    if (store.Certificates.Count &gt; 0)
+    {
+        cert = store.Certificates[^1];
+
+        // rotate key after it expires
+        if (DateTime.Parse(cert.GetExpirationDateString(), null) &lt; DateTimeOffset.UtcNow)
+        {
+            cert = null;
+        }
+    }
+    if (cert == null)
+    {
+        // generate a new cert
+        var now = DateTimeOffset.UtcNow;
+        SubjectAlternativeNameBuilder sanBuilder = new();
+        sanBuilder.AddDnsName("localhost");
+        using var ec = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        CertificateRequest req = new("CN=localhost", ec, HashAlgorithmName.SHA256);
+        // Adds purpose
+        req.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension(new OidCollection
+        {
+            new("1.3.6.1.5.5.7.3.1") // serverAuth
+        }, false));
+        // Adds usage
+        req.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, false));
+        // Adds subject alternate names
+        req.CertificateExtensions.Add(sanBuilder.Build());
+        // Sign
+        using var crt = req.CreateSelfSigned(now, now.AddDays(14)); // 14 days is the max duration of a certificate for this
+        cert = new(crt.Export(X509ContentType.Pfx));
+
+        // Save
+        store.Add(cert);
+    }
+    store.Close();
+
+    var hash = SHA256.HashData(cert.RawData);
+    var certStr = Convert.ToBase64String(hash);
+    Console.WriteLine($"\n\n\n\n\nCertificate: {certStr}\n\n\n\n"); // &lt;-- you will need to put this output into the JS API call to allow the connection
+    return cert;
+}
+// Adapted from: https://github.com/wegylexy/webtransport</code></pre>
+<h2 id="going-forward">Going Forward</h2>
+<p>WebTransport offers exciting new possibilities for real-time app developers, making it easier and more efficient to stream multiple kinds of data back and forth with the client.</p>
+<p>Please send us <a href="https://github.com/dotnet/aspnetcore/issues">feedback</a> about how this works for your scenarios. We&#8217;ll use that feedback to continue the development of this feature in .NET 8, explore integrations with frameworks like SignalR and determine when to take it out of preview.</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/experimental-webtransport-over-http-3-support-in-kestrel/">Experimental WebTransport over HTTP/3 support in Kestrel</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://devblogs.microsoft.com/dotnet/experimental-webtransport-over-http-3-support-in-kestrel/feed/</wfw:commentRss>
+			<slash:comments>5</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Microsoft Teams’ Infrastructure and Azure Communication Services’ Journey to .NET 6</title>
+		<link>https://devblogs.microsoft.com/dotnet/microsoft-teams-infrastructure-and-azure-communication-services-journey-to-dotnet-6/</link>
+					<comments>https://devblogs.microsoft.com/dotnet/microsoft-teams-infrastructure-and-azure-communication-services-journey-to-dotnet-6/#comments</comments>
+		
+		<dc:creator><![CDATA[Siavash Fathi]]></dc:creator>
+		<pubDate>Wed, 28 Sep 2022 17:05:30 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[Developer Stories]]></category>
+		<category><![CDATA[.net 6]]></category>
+		<category><![CDATA[Microsoft Teams]]></category>
+		<category><![CDATA[Migration]]></category>
+		<category><![CDATA[upgrade]]></category>
+		<guid isPermaLink="false">https://devblogs.microsoft.com/dotnet/?p=42504</guid>
+
+					<description><![CDATA[<p>Microsoft Teams’ infrastructure team, or Intelligent Conversation and Communications Cloud (IC3), aspires to be the industry leading platform with reliable and high-quality audio and video calling, meetings, and chat experiences that work any time, from anywhere, on any device. A key element of our platform evolution is the migration from .NET Framework to the latest version of .NET LTS, currently .NET 6.</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/microsoft-teams-infrastructure-and-azure-communication-services-journey-to-dotnet-6/">Microsoft Teams’ Infrastructure and Azure Communication Services’ Journey to .NET 6</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Microsoft Teams’ infrastructure team, or Intelligent Conversation and Communications Cloud (IC3), aspires to be the industry leading platform with reliable and high-quality audio and video calling, meetings, and chat experiences that work any time, from anywhere, on any device. We use our core capabilities to power Microsoft Teams and enable third-party partners to bring intelligent conversations to life in their own product using  Azure Communication Services. We learn from each conversation, every call, and meeting to make the next one better.</p>
+<p>In that spirit, we continually evolve and modernize our engineering platform. A key element of our platform evolution is the migration from .NET Framework to the latest version of .NET LTS, currently .NET 6.</p>
+<h2 id="motivation-to-move-to-net-6">Motivation to move to .NET 6</h2>
+<p>The migration to .NET Core is driven by multiple factors:</p>
+<ol>
+<li>Cost Reduction: Average of 29% savings on Azure Compute cost.</li>
+<li>Performance Improvement: 30-50% improvements in performance including P99 CPU utilization and P99 service latency.</li>
+<li>Service and Network Modernization: Access to the latest features in the framework, such as a lightweight application memory footprint, support for Containers on Linux, better exception handling thus better reliability under strenuous conditions and latest security fixes.</li>
+<li>Improved engineering satisfaction and productivity</li>
+</ol>
+<h2 id="our-approach">Our approach</h2>
+<p>IC3 consists of more than 200 different microservices working together in a sophisticated mesh. It is global and highly scalable. Each microservice is developed and managed independently. We started our .NET 6 migration journey by building the infrastructure to track and analyze our large-scale system.  For example, understanding the downstream library dependencies for each microservice was an important steps to unblock migration of individual microservices. Then experimented with two microservices to build and verify our approach, supporting infrastructure, and updated libraries. Once we verified our assumptions and validated our migration steps we scaled and planned the migration for the rest of our services in 3 waves. Currently more than a third of our microservices run on .NET 6.
+Here is a list of notable tools and learnings from our initial planning:</p>
+<ul>
+<li>Our internal tools analyze over 5500 NuGet packages, over 17000 CSProj files, and over 600 microservices daily. These include microservices from various Microsoft products in addition to Microsoft Teams and Azure Communication Services. If you’re planning a large-scale migration such as this, it is worth taking time to analyze your dependencies using scalable tools. For smaller scale migrations we recommend using <a href="https://github.com/dotnet/upgrade-assistant">.NET Upgrade Assistant</a>.</li>
+<li>We tested bridging the existing WebAPI component to a .NET Core with a shim prior to them being migrated to ASP.NET to de-risk the migration. This was useful for microservices that were more complex and time consuming to upgrade to .NET 6.</li>
+<li>To measure the efficiency gains we implemented Q-Factor analysis that does short term side-by-side comparisons between .NET 6 and .NET Framework, as well as long term trends and comparisons between microservices.</li>
+<li>We started with the assumption that moving to .NET 6 will result in 30% cost reduction for our services. After our experimentation, we were able to confirm this assumption. After migration of 1/3 of our microservices, we continue to observe an average of 29% cost reduction per service.  </li>
+</ul>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/Picture1.png" alt="Figure 1-Effect of .NET 6 on long-term performance trend of two different microservices in IC3" />
+<em>Figure 1-Effect of .NET 6 on long-term performance trend of two different microservices in IC3</em></p>
+<h3 id="what-is-q-factor">What is Q-Factor?</h3>
+<p>We needed a way to measure and compare service efficiency improvements regardless of each service’s specific nature. For example, comparing a Web API service’s improvements to one that pulls events from a queue and processes them can be difficult. Therefore, we defined the following simple model.</p>
+<p>Q-Factor is defined as Q=(Total Amount of Work)/(Total Utilization)  , which means that effectively Q is the amount of work an instance can do in an unit of utilization in a period of time.  This metric can be measured at the instance level, cluster level or even region level.
+To calculate the Q-Factor, a service needs to determine which metric will be used for each of the variables. Q-Factor is versatile enough to account for memory-bound services, and CPU-bound services, as well as others with  different bottlenecks. For all our services we used compute core utilization. By moving to .NET 6 less CPU cores are needed to process the same amount of work. An example of amount of work used was ‘number of requests’. In our system each service has a different metric to measure the amount of work. Our migration delivered lower CPU load, and up to 50% improvement in service latency (P99). We verified these results hold across various Azure Compute platforms  [Service Fabric, Azure Kubernetes, Azure Cloud Services].
+<img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/Picture2.png" alt="Figure 2. Example Q-Factor chart produced via load testing." />
+<em>Figure 2. Example Q-Factor chart produced via load testing. This service utilization grows linearly with total work, primarily between utilization (25, 70)</em></p>
+<p>We categorize our microservices into domains corresponding to product functionalities. The examples below aren’t conclusive of our entire system, but they would serve as good examples to showcase our results while keeping this post brief.</p>
+<h2 id="messaging-domain">Messaging domain</h2>
+<p>At the heart of IC3’s real-time communication products a collection of microservices handling text messaging and asynchronous media communications. Messages sent in private chats, groups, meetings, as well as files sent are handled by these services. Below shows the result from moving the Messaging API service to .NET 6. This service is a front-end for messaging scenarios and APIs. It is the  gateway between the clients and backend services.</p>
+<h3 id="highlights">Highlights</h3>
+<ul>
+<li>Average CPU Utilization reduction by 40%</li>
+<li>Azure spend reduction by 50% (Monthly/Average)</li>
+<li>Monthly average Azure Compute cost reduction of 24%</li>
+</ul>
+<h3 id="instance-reduction">Instance reduction</h3>
+<p>After moving completely to .NET Core and deprecating .NET FW, we scaled down our Azure Compute instances. We landed delivering the same service performance with 24% less instances and 50% less cores.</p>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/Picture3.png" alt="Messaging Domain Q-Factor" /></p>
+<h3 id="azure-spend">Azure spend</h3>
+<p>We were able to see Azure Compute cost reduction of up to 50% per month, on average we observed 24% monthly cost reduction after migrating to .NET 6. The reduction in cores reduced Azure spend by 24%.</p>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/Picture4.jpg" alt="Messaging Domain Instance reduction trend" /></p>
+<h3 id="next-steps">Next steps</h3>
+<p>We are now enabling Dynamic PGO (Profile Guided Optimization). This should enable further CPU (and cost) reductions. We encourage you to read more about <a href="https://devblogs.microsoft.com/dotnet/conversation-about-pgo/">Dynamics PGO</a>.</p>
+<h2 id="calling-domain">Calling domain</h2>
+<p>The heart of our real-time communication products consists of  microservices managing signaling for voice &amp; video calls. Every time a client makes or receives a call, starts or joins a meeting, and leaves a call or a meeting these services are hard at work behind the scenes. Below shows the result of moving our Broker service to .NET 6. This service is the message broker for IC3’s real time communication protocols, orchestrating calling and meeting scenarios.</p>
+<h3 id="highlights">Highlights</h3>
+<ul>
+<li>Monthly average CPU cores reduction by 67%</li>
+<li>Azure spend reduction of 38% (Monthly/Average)</li>
+<li>55% reduction in API latency.</li>
+<li>25% improvement in average CPU usage across all regions on both Azure Kubernetes and Azure VM clusters.</li>
+</ul>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/Picture6.png" alt="Calling Domain Q-Factor" /></p>
+<h3 id="cpu-usage-decrease">CPU usage decrease</h3>
+<p>We ran into multiple performance challenges, and iterated mu to optimize performance (CPU usage). At our first benchmarking of Broker on .Net Core 3.1, CPU usage was significantly higher than .Net Framework. After 3 rounds of optimizations in various parts of the code, .Net Core proved more efficient than .Net Framework. The team quickly upgraded the service to .NET 6, designed and implemented additional performance tests to quickly iterate and identify bottlenecks, and finally saw significant improvements. Below charts show CPU usage in each region compared between .NET Framework 4.7.2 and .NET 6.</p>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/Picture7.png" alt="Calling Domain Instance reduction trend" /></p>
+<p>Below table shows CPU utilization on both NET Framework and NET 6 at different P-values.</p>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/Picture8.png" alt="Calling Domain CPU utilization comparison" /></p>
+<h3 id="latency-decrease">Latency decrease</h3>
+<p>The charts below show P90 latency (in ms) for a 24-hour period. The top chart is from Broker on .Net Framework 4.7.2 and the bottom one is from Broker on .Net 6. Our measurement is based on the metric logged by Broker service itself. And while Broker is a long-poll transport service, the latency charts below are for a specific API that does not have any I/O or publish event wait times. These charts show an average of 55% improvement in API latency. It also shows a reduction in latency variability, from an observed range of 7.5ms to 4ms.</p>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/Picture9.png" alt="Calling Domain latency reduction trend" /></p>
+<h3 id="next-steps">Next steps</h3>
+<p>We continue to migrate the rest of our microservices to .NET 6 . We are also investigating the latest technologies that .NET 6 enables such as QUIC, HTTP/3, etc.</p>
+<h2 id="conferencing-domain">Conferencing domain</h2>
+<p>Our final example focuses on IC3’s conferencing services. These services manage scenarios related to business conferencing, such as joining a meeting, announcements, dialing into a conference etc. Two primary services, Conferencing Virtual Assistant and Conferencing Auto Attendant, were moved to .NET 6. Below shows the results for Conferencing Auto Attendant service.
+Key highlights</p>
+<ul>
+<li>Monthly average CPU cores reduction by 98%</li>
+<li>Azure spend reduction of 69% (Monthly/Average)</li>
+<li>55% reduction in CPU utilization.</li>
+<li>Up to 40% reduction in outgoing request latency.</li>
+<li>Up to 9% reduction in incoming request latency.</li>
+<li>7 % reduction in memory usage</li>
+</ul>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/Picture10.png" alt="Conferencing Domain Q-Factor" /></p>
+<h3 id="cpu-memory-usage-decrease">CPU &amp; memory usage decrease</h3>
+<p>Charts below show the comparison of CPU &amp; Memory usage as well as the Q-Factor for Conferencing Auto Attendant service running on .NET 6 vs .NET Framework 4.7.2. Our side by side comparison showed 7% reduction in memory usage and 55% reduction in CPU usage. As a result we’ve been able to reduce our core utilization to half.</p>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/Picture11.png" alt="Conferencing Domain CPU reduction trend" />
+<img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/Picture12.png" alt="Conferencing Domain RAM reduction trend" /></p>
+<h3 id="latency-decrease">Latency decrease</h3>
+<p>We have observed reduced latency for both incoming and outgoing requests after moving to .NET 6. The improvements depend on multiple factors, including the behavior of the service on the other side of the request. As for some notable examples of incoming requests, we’ve seen a range of 1% to 9% reduction in accepting Dial-In requests, 6% reduction in time to join a meeting. For outgoing requests we’ve seen a up to 40% reduction depending on the downstream services.</p>
+<h2 id="summary-of-why-this-matters">Summary of why this matters</h2>
+<p>.NET Core has a substantial value proposition for our large-scale microservices, to name a few:</p>
+<ul>
+<li>New JIT compiler, new primitive data types, and optimized implementation of low-level classes that bring performance improvements</li>
+<li>Ability to develop and run services on Windows and Linux</li>
+<li>Architected for testability</li>
+<li>Open Source and community-focused</li>
+<li>A cloud ready, environment-based configuration system</li>
+<li>Built-in dependency injection</li>
+<li>A lightweight, high performance, and modular HTTP request pipeline</li>
+<li>Ability to host on the following: Kestrel, IIS, HTTP.sys, Nginx, Apache, Docker</li>
+<li>Side-by-side versioning</li>
+<li>Support for latest transport protocols like Http/3 QUIC</li>
+</ul>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/microsoft-teams-infrastructure-and-azure-communication-services-journey-to-dotnet-6/">Microsoft Teams’ Infrastructure and Azure Communication Services’ Journey to .NET 6</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://devblogs.microsoft.com/dotnet/microsoft-teams-infrastructure-and-azure-communication-services-journey-to-dotnet-6/feed/</wfw:commentRss>
+			<slash:comments>4</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Microsoft Commerce&#8217;s .NET 6 Migration Journey</title>
+		<link>https://devblogs.microsoft.com/dotnet/microsoft-commerce-dotnet-6-migration-journey/</link>
+					<comments>https://devblogs.microsoft.com/dotnet/microsoft-commerce-dotnet-6-migration-journey/#comments</comments>
+		
+		<dc:creator><![CDATA[Kurtis Story (HE/HIM)]]></dc:creator>
+		<pubDate>Mon, 26 Sep 2022 17:30:07 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[ASP.NET Core]]></category>
+		<category><![CDATA[Azure]]></category>
+		<category><![CDATA[Developer Stories]]></category>
+		<category><![CDATA[.net 6]]></category>
+		<category><![CDATA[Migration]]></category>
+		<guid isPermaLink="false">https://devblogs.microsoft.com/dotnet/?p=42473</guid>
+
+					<description><![CDATA[<p>Microsoft Commerce is a diverse set of services (&#62;700) services and recently made the journey to .NET 6 from .NET Framework. Here are some tips, tricks, and results from our journey to .NET 6.</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/microsoft-commerce-dotnet-6-migration-journey/">Microsoft Commerce&#8217;s .NET 6 Migration Journey</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Microsoft Commerce is a diverse set of services (&gt;700) which transact Microsoft&#8217;s revenue in various ways &#8211; whether via our large catalog of products and services, maintaining licensing information, calculating appropriate tax amounts for each locale in which we operate, or many more both in the Commercial and Consumer spaces. These services range from the small to the large but share many requirements around reliability, availability, scalability, compliance, and more, being involved in most transactions with Microsoft. To give a sense of overall scale, 2 of our largest services represent over 1.1M Requests per Second (RPS) and run on hundreds of thousands of cores.</p>
+<p>In 2019, we embarked on a journey to take better advantage of Azure platforms. With so many services were migrating, of all different shapes and sizes, we worked closely with platform teams across Azure to ensure we landed in the best platforms for each of our services. We quickly realized that our largest and most complex services fit best on containers and Kubernetes, but to take full advantage of Kubernetes and the open-source community this required a shift to Linux (and to .NET Core to enable this move).</p>
+<p>While the learnings and insights come from all our migrated services over the past several years, we’ll focus some of our details on one service in particular &#8211; our Global Lookup Service (GLS) &#8211; who has had one of the furthest journeys. GLS provides partitioning as a service that maps a Microsoft user to the location of their data based on proximity. It is a critical infra service that powers consumer commerce scenarios such as Xbox and Microsoft store. GLS is a distributed high scale RESTful service that is deployed in 4 regions worldwide with over 100k requests per second globally. It was initially written in .NET Framework 4.6.2 and ran on Windows VMs, and as part of the Commerce migration to Azure the code base was upgraded to .NET Core 3.1, then 5, and currently running on .NET 6. It was also containerized to run on Azure Kubernetes Service (AKS) as a scalable compute platform.</p>
+<h2 id="migration-big-picture">Migration Big Picture</h2>
+<p>With our more complex services moving into Kubernetes, our migration required more than just .NET:</p>
+<ul>
+<li>Windows to Linux</li>
+<li>.NET Framework to .NET Core (3.1, in some cases 5.0, and now 6.0)</li>
+<li>A platform shift to containers and Kubernetes (away from just VMs)</li>
+<li>A build and release system change to take advantage of the latest security and compliance improvements and support containerized applications.</li>
+<li>Many more as we took advantage of enhancements and improvements in our platforms and .NET as we migrated, and our partners did the same for dependencies.
+While the benefits aren&#8217;t all directly due to our .NET Core migration, they were enabled by the move, and we&#8217;re thankful for all the help and support of the .NET team during our migration!</li>
+</ul>
+<p>Often we are asked how long it took us to migrate &#8211; and the answer is complicated as it varied by service. Service size, complexity, and the number of other changes going on in parallel, all required additional work to coordinate, with early services taking much longer to migrate than later services as we got better at the migration process. Some teams migrated from .NET Framework to versions of .NET Core without taking advantage of new functionality like <a href="https://docs.microsoft.com/archive/msdn-magazine/2018/january/csharp-all-about-span-exploring-a-new-net-mainstay">spans</a>, while others spent additional time updating code to realize performance gains. Other changes teams made throughout this process (leaving the code better than when they started their migration) also impacted the amount of testing and validation required.</p>
+<p>The moves from .NET Core 3.1 to 5.0 and then 5.0 to 6.0 were more straightforward, and several of our teams did direct migrations to take advantage of framework changes without much additional investment. Changing a few lines of code to make this move often took less than a day, followed by the services’ regular validation and service safe deployment rollout processes.</p>
+<h2 id="results">Results</h2>
+<p>When we originally started measuring success, we looked primarily on the cost axis &#8211; where we saw a wide range of savings, with some services having cost savings of 80%+ and vCores reduction of 35%+! While these are certainly successful metrics, they wrap up a huge set of changes (everything listed above), and so we looked for examples that would help highlight the .NET portion of the migration.</p>
+<p>One particularly significant example was a service which migrated to .NET Core 3.1 from .NET Framework while leaving as much else the same as possible (though this change did include dependency updates to .NET Core as well, and small improvements made while migrating their code). The chart below shows a ~78% improvement in service latency and significantly more stability after deploying it initially (running with the same load, environment, and hardware)!</p>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/78-latency-improvement.png" alt="78% Service Latency Improvement" /></p>
+<p>Similar savings were also seen in GLS, which had 30% reduction on vCores and 20% improvement to latency compared with .NET Framework / Windows VMs.</p>
+<h3 id="net-5-to-6-migration-improvements">.NET 5 to 6 Migration Improvements</h3>
+<p>Moving past the initial .NET Framework to .NET Core version updates, we&#8217;ve found further migrations significantly easier (as mentioned above, sometimes just taking a few lines changed). In our GLS service, we’ve been seeing continuous improvements by updating .NET without having to pick up new features. In these updates improvements were primarily in .NET metrics other than service latency, as GLS was already operating at ~ 8ms response time at the 99th percentile after migrating to AKS / Linux).
+Some specific improvements we saw below in this migration while maintaining our overall service quality metrics (again, the only change being .NET 5 -&gt; 6):</p>
+<ul>
+<li>An improvement in thread management as the number of threads in thread pool dropped while we maintain the same RPS
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/thread-management.png" alt="Thread Management Improvement" /></li>
+<li>Improved connection management as the number of concurrent connections dropped
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/connection-management.png" alt="Connection Management Improvement" /></li>
+<li>A reduction in Runtime Exceptions. The reduction was not from GLS service code itself but in the .NET Runtime.
+<p><img class="alignnone" src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/runtime-exceptions.png" alt="Runtime Exceptions Improvement, Microsoft Commerce’s .NET 6 Migration Journey" width="819" height="480" /></li>
+</ul>
+<h2 id="migration-learnings">Migration Learnings</h2>
+<p>Along the way we’ve learned a lot (both within our services and across the broader .NET ecosystem as we share these lessons). Given the length of our journey each stage has had some differences – as one example, our first services moved while many of their dependencies weren’t updated to be compatible yet, while our latest services haven’t had to worry much about dependencies – but as we’ve learned from the past, we hope we can help others here too.</p>
+<h3 id="dependencies">Dependencies</h3>
+<p>Early on most of the libraries and components our services took dependencies on weren’t migrated over, which required an extensive effort to map our dependencies, evaluate the migration path (replace with .NET functionality, replace with new dependency, work with the dependency to migrate, or write our own replacement), and execute on this plan. Today this takes up only a small amount of time as many dependencies have migrated and are available, though we still take time up front to evaluate when dependencies might have better alternatives in .NET Core 3.1 and above. Later versions of .NET also don’t require changes to dependencies to consume, significantly reducing the amount of time needed (as .NET Core 3.1 dependencies can be consumed from .NET 6 services).</p>
+<p>There are several tools available to start you off (for example <a href="https://docs.microsoft.com/visualstudio/modeling/map-dependencies-across-your-solutions">Code Maps built into Visual Studio</a>), and the <a href="https://github.com/dotnet/core/tree/main/release-notes">.NET release notes</a> and <a href="https://learn.microsoft.com/aspnet/core/migration/">ASP.NET Core migration guides</a> are a great place to get started on exploring what’s new and available to take advantage of.</p>
+<h4 id="evaluate-net-platform-best-practices-for-adoption">Evaluate .NET Platform Best Practices for Adoption</h4>
+<p>During our migration we picked up several .NET Platform improvements as best practices to replace custom solutions and avoid reinventing the wheel. Two examples of this:</p>
+<ul>
+<li>Object Pooling
+<p>GLS code heavily relies on object pooling to reuse objects and keep the memory size predictable. The old code in .NET framework implemented a custom solution by wrapping a ConcurrentStack class which worked but required maintenance every time we upgraded the codebase. This was no longer needed when we migrated to .NET Core, which provides <a href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.objectpool.objectpool-1">ObjectPool</a> class. Byte array was another type of object that was pooled a lot. We were able to simply the code by leveraging the <a href="https://github.com/microsoft/Microsoft.IO.RecyclableMemoryStream">RecyclableMemoryStream</a> library with the IDisposable pattern. This class pools underlying buffers and incurs fewer GCs.</p>
+<p>At the end of the migration, we were able to remove hundreds of lines of custom code while maintaining our performance, freeing us from maintaining this custom implementation.</li>
+<li>APM to TAP
+<p>The Asynchronous Programing Model (APM) was introduced in .NET 1.0 and implements asynchronous operations with IAsyncResult design pattern (where two methods named BeginOperationName and EndOperationName are pairing together). The entire GLS codebase was written in this paradigm which worked well with our HTTP.sys based pipeline but wasn’t a good fit for Kestrel, where Task-based Asynchronous Pattern is recommended (TAP).</p>
+<p>Fortunately, APM code can interop with TAP code easily (documented in <a href="https://docs.microsoft.com/dotnet/standard/asynchronous-programming-patterns/interop-with-other-asynchronous-patterns-and-types">Interop with Other Asynchronous Patterns and Types</a>), and the legacy begin/end methods worked perfectly with the new await/async code in ASP.NET Core without any performance bottleneck. More specifically, Begin/End methods can be chained with <a href="https://docs.microsoft.com/dotnet/api/system.threading.tasks.taskfactory.fromasync?view=net-6.0">TaskFactory.FromAsync</a> overloaded methods and callback logic can be implemented in <a href="https://docs.microsoft.com/dotnet/api/system.threading.tasks.task.continuewith?view=net-6.0">Task.ContinueWith</a> overloaded methods.</p>
+<pre><code class="language-csharp">await await Task.Factory.FromAsync(this.AzureHelper.BeginGetMigrationInfo, this.GetMigrationInfoForUpdateCallback, migraitonId, CallContext);
+
+public void AddKeys(MigrationId migrationId, List&lt;string&gt; geoKeys, string transactionId, AddKeysResultHandler handler, object state)
+{
+Task&lt;GeoMigrationResult&gt; task = this.AddKeysAsync(migrationId, geoKeys, transactionId);
+task.ContinueWith(
+    (t) =&gt;
+    {
+        handler(new GeoMigrationResult(t.Status == TaskStatus.RanToCompletion &amp;&amp; t.Result.Success, t.Result.Message, t.Result.Exception), state);
+    }
+);
+}</code></pre>
+</li>
+</ul>
+<h3 id="windows-assumptions">Windows Assumptions</h3>
+<p>As we moved services to .NET Core and then into Linux, we quickly found it important to remind teams that .NET Core and beyond does not mean that everything will &#8220;Work in Linux&#8221; out of the box. &#8220;Windows Assumptions&#8221; in your code can sneak in – or in your build, tooling, monitoring, troubleshooting, or other processes.</p>
+<p>What are “Windows Assumptions”? These can be as simple as assumptions around folder slash direction (if not using Path.Combine), more complex such as relying on COM components, or even using an API which is only available on Windows. It also might be build process limitations, or tools that you use with your service that aren’t available. In all cases work is needed to identify these and replace these with platform-agnostic code where available. Testing your service end to end on multiple platforms early is key!</p>
+<h4 id="removing-windows-dependencies">Removing Windows Dependencies</h4>
+<ul>
+<li>Moving to Kestrel
+<p>Many services relied on non-cross platform webservers (IIS or HTTP.sys for example), and while these remain an option for Windows based ASP.NET Core, in our journey to Linux and AKS we needed to rewrite to a cross platform option (Kestrel). While this is a substantial change, the resulting services had better performance in general and a much cleaner and more maintainable code structure.</p>
+<p>This also resulted in changes to our metrics, alerting, and reporting, and we’ve seen improvements here in every version of .NET since (see for example Dotnet Metrics Sidecar).</li>
+<li>Win32 File API
+<p>In memory caching was a critical feature in GLS to help achieve the required response time at scale. The GLS cache includes many objects as large as 2GB each. They were written to/loaded from file system periodically with the Win32 File API directly for the best performance on Windows. In Linux containers, this Windows specific API doesn’t exist, and needed to be replaced with UnmanagedMemoryStream class. We found UnmanagedMemoryStream to be equally fast, and not requiring the unmanaged memory to be copied to the heap before writing to the underlying file system.</li>
+</ul>
+<h3 id="cross-platform-tooling">Cross-Platform Tooling</h3>
+<p>Tooling was one area which surprised many teams, as familiar tools (from Windows debugging or investigations) didn’t always work (or work as expected) with .NET Core or Linux. While support here is ever improving, the key learning was to build up your knowledge of the standard .NET tools (dotnet-counters, dotnet-dump, dotnet-trace, and so on) early, and use these on all platforms.</p>
+<p>We also found teams hadn’t considered general debugging tool changes (given things like general OS performance monitoring commands, network tooling, or even command-line navigation change on Linux!). Investing in a cross-platform toolset proved essential including the .NET tools as well as using cross-platform compatible PowerShell.</p>
+<p>This knowledge is as important as the migration itself, as you’ll soon discover with your first LiveSite investigation!</p>
+<h4 id="dotnet-metrics-sidecar">Dotnet Metrics Sidecar</h4>
+<p>With this change we’ve also been able to take advantage of several new tools as they’ve become available, with one example of this being the dotnet metrics sidecar.</p>
+<p>As Linux doesn’t (out of the box) provide a similar mechanism to Windows to track and diagnose the performance of .NET runtime through <a href="https://docs.microsoft.com/dotnet/core/diagnostics/available-counters">well-known EventCounters</a>, teams need to find other ways to expose and view this information to not be blind to service issues. Fortunately .NET Core provides a <a href="https://docs.microsoft.com/dotnet/core/diagnostics/dotnet-counters">series of tools</a> for diagnostics and instrumentation (<a href="https://docs.microsoft.com/dotnet/core/diagnostics/dotnet-counters">&#8220;Dotnet-counters&#8221;</a> was a specific one that GLS needed), but previous to .NET 6 integrating these tools in a containerized Production environment was not easy.</p>
+<p>Thanks to the <a href="https://devblogs.microsoft.com/dotnet/announcing-dotnet-monitor-in-net-6/">“dotnet monitor” in .NET 6</a>, all of these fantastic tools are packaged in a docker image that can be deployed as a <a href="https://docs.microsoft.com/azure/architecture/patterns/sidecar">sidecar container</a> to run alongside your service container to report metrics, which can be further piped through Prometheus for visualization. The dotnet monitor sidecar can also be used for other investigative tasks such as taking process dumps, collect traces, and more – running very efficiently and requiring few resources to run (in GLS’ case, it uses less than 1 millicore and around 163MB memory all the time).</p>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/DotNetMonitorCPU.png" alt="DotNet Monitor CPU" /><img class="alignnone" src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/DotNetMonitorMemory.png" alt="DotNet Monitor Memory, Microsoft Commerce’s .NET 6 Migration Journey" width="664" height="480" /></p>
+<h2 id="summary">Summary</h2>
+<p>Commerce has seen (and continues to see) numerous benefits from our services migrated to .NET Core, and we expect to continue to see improvements as new releases become available. Each new service we migrate becomes easier as we learn and the ecosystem grows, and once initially migrated each release of .NET brings new features and performance improvements to these services with minimal effort from the team.</p>
+<p>This change has also enabled a shift in many of our large services onto AKS and Linux, which have further enabled teams to leverage improvements and contribute back to the open-source community as we build large scalable services and continue to meet our high availability, reliability, and maintainability requirements.</p>
+<p>As we look forward towards .NET 7.0 and beyond, we see our migration efforts continuing to pay off with new capabilities, performance improvements, and more!</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/microsoft-commerce-dotnet-6-migration-journey/">Microsoft Commerce&#8217;s .NET 6 Migration Journey</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://devblogs.microsoft.com/dotnet/microsoft-commerce-dotnet-6-migration-journey/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Use .NET from any JavaScript app in .NET 7</title>
+		<link>https://devblogs.microsoft.com/dotnet/use-net-7-from-any-javascript-app-in-net-7/</link>
+					<comments>https://devblogs.microsoft.com/dotnet/use-net-7-from-any-javascript-app-in-net-7/#comments</comments>
+		
+		<dc:creator><![CDATA[Pavel Šavara]]></dc:creator>
+		<pubDate>Mon, 26 Sep 2022 16:00:13 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[Blazor]]></category>
+		<category><![CDATA[C#]]></category>
+		<category><![CDATA[browser]]></category>
+		<category><![CDATA[interop]]></category>
+		<category><![CDATA[javascript]]></category>
+		<category><![CDATA[wasm]]></category>
+		<guid isPermaLink="false">https://devblogs.microsoft.com/dotnet/?p=42440</guid>
+
+					<description><![CDATA[<p>Port of the famous TodoMVC to .NET on WASM. Showcase of the JavaScript interop and running .NET in the browser, with or without Blazor.</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/use-net-7-from-any-javascript-app-in-net-7/">Use .NET from any JavaScript app in .NET 7</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>.NET 7 provides improved support for running .NET on WebAssembly in JavaScript-based apps, including a rich JavaScript interop mechanism. The WebAssembly support in .NET 7 is the basis for Blazor WebAssembly apps but can be used independently of Blazor too. Existing JavaScript apps can use the expanded WebAssembly support in .NET 7 to reuse .NET libraries from JavaScript or to build completely novel .NET-based apps and frameworks. Blazor WebAssembly apps can also use the new JavaScript interop mechanism to optimize interactions with JavaScript and the web platform. In this post, we&#8217;ll take a look at the new JavaScript interop support in .NET 7 and use it to build the classic TodoMVC sample app. We&#8217;ll also look at using the new JavaScript interop app from a Blazor WebAssembly app.</p>
+<h2 id="tldr">TL;DR</h2>
+<p>Fork the samples:</p>
+<ul>
+<li><a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc">https://github.com/pavelsavara/dotnet-wasm-todo-mvc</a></li>
+<li><a href="https://github.com/pavelsavara/blazor-wasm-hands-pose">https://github.com/pavelsavara/blazor-wasm-hands-pose</a></li>
+</ul>
+<p>The new JavaScript interop is controlled by attributes from the <a href="https://docs.microsoft.com/dotnet/api/system.runtime.interopservices.javascript?view=net-7.0">System.Runtime.InteropServices.JavaScript</a> namespace.</p>
+<p>Live demos:</p>
+<ul>
+<li><a href="https://pavelsavara.github.io/dotnet-wasm-todo-mvc">https://pavelsavara.github.io/dotnet-wasm-todo-mvc</a></li>
+<li><a href="https://pavelsavara.github.io/blazor-wasm-hands-pose">https://pavelsavara.github.io/blazor-wasm-hands-pose</a></li>
+</ul>
+<h2 id="todomvc">TodoMVC</h2>
+<p>TodoMVC is great <a href="https://todomvc.com/">community project</a> which helps JavaScript developers compare the features of various UI frameworks.</p>
+<p>To show how the new JS interop support in .NET 7 works, let&#8217;s create a C# port of TodoMVC based on the <a href="https://github.com/tastejs/todomvc/tree/gh-pages/examples/vanilla-es6">vanilla-es6</a> version. We won&#8217;t try to convert all the UI logic, just the app logic.</p>
+<h2 id="how-to">How-to</h2>
+<p><strong>This post only shows interesting snippets, not the whole code.</strong>
+To follow along, please copy &amp; paste from the sample <a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc">repo on github</a>.</p>
+<p>To get started, install the <a href="https://dotnet.microsoft.com/download/dotnet/7.0">.NET 7 RC1 SDK</a> (or later) and run the following commands:</p>
+<pre><code class="language-.sh">dotnet workload install wasm-tools
+dotnet workload install wasm-experimental
+dotnet new wasmbrowser</code></pre>
+<p>The <code>wasm-experimental</code> workload contains experimental project templates for getting started with .NET on WebAssembly in a browser app (WebAssembly Browser App) or in a Node.js based console app (WebAssembly Console App). Here we&#8217;re using the browser-based template. The developer experience for these project templates is still a work in progress, but the APIs used in them are fully supported in .NET 7.</p>
+<p>Open the folder in your favorite code editor and change the <strong>Program.cs</strong> to match <a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc/blob/main/Program.cs">Program.cs</a> from the sample.</p>
+<pre><code class="language-.cs">using System;
+using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
+
+namespace TodoMVC
+{
+    public partial class MainJS
+    {
+        static Controller? controller;
+
+        public static async Task Main()
+        {
+            if (!OperatingSystem.IsBrowser())
+            {
+                throw new PlatformNotSupportedException("This demo is expected to run on browser platform");
+            }
+
+            await JSHost.ImportAsync("todoMVC/store.js", "./store.js");
+            await JSHost.ImportAsync("todoMVC/view.js", "./view.js");
+
+            var store = new Store();
+            var view = new View(new Template());
+            controller = new Controller(store, view);
+            Console.WriteLine("Ready!");
+        }
+    }
+}</code></pre>
+<p>Add <a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc/blob/main/Item.cs">Item.cs</a>, <a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc/blob/main/Controller.cs">Controller.cs</a>, <a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc/blob/main/Template.cs">Template.cs</a> which are C# ports of the ES6 sample code. Also add <a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc/blob/main/helpers.js">helpers.js</a> as it is.</p>
+<h3 id="store">Store</h3>
+<p><a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc/blob/main/Store.cs">Store.cs</a> is also almost the same as the ES6 version, except the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">localStorage API</a> is wrapped by <a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc/blob/main/store.js">store.js</a></p>
+<pre><code class="language-.js">export function setLocalStorage(todosJson) {
+  window.localStorage.setItem('dotnet-wasm-todomvc', todosJson);
+}
+
+export function getLocalStorage() {
+  return window.localStorage.getItem('dotnet-wasm-todomvc') || '[]';
+};</code></pre>
+<p>Bind these JavaScript functions to C# code using <code>JSImportAttribute</code> in <code>Store.cs</code></p>
+<pre><code class="language-.cs">static partial class Interop
+{
+    [JSImport("setLocalStorage", "todoMVC/store.js")]
+    internal static partial void _setLocalStorage(string json);
+
+    [JSImport("getLocalStorage", "todoMVC/store.js")]
+    internal static partial string _getLocalStorage();
+}</code></pre>
+<p>The first parameter of the attribute <code>"setLocalStorage"</code> is a name of a JS function.
+The function is exported from the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules">ES6 module</a> named <code>"todoMVC/store.js"</code>.
+The module name needs to be unique for all libraries in the application. The prefix <code>todoMVC/</code> solves that.
+It also maps to the name used in <code>JSHost.ImportAsync</code> in the <code>Main.cs</code>.</p>
+<h3 id="view">View</h3>
+<p>The last and most complex part is the View. Most of the real implementation is left in JavaScript in <a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc/blob/main/view.js">view.js</a>.
+Unlike with Blazor, the new <code>wasmbrowser</code> template doesn&#8217;t include any UI framework, so we&#8217;ll leave all the UI logic in JavaScript.</p>
+<pre><code class="language-.js">export function removeItem(id) {
+  const elem = qs(`[data-id="${id}"]`);
+  if (elem) {
+    $todoList.removeChild(elem);
+  }
+}
+
+export function bindAddItem(handler) {
+  $on($newTodo, 'change', ({ target }) =&gt; {
+    const title = target.value.trim();
+    if (title) {
+      handler(title);
+    }
+  });
+}</code></pre>
+<p><a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc/blob/main/View.cs">View.cs</a> binds the JS functions and makes them callable from C#. A couple of these imported functions are shown below, but there are more in the full sample.</p>
+<pre><code class="language-.cs">public static partial class Interop
+{
+    [JSImport("removeItem", "todoMVC/view.js")]
+    public static partial void removeItem([JSMarshalAs&lt;JSType.Number&gt;] long id);
+
+    [JSImport("bindAddItem", "todoMVC/view.js")]
+    public static partial void bindAddItem(
+        [JSMarshalAs&lt;JSType.Function&lt;JSType.String&gt;&gt;] Action&lt;string&gt; handler);
+}</code></pre>
+<p>The <code>removeItem</code> is passing <code>Int64</code> as an argument. The marshaller is configured to translate it as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number"><code>JSType.Number</code></a> which can only represent a 52-bit integer.
+The alternative would be to marshal it as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt"><code>JSType.BigInt</code></a> which is bit more expensive.
+Since the runtime doesn&#8217;t want to guess which conversion is preferred in the use case, the developer needs to annotate the method parameter with <code>[JSMarshalAs&lt;T&gt;]</code>.</p>
+<p>In C# 11, it&#8217;s now possible to <a href="https://docs.microsoft.com/dotnet/csharp/whats-new/csharp-11#generic-attributes">use generic instances as custom attributes</a>, such as <code>JSMarshalAsAttribute&lt;T&gt;</code> in the above code. Enable the preview language version with <code>&lt;LangVersion&gt;preview&lt;/LangVersion&gt;</code> in the project file.</p>
+<p>The <code>bindAddItem</code> is even more interesting. It&#8217;s passing a strongly typed callback delegate <code>handler</code>.
+An explicit definition for the marshaller also needs to be there.
+It&#8217;s a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function"><code>Function</code></a> with a first argument of type <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"><code>String</code></a>.
+This callback is registered by <code>$on</code> helper with the DOM <code>change</code> event for the <code>&lt;input class="new-todo"/&gt;</code> when we call <code>bindAddItem</code> function.</p>
+<h3 id="main">Main</h3>
+<p>Copy the contents of <a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc/blob/main/index.html">index.html</a> from the sample. The interesting part is</p>
+<pre><code class="language-.html">&lt;script type='module' src="./main.js"/&gt;</code></pre>
+<p>It&#8217;s loading <code>main.js</code> which will import <code>./dotnet.js</code> and start the .NET runtime.</p>
+<p>Copy the contents of <a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc/blob/main/main.js">main.js</a>. The interesting part is</p>
+<pre><code class="language-.js">import { dotnet } from './dotnet.js'
+
+await dotnet.run();</code></pre>
+<p>Edit the project file and add</p>
+<pre><code class="language-.diff">&lt;Project Sdk="Microsoft.NET.Sdk"&gt;
+    &lt;PropertyGroup&gt;
+        &lt;TargetFramework&gt;net7.0&lt;/TargetFramework&gt;
+        &lt;WasmMainJSPath&gt;main.js&lt;/WasmMainJSPath&gt;
+        &lt;OutputType&gt;Exe&lt;/OutputType&gt;
+        &lt;Nullable&gt;enable&lt;/Nullable&gt;
+        &lt;AllowUnsafeBlocks&gt;true&lt;/AllowUnsafeBlocks&gt;
++        &lt;LangVersion&gt;preview&lt;/LangVersion&gt;
+    &lt;/PropertyGroup&gt;
+
+    &lt;ItemGroup&gt;
+        &lt;WasmExtraFilesToDeploy Include="index.html" /&gt;
+-        &lt;WasmExtraFilesToDeploy Include="main.js" /&gt; 
++        &lt;WasmExtraFilesToDeploy Include="*.js" /&gt;
++        &lt;WasmExtraFilesToDeploy Include="*.css" /&gt;
+    &lt;/ItemGroup&gt;
+&lt;/Project&gt;</code></pre>
+<h3 id="jsexport">JSExport</h3>
+<p>The code above demonstrates how to pass callback from C# to JavaScript so that events fired by the browser can be handled by managed code. There is also another possibility: static methods annotated with <code>JSExportAttribute</code> that are callable from JavaScript.</p>
+<pre><code class="language-.cs">namespace TodoMVC
+{
+    public partial class MainJS
+    {
+        [JSExport]
+        public static void OnHashchange(string url)
+        {
+            controller?.SetView(url);
+        }
+    }
+}</code></pre>
+<p>The <a href="https://github.com/pavelsavara/dotnet-wasm-todo-mvc/blob/main/main.js">main.js</a> uses <code>getAssemblyExports</code> JavaScript API to get all the exports of the assembly.</p>
+<pre><code class="language-.js">const exports = await getAssemblyExports(getConfig().mainAssemblyName);
+exports.TodoMVC.MainJS.OnHashchange(document.location.hash);</code></pre>
+<p>The code uses <code>getConfig().mainAssemblyName</code> so that <code>"TodoMVC.dll"</code> doesn&#8217;t have to be hard-coded.
+The <code>exports</code> object contains the same namespace <code>TodoMVC</code>, the same class <code>MainJS</code> and the same method <code>OnHashchange</code> as the C# code.
+The parameters of the call will be marshalled using the same rules as for <code>[JSImport]</code>.
+Marshaling in both directions is governed by the C# method signature and the <code>[JSMarshalAs&lt;T&gt;]</code> annotations on the parameters and return values.</p>
+<h3 id="run-the-app">Run the app</h3>
+<p>Start the app with the following command (*) :</p>
+<pre><code class="language-.sh">dotnet run</code></pre>
+<p>* This is unfortunately broken on Windows for RC1 and it should be <a href="https://github.com/dotnet/runtime/pull/75295">fixed in RC2</a></p>
+<p>For RC1 on Windows you could run following commands instead with similar results:</p>
+<pre><code class="language-.sh">dotnet tool update dotnet-serve --global
+dotnet serve --directory bin\Debug\net7.0\browser-wasm\AppBundle</code></pre>
+<p>You should see output similar to this. You can click on one of the URLs and test the application in your browser.</p>
+<pre><code class="language-.sh">WasmAppHost --runtime-config C:\Dev\dotnet-wasm-todo-mvc\bin\Debug\net7.0\browser-wasm\AppBundle\TodoMVC.runtimeconfig.json
+App url: http://127.0.0.1:9000/index.html
+App url: https://127.0.0.1:58139/index.html</code></pre>
+<p>You can see a live demo of the completed app at <a href="https://pavelsavara.github.io/dotnet-wasm-todo-mvc">https://pavelsavara.github.io/dotnet-wasm-todo-mvc</a>.
+<a href="https://pavelsavara.github.io/dotnet-wasm-todo-mvc"><img class="aligncenter" src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/todomvcnet7rc1.png" alt="image" width="534" height="452" /></a></p>
+<h3 id="optimize-the-app">Optimize the app</h3>
+<p>It&#8217;s possible to preload the files <code>dotnet.js</code> and <code>mono-config.json</code> which are the early dependencies for the runtime to begin starting.</p>
+<p>It&#8217;s also possible to prefetch the largest binary files.
+In a real production application you should measure the impact of these optimizations.
+Depending on the expected bandwidth and the latency of the target device&#8217;s connectivity, strike a good balance of what to prefetch.</p>
+<pre><code class="language-.html">&lt;head&gt;
+  &lt;script type='module' src="./dotnet.js"/&gt;
+  &lt;link rel="preload" href="./mono-config.json" as="fetch" crossorigin="anonymous"&gt;
+  &lt;link rel="prefetch" href="./dotnet.wasm" as="fetch" crossorigin="anonymous"&gt;
+  &lt;link rel="prefetch" href="./icudt.dat" as="fetch" crossorigin="anonymous"&gt;
+  &lt;link rel="prefetch" href="./managed/System.Private.CoreLib.dll" as="fetch" crossorigin="anonymous"&gt;
+&lt;/head&gt;</code></pre>
+<p>In the project file enable ahead-of-time (AOT) compilation to improve speed.
+Enable trimming of unused code to reduce download size.</p>
+<pre><code class="language-.diff">&lt;Project Sdk="Microsoft.NET.Sdk"&gt;
+  &lt;PropertyGroup&gt;
+        &lt;TargetFramework&gt;net7.0&lt;/TargetFramework&gt;
+        &lt;WasmMainJSPath&gt;main.js&lt;/WasmMainJSPath&gt;
+        &lt;OutputType&gt;Exe&lt;/OutputType&gt;
+        &lt;Nullable&gt;enable&lt;/Nullable&gt;
+        &lt;AllowUnsafeBlocks&gt;true&lt;/AllowUnsafeBlocks&gt;
++        &lt;PublishTrimmed&gt;true&lt;/PublishTrimmed&gt;
++        &lt;TrimMode&gt;full&lt;/TrimMode&gt;
++        &lt;RunAOTCompilation&gt;true&lt;/RunAOTCompilation&gt;
+    &lt;/PropertyGroup&gt;
+&lt;/Project&gt;</code></pre>
+<p>Please note that while AOT code runs much faster than interpreted IL, it increases size of the binary download.</p>
+<p>When trimming unused code, the components which are used dynamically (for example via reflection) need to be protected from trimming.<code class="language-.cs"></code></p>
+<p>In order to publish with AOT compilation, install the <code>wasm-tools</code> workload and then publish the app.</p>
+<pre><code class="language-.sh">dotnet workload install wasm-tools
+dotnet publish -c Release</code></pre>
+<p>We can use the <code>dotnet-serve</code> tool to host the published app locally. Using the correct MIME type for <code>.wasm</code> allows the browser to use streaming instantiation of the WebAssembly module.</p>
+<pre><code class="language-.sh">dotnet tool install --global dotnet-serve
+dotnet serve --mime .wasm=application/wasm --mime .js=text/javascript --mime .json=application/json --directory bin\Release\net7.0\browser-wasm\AppBundle\</code></pre>
+<p>Compressing the binary assets is also good idea but it&#8217;s out of the scope of this article.</p>
+<h3 id="interop-performance">Interop performance</h3>
+<p>We test the performance of the new JS interop model by running a set of microbenchmarks regularly.
+For example, this graph shows 10000 calls to a trivial JavaScript method using the C# signature <code>[JSImport] int Echo(int value)</code>.
+Currently we measure various build configurations and browsers on a small ODROID-N2+.
+<img class="aligncenter" src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/interopperf.png" alt="image" /></p>
+<p>Marshalling of primitive numbers and <code>IntPtr</code> is fast.
+Note in the graph the difference AOT can make.
+Marshalling <code>string</code> requires us to allocate memory and copy the bits, so it&#8217;s slower.
+Marshaling <code>Span&lt;byte&gt;</code> is cheap but the <code>MemoryView</code> on JavaScript side is valid only for the duration of the call.
+Marshalling a proxy of <code>object</code> involves an object allocation, <code>GCHandle</code>, and two GCs.
+Marshaling <code>Task</code>, <code>Exception</code> and also <code>ArraySegment&lt;byte&gt;</code> is similar as they also allocate a <code>GCHandle</code>.</p>
+<h2 id="blazor-webassembly">Blazor WebAssembly</h2>
+<p>The new interop with <code>[JSImport]</code> and <code>[JSExport]</code> is also available in Blazor WebAssembly apps.
+It&#8217;s useful when you need to integrate with the browser on the client side only.
+When you need to call your JavaScript also from the server side or in a native hybrid app, please use the existing <a href="https://docs.microsoft.com/dotnet/api/microsoft.jsinterop.ijsruntime?view=aspnetcore-7.0">IJSRuntime</a> interface, which does JSON serialization and a remote dispatch.</p>
+<p>For a simple sample, please have a look at the <a href="https://github.com/pavelsavara/blazor-wasm-hands-pose">hands demo</a> of 3rd party video processing JavaScript library integrated into Blazor WASM.</p>
+<p>You can see a live demo of the app is at <a href="https://pavelsavara.github.io/blazor-wasm-hands-pose">https://pavelsavara.github.io/blazor-wasm-hands-pose</a>
+<a href="https://pavelsavara.github.io/blazor-wasm-hands-pose"><img class="aligncenter" src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/blazorhands.png" alt="image" width="582" height="478" /></a></p>
+<h2 id="legacy-interop">Legacy interop</h2>
+<p>Prior to .NET 7, to perform low-level JavaScript interop in Blazor WebAssembly apps you may have used the undocumented APIs grouped in the <code>MONO</code> and <code>BINDING</code> JavaScript namespaces.
+Those APIs are still there in .NET 7 for backward compatibility reason, but please consider them deprecated.
+They expose the user to raw pointers to managed objects and are not protected from GC and WASM memory resize.
+In Blazor the <code>IJSUnmarshalledRuntime</code> interface has similar downsides and is now also deprecated.
+The new interop with <code>[JSImport]</code> and <code>[JSExport]</code> should be a faster and safer replacement.</p>
+<p>If your use case can&#8217;t be implemented by the new API or if you found a bug, please let us know by <a href="https://github.com/dotnet/runtime/issues/new/choose">creating a new issue</a> on GitHub.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>We hope that these new features will allow developers to create better integration between the JavaScript ecosystem and .NET. With these new features .NET developers can now wrap and use existing JavaScript libraries within existing frameworks like Blazor or Uno, or use them directly, like in this demo.</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/use-net-7-from-any-javascript-app-in-net-7/">Use .NET from any JavaScript app in .NET 7</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://devblogs.microsoft.com/dotnet/use-net-7-from-any-javascript-app-in-net-7/feed/</wfw:commentRss>
+			<slash:comments>7</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>.NET Framework September 2022 Cumulative Update Preview</title>
+		<link>https://devblogs.microsoft.com/dotnet/dotnet-framework-september-2022-cumulative-update-preview/</link>
+					<comments>https://devblogs.microsoft.com/dotnet/dotnet-framework-september-2022-cumulative-update-preview/#respond</comments>
+		
+		<dc:creator><![CDATA[Salini Agarwal]]></dc:creator>
+		<pubDate>Tue, 20 Sep 2022 19:14:59 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Framework]]></category>
+		<category><![CDATA[GC]]></category>
+		<category><![CDATA[WinForms]]></category>
+		<category><![CDATA[WPF]]></category>
+		<guid isPermaLink="false">https://devblogs.microsoft.com/dotnet/?p=42399</guid>
+
+					<description><![CDATA[<p>September 2022 Cumulative Update Preview Updates for .NET Framework</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/dotnet-framework-september-2022-cumulative-update-preview/">.NET Framework September 2022 Cumulative Update Preview</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p><strong>[09/22/2022]</strong> <em>revised to add known issues</em></p>
+<p>Today, we are releasing the September 2022 Cumulative Update Preview for .NET Framework.</p>
+<h3 id="quality-and-reliability">Quality and Reliability</h3>
+<p>This release contains the following quality and reliability improvements.</p>
+<h5 id="wpf1">WPF<span style="font-size: 12pt;"><sup>1</sup></span></h5>
+<ul>
+<li>Addresses an issue of WPF apps not working with &#8220;Text Cursor Indicator&#8221; enabled when using RichTextBox.</li>
+<li>Addresses an issue to allow users to adjust column width for Datagrid and Gridview controls using keybord.</li>
+<li>Addresses an issue where opening a tooltip causes an ArgumentOutOfRangeException, when the app has changed the floating point control word.</li>
+<li>Addresses an issue where invoking a synchronization Wait on the UI thread can lead to a render-thread failure, due to unexpected re-entrancy.</li>
+<li>Addresses issues arising in TreeView (or ListBox/DataGrid with grouping enabled) when changing the underlying collection(s) while also collapsing or expanding TreeView nodes. Scrolling actions, especially &#8220;short&#8221; actions like LineUp or MouseWheelUp, can result in poor outcomes: hangs, crashes, unexpected scrolling, gaps in the display, etc.</li>
+<li>Addresses an issue where DWM failures can cause WPF&#8217;s render thread to fail. An app can opt-in to the behavior of ignoring all DwmFlush errors by setting a regkey in
+HKCU\Software\Microsoft\Avalon.Graphics\IgnoreDwmFlushErrors
+or
+HKLM\Software\Microsoft\Avalon.Graphics\IgnoreDwmFlushErrors
+whose name is the full path to the .exe that wants to opt-in, and whose DWORD value is 1.</li>
+</ul>
+<h5 id="winforms">Winforms</h5>
+<ul>
+<li>Enabled Narrator to focus on System.Windows.Forms.DataGridView control even if it&#8217;s empty.</li>
+<li>Improved keyboard navigation in ToolStrip ComboBox and TextBox items.</li>
+<li>Improved color contrast in System.Windows.Forms.DataGridView control&#8217;s link cells.</li>
+</ul>
+<h5 id="workflow">Workflow</h5>
+<ul>
+<li>Addresses an issue when users interact with the Workflow Designer, they might encounter incorrectly disabled context menu items when right clicking on a variable in the component variables list.</li>
+</ul>
+<h5 id="net-runtime">.NET Runtime</h5>
+<ul>
+<li>Adjusted GC Heap Hard Limit configuration, as well as processor interpretation for .NET Framework container scenarios.</li>
+<li>Improved reliability of managed debugging on arm64.</li>
+<li>Improved security of code identified by internal compliance scans.</li>
+<li>Improved deterministic output capability in ilasm.exe.</li>
+</ul>
+<h5 id="networking">Networking</h5>
+<ul>
+<li>Addresses an issue when Ssl negotiation can hang indefinitely when client certificates are used when TLS 1.3 is negotiated. Before the change renegotiation (PostHandshakeAuthentiction) would fail and SslStream or HttpWebRequest would observe timeout. Possible workaround is disabling TLS 1.3 either via Switch.System.Net.DontEnableTls13 AppContext or via OS registry.</li>
+</ul>
+<p><sup>1 </sup>Windows Presentation Foundation (WPF)</p>
+<h3 id="known-issues">Known issues:</h3>
+<p data-ddue="para"><strong data-ddue="legacyBold">The September 2022 preview release is listed in Windows Server Update Services </strong>
+IT Administrators who utilize <a title="CTRL+Click to open" href="https://learn.microsoft.com/en-us/windows-server/administration/windows-server-update-services/get-started/windows-server-update-services-wsus" data-ddue="externalLink" data-cke-saved-href="https://learn.microsoft.com/en-us/windows-server/administration/windows-server-update-services/get-started/windows-server-update-services-wsus">Windows Server Update Services (WSUS)</a> might notice that these updates are listed among the updates available from WSUS. This listing is an error. Preview updates are generally only available for manual importing via to the <a title="CTRL+Click to open" href="https://www.catalog.update.microsoft.com/Home.aspx" data-ddue="externalLink" data-cke-saved-href="https://www.catalog.update.microsoft.com/Home.aspx">Microsoft Update Catalog</a>.</p>
+<p data-ddue="para">Home users of Windows are unlikely to experience this issue. WSUS is commonly utilized by technology administrators to deploy Microsoft product updates in managed environments.</p>
+<p data-ddue="para"><strong data-ddue="legacyBold">Please note: </strong>In environments where WSUS is configured to auto-approve updates and also auto-decline superseded content, the <a title="CTRL+Click to open" href="https://devblogs.microsoft.com/dotnet/dotnet-framework-september-2022-security-and-quality-rollup/" data-ddue="externalLink" data-cke-saved-href="https://devblogs.microsoft.com/dotnet/dotnet-framework-september-2022-security-and-quality-rollup/">.NET Framework September 2022 Security and Quality Rollup Update</a> may subsequently be auto-decline and auto-expired from the client view. If this occurs, see the guidance for <a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-server-update-services/manage/updates-operations#reinstating-declined-updates">reinstating declined updates</a>. Then, run an <a title="CTRL+Click to open" href="https://learn.microsoft.com/en-us/mem/configmgr/sum/get-started/synchronize-software-updates#schedule-software-updates-synchronization" data-ddue="externalLink" data-cke-saved-href="https://learn.microsoft.com/en-us/mem/configmgr/sum/get-started/synchronize-software-updates#schedule-software-updates-synchronization">update synchronization</a> within Microsoft Endpoint Configuration Manager, or update management environments. Environments configured to only take security updates should not reflect these symptoms.</p>
+<p data-ddue="para"><strong data-ddue="legacyBold">Next steps: </strong>The September 2022 preview release is being removed from WSUS and we are working on a resolution to support customers who received these updates via WSUS inadvertently. We estimate a solution will be available in the coming days.</p>
+<h3><a id="user-content-getting-the-update" class="anchor" href="#getting-the-update"></a>Getting the Update</h3>
+<p>The Cumulative Update Preview is available via Windows Update and <a id="user-content-microsoft-update-catalog" class="anchor" href="#microsoft-update-catalog"></a>Microsoft Update Catalog.</p>
+<p><strong>Note</strong>: Customers that rely on Windows Update will automatically receive the .NET Framework version-specific updates. Advanced system administrators can also take use of the below direct Microsoft Update Catalog download links to .NET Framework-specific updates. Before applying these updates, please ensure that you carefully review the .NET Framework version applicability, to ensure that you only install updates on systems where they apply.</p>
+<p>The following table is for Windows 10, version 1809 and Windows Server 2019+ versions.</p>
+<table border="1" cellspacing="0" cellpadding="8px">
+<thead>
+<tr>
+<th>Product Version</th>
+<th colspan="2">Cumulative Update</th>
+</tr>
+</thead>
+<tbody>
+<tr bgcolor="#F0F0F0">
+<td><strong>Windows 11</strong></td>
+<td></td>
+<td><strong><a href="https://support.microsoft.com/kb/5017859" rel="nofollow">5017859</a></strong></td>
+</tr>
+<tr>
+<td>.NET Framework 3.5, 4.8</td>
+<td><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=5017264" rel="nofollow">Catalog</a></td>
+<td><a href="https://support.microsoft.com/kb/5017264" rel="nofollow">5017264</a></td>
+</tr>
+<tr>
+<td>.NET Framework 3.5, 4.8.1</td>
+<td><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=5017267" rel="nofollow">Catalog</a></td>
+<td><a href="https://support.microsoft.com/kb/5017267" rel="nofollow">5017267</a></td>
+</tr>
+<tr bgcolor="#F0F0F0">
+<td><strong>Microsoft server operating system version 21H2</strong></td>
+<td></td>
+<td><strong><a href="https://support.microsoft.com/kb/5017860" rel="nofollow">5017860</a></strong></td>
+</tr>
+<tr>
+<td>.NET Framework 3.5, 4.8</td>
+<td><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=5017265" rel="nofollow">Catalog</a></td>
+<td><a href="https://support.microsoft.com/kb/5017265" rel="nofollow">5017265</a></td>
+</tr>
+<tr>
+<td>.NET Framework 3.5, 4.8.1</td>
+<td><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=5017268" rel="nofollow">Catalog</a></td>
+<td><a href="https://support.microsoft.com/kb/5017268" rel="nofollow">5017268</a></td>
+</tr>
+<tr bgcolor="#F0F0F0">
+<td><strong>Windows 10 21H2</strong></td>
+<td></td>
+<td><strong><a href="https://support.microsoft.com/kb/5017858" rel="nofollow">5017858</a></strong></td>
+</tr>
+<tr>
+<td>.NET Framework 3.5, 4.8</td>
+<td><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=5017262" rel="nofollow">Catalog</a></td>
+<td><a href="https://support.microsoft.com/kb/5017262" rel="nofollow">5017262</a></td>
+</tr>
+<tr>
+<td>.NET Framework 3.5, 4.8.1</td>
+<td><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=5017266" rel="nofollow">Catalog</a></td>
+<td><a href="https://support.microsoft.com/kb/5017266" rel="nofollow">5017266</a></td>
+</tr>
+<tr bgcolor="#F0F0F0">
+<td><strong>Windows 10 21H1</strong></td>
+<td></td>
+<td><strong><a href="https://support.microsoft.com/kb/5017857" rel="nofollow">5017857</a></strong></td>
+</tr>
+<tr>
+<td>.NET Framework 3.5, 4.8</td>
+<td><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=5017262" rel="nofollow">Catalog</a></td>
+<td><a href="https://support.microsoft.com/kb/5017262" rel="nofollow">5017262</a></td>
+</tr>
+<tr>
+<td>.NET Framework 3.5, 4.8.1</td>
+<td><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=5017266" rel="nofollow">Catalog</a></td>
+<td><a href="https://support.microsoft.com/kb/5017266" rel="nofollow">5017266</a></td>
+</tr>
+<tr bgcolor="#F0F0F0">
+<td><strong>Windows 10 Version 20H2</strong></td>
+<td></td>
+<td><strong><a href="https://support.microsoft.com/kb/5017856" rel="nofollow">5017856</a></strong></td>
+</tr>
+<tr>
+<td>.NET Framework 3.5, 4.8</td>
+<td><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=5017262" rel="nofollow">Catalog</a></td>
+<td><a href="https://support.microsoft.com/kb/5017262" rel="nofollow">5017262</a></td>
+</tr>
+<tr>
+<td>.NET Framework 3.5, 4.8.1</td>
+<td><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=5017266" rel="nofollow">Catalog</a></td>
+<td><a href="https://support.microsoft.com/kb/5017266" rel="nofollow">5017266</a></td>
+</tr>
+<tr bgcolor="#F0F0F0">
+<td><strong>Windows 10 1809 (October 2018 Update) and Windows Server 2019</strong></td>
+<td></td>
+<td><strong><a href="https://support.microsoft.com/kb/5017855" rel="nofollow">5017855</a></strong></td>
+</tr>
+<tr>
+<td>.NET Framework 3.5, 4.7.2</td>
+<td><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=5017270" rel="nofollow">Catalog</a></td>
+<td><a href="https://support.microsoft.com/kb/5017270" rel="nofollow">5017270</a></td>
+</tr>
+<tr>
+<td>.NET Framework 3.5, 4.8</td>
+<td><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=5017263" rel="nofollow">Catalog</a></td>
+<td><a href="https://support.microsoft.com/kb/5017263" rel="nofollow">5017263</a></td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h3 id="previous-monthly-rollups">Previous Monthly Rollups</h3>
+<p>The last few .NET Framework Monthly updates are listed below for your convenience:</p>
+<ul>
+<li><a href="https://devblogs.microsoft.com/dotnet/dotnet-framework-september-2022-security-and-quality-rollup/" rel="nofollow">.NET Framework September 2022 Security and Quality Rollup</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/dotnet-framework-august-2022-cumulative-update-preview-updates/" rel="nofollow">.NET Framework August 2022 Cumulative Update Preview Updates</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/dotnet-framework-august-2022-security-and-quality-rollup-updates/" rel="nofollow">.NET Framework August 2022 Security and Quality Rollup Updates</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/dotnet-framework-july-2022-cumulative-update-preview/" rel="nofollow">.NET Framework July 2022 Cumulative Update Preview</a></li>
+</ul>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/dotnet-framework-september-2022-cumulative-update-preview/">.NET Framework September 2022 Cumulative Update Preview</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://devblogs.microsoft.com/dotnet/dotnet-framework-september-2022-cumulative-update-preview/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>.NET MAUI in .NET 7 Release Candidate 1</title>
+		<link>https://devblogs.microsoft.com/dotnet/dotnet-maui-in-dotnet-7-rc1/</link>
+					<comments>https://devblogs.microsoft.com/dotnet/dotnet-maui-in-dotnet-7-rc1/#comments</comments>
+		
+		<dc:creator><![CDATA[David Ortinau]]></dc:creator>
+		<pubDate>Tue, 20 Sep 2022 18:03:44 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET MAUI]]></category>
+		<category><![CDATA[.net 7]]></category>
+		<category><![CDATA[.net maui]]></category>
+		<guid isPermaLink="false">https://devblogs.microsoft.com/dotnet/?p=42407</guid>
+
+					<description><![CDATA[<p>.NET MAUI is now part of .NET 7 in RC1 with tons of improvements, and a few new features.</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/dotnet-maui-in-dotnet-7-rc1/">.NET MAUI in .NET 7 Release Candidate 1</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Today we are excited to announce the availability of .NET Multi-platform App UI (MAUI) in .NET 7 release candidate 1 (RC1) with the release of Visual Studio 17.4 Preview 2.1. This includes the foundational SDKs .NET for Android, iOS, Mac Catalyst, and macOS. With the Tizen workload installed, the same code also runs on numerous Samsung devices including phones, televisions, appliances, and wearables.</p>
+<p>Our top priority for this release of .NET MAUI is increasing the overall quality and reliability of the toolkit. .NET 7 RC1 includes the highest priority quality fixes based on your GitHub feedback. Maps and DualScreen join .NET MAUI in .NET 7 to fill two gaps for mobile developers upgrading from Xamarin. We have also added some fundamental desktop features for tooltips, right-click, hover, window size, and context menus.</p>
+<blockquote><p><strong>Note about Xcode 14</strong> for iOS, iPadOS, and macOS: .NET 7 is currently compatible with Xcode 13 and the related SDK versions. To get Xcode 14 support today for Xamarin SDKs, follow our <a href="https://github.com/xamarin/xamarin-macios/issues/15954">guidance on GitHub</a>. These SDKs will also come to Visual Studio, .NET 6, and .NET 7 in service releases soon.</p></blockquote>
+<h2 id="get-started-with-net-maui-in-net-7">Get Started with .NET MAUI in .NET 7</h2>
+<p>To quickly get started with RC1, <a href="https://visualstudio.microsoft.com/vs/preview/">download and install Visual Studio 17.4 Preview 2.1</a> on Windows or Mac. While on Windows you can install Visual Studio versions side by side, this is not the same for Mac and for installing .NET. To address this, we have worked hard in .NET 7 to ensure you can continue building .NET 6 projects even after installing .NET 7. In fact, in the new project dialog, you&#8217;ll notice that .NET 6 and .NET 7 will both be presented for you to choose from when creating a new .NET MAUI project. You can adopt .NET MAUI versions at your own cadence.</p>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/framework-selector.png" alt="framework selector" /></p>
+<p>From the command line you can now see version details about all of your workload dependencies by running <code>dotnet workload list</code>.</p>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/workload-list.png" alt="workload list report" /></p>
+<blockquote><p><strong>Upgrading projects from .NET 6</strong> &#8211; in many cases after installing .NET 7 you only need to update <code>net6.0</code> references in the <em>csproj</em> file to <code>net7.0</code>. We recommend closing the solution, deleting your bin and obj folders, and reopening the project to now restore .NET 7 dependencies from a clean starting point.</p></blockquote>
+<h2 id="maps">Maps</h2>
+<p>.NET MAUI now ships with a <code>Map</code> control that you can add to your project with the <code>Microsoft.Maui.Controls.Maps</code> NuGet package. This control is ideal for displaying and annotating maps using the native maps from each mobile platform. You can draw shapes on the map, drop pins, add custom pins, and even geocode street addresses, latitude, and longitude. To use the map control, add the NuGet package and initialize the control in your MauiProgram.</p>
+<p>To initialize the control, add <code>.UseMauiMaps()</code> in your <code>MauiProgram</code> builder and then add the <code>Map</code> control to your view.</p>
+<pre><code class="language-xaml">&lt;Grid&gt;
+    &lt;Map x:Name="map"/&gt;
+&lt;/Grid&gt;</code></pre>
+<pre><code class="language-csharp">protected override void OnNavigatedTo(NavigatedToEventArgs args)
+{
+    base.OnNavigatedTo(args);
+
+    var hanaLoc = new Location(20.7557, -155.9880);
+
+    MapSpan mapSpan = MapSpan.FromCenterAndRadius(hanaLoc, Distance.FromKilometers(3));
+    map.MoveToRegion(mapSpan);
+    map.Pins.Add(new Pin
+    {
+        Label = "Welcome to .NET MAUI!",
+        Location = hanaLoc,
+    });
+}</code></pre>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/maps.png" alt="map control on mac, android, and ios" /></p>
+<p>As you can see in this image, the control also works on macOS. WinUI 3 does not currently have a native map control. To fill that gap, we have created a <code>WebView</code> implementation and <a href="https://github.com/CommunityToolkit/Maui/issues/605">opened a proposal</a> on the .NET MAUI Community Toolkit.</p>
+<h2 id="desktop-improvements">Desktop Improvements</h2>
+<p>We have seen many of you using .NET MAUI to target desktop platforms, and we&#8217;ve been working closely with quite a few customers who are also building cross-platform desktop applications with .NET MAUI. In response to your needs and feedback, we have surfaced a few useful features targeted at creating better desktop experiences including context menus, tooltips, pointer gestures, right-click mapping on tap gestures, and more control over the window size. Below are some highlights for you to explore in RC1.</p>
+<p><img class="alignnone" src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/Figure8.png" alt="context menu on Windows, .NET MAUI in .NET 7 Release Candidate 1" width="597" height="569" /></p>
+<h3 id="context-menu">Context Menu</h3>
+<p>You can now attach a context menu to any visual element using a MenuFlyout control. When the user right-clicks that view, the flyout will appear in that location when run on a desktop platform.</p>
+<pre><code class="language-xaml">&lt;Editor Text="This is my text and I want bold."&gt;
+    &lt;FlyoutBase.ContextFlyout&gt;
+        &lt;MenuFlyout&gt;
+            &lt;MenuFlyoutItem Text="Bold" Clicked="OnBoldClicked"/&gt;
+            &lt;MenuFlyoutItem Text="Italics" Clicked="OnItalicsClicked"/&gt;
+            &lt;MenuFlyoutItem Text="Underline" Clicked="OnUnderlineClicked"/&gt;
+        &lt;/MenuFlyout&gt;
+    &lt;/FlyoutBase.ContextFlyout&gt;
+&lt;/Editor&gt;</code></pre>
+<p><img class="alignnone" src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/maui-tooltip.png" alt="tooltip, .NET MAUI in .NET 7 Release Candidate 1" width="868" height="460" /></p>
+<h3 id="tooltips">Tooltips</h3>
+<p>Sometimes you want to provide details about what an element is onscreen when the user hovers the cursor over it. We have added a simple attached property for you to set that text, and the display and disappearance of the tooltip with automatically be triggered. This is the same pattern used for adding accessibility descriptions via semantic properties.</p>
+<pre><code class="language-xaml">&lt;RadioButton Value="home" 
+    ToolTipProperties.Text="Home"
+    SemanticProperties.DescriptionText="Home menu item"&gt;
+    &lt;RadioButton.Content&gt;
+        &lt;Image Source="home.png"/&gt;
+    &lt;/RadioButton.Content&gt;
+&lt;/RadioButton&gt;</code></pre>
+<h3 id="gestures">Gestures</h3>
+<p>Desktop apps need a few gestures that aren’t used on mobile, so in .NET 7 we are adding a pointer gesture for handling hover events and a button mask for secondary (commonly right-click) taps.</p>
+<pre><code class="language-xaml">&lt;PointerGestureRecognizer PointerEntered="HoverBegan" PointerExited="HoverEnded" PointerMoved="HoverMoved" /&gt;</code></pre>
+<pre><code class="language-csharp">var secondaryClick = new TapGestureRecognizer()
+{
+    Buttons = ButtonsMask.Secondary
+};
+
+secondaryClick.Tapped += SecondaryClick_Tapped;</code></pre>
+<h3 id="window-size-and-position">Window Size and Position</h3>
+<p>We&#8217;ve added properties and events to the Window so you have control at the cross-platform layer rather than writing platform code. These include:</p>
+<ul>
+<li>X/Y position*</li>
+<li>Width/Height*</li>
+<li>Minimum Width/Height</li>
+<li>Maximum Width/Height</li>
+<li>SizeChanged</li>
+</ul>
+<p><i>* not supported on macOS</i></p>
+<p>Now to size and center your window on the current display you can do this:</p>
+<pre><code class="language-csharp">const int newWidth = 800;
+const int newHeight = 600;
+
+// get screen size
+var disp = DeviceDisplay.Current.MainDisplayInfo;
+
+// center the window
+Window.X = (disp.Width / disp.Density - newWidth) / 2;
+Window.Y = (disp.Height / disp.Density - newHeight) / 2;
+
+// resize
+Window.Width = newWidth;
+Window.Height = newHeight;</code></pre>
+<h2 id="we-need-your-feedback">We need your feedback</h2>
+<p>We’d love to hear from you! As you encounter any issues, please file a report on GitHub at <a href="https://github.com/dotnet/maui/issues/new/choose">dotnet/maui</a>. For any issues related to Visual Studio 2022, please use the <a href="https://learn.microsoft.com/visualstudio/ide/how-to-report-a-problem-with-visual-studio?view=vs-2022">Report a Problem</a> button.</p>
+<h2 id="resources">Resources</h2>
+<p>Install and Getting Started:</p>
+<ul>
+<li><a href="https://visualstudio.microsoft.com/vs/preview/">Visual Studio 17.4 Preview 2.1</a></li>
+<li><a href="https://github.com/dotnet/maui-samples">.NET MAUI Samples</a></li>
+</ul>
+<p>Release notes:</p>
+<ul>
+<li><a href="https://github.com/dotnet/maui/releases/tag/7.0.0-rc.1.6683">.NET MAUI</a></li>
+<li><a href="https://github.com/xamarin/xamarin-android/releases">.NET for Android</a></li>
+<li><a href="https://github.com/xamarin/xamarin-macios/releases/tag/untagged-e43f0fe4c3cf3ff33a50">.NET for iOS and macOS</a></li>
+</ul>
+<p>Known issues:</p>
+<ul>
+<li><a href="https://github.com/xamarin/xamarin-android/wiki/Known-issues-in-.NET">.NET for Android</a></li>
+<li><a href="https://github.com/xamarin/xamarin-macios/wiki/Known-issues-in-.NET7">.NET for iOS and macOS</a></li>
+</ul>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/dotnet-maui-in-dotnet-7-rc1/">.NET MAUI in .NET 7 Release Candidate 1</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://devblogs.microsoft.com/dotnet/dotnet-maui-in-dotnet-7-rc1/feed/</wfw:commentRss>
+			<slash:comments>28</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>ASP.NET Core updates in .NET 7 Release Candidate 1</title>
+		<link>https://devblogs.microsoft.com/dotnet/asp-net-core-updates-in-dotnet-7-rc-1/</link>
+					<comments>https://devblogs.microsoft.com/dotnet/asp-net-core-updates-in-dotnet-7-rc-1/#comments</comments>
+		
+		<dc:creator><![CDATA[Daniel Roth]]></dc:creator>
+		<pubDate>Wed, 14 Sep 2022 19:13:30 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[ASP.NET]]></category>
+		<category><![CDATA[ASP.NET Core]]></category>
+		<category><![CDATA[Blazor]]></category>
+		<guid isPermaLink="false">https://devblogs.microsoft.com/dotnet/?p=42290</guid>
+
+					<description><![CDATA[<p>.NET 7 Release Candidate 1 is now available! Check out what's new in ASP.NET Core in this update.</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/asp-net-core-updates-in-dotnet-7-rc-1/">ASP.NET Core updates in .NET 7 Release Candidate 1</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p><a href="https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-rc-1">.NET 7 Release Candidate 1 (RC1) is now available</a> and includes many great new improvements to ASP.NET Core.</p>
+<p>Here&#8217;s a summary of what&#8217;s new in this preview release:</p>
+<ul>
+<li>Dynamic authentication requests in Blazor WebAssembly</li>
+<li>Handle location changing events</li>
+<li>Blazor WebAssembly debugging improvements</li>
+<li>.NET WebAssembly build tools for .NET 6 projects</li>
+<li>.NET JavaScript interop on WebAssembly</li>
+<li>Kestrel full certificate chain improvements</li>
+<li>Faster HTTP/2 uploads</li>
+<li>HTTP/3 improvements</li>
+<li>Experimental Kestrel support for WebTransport over HTTP/3</li>
+<li>Experimental OpenAPI support for gRPC JSON transcoding</li>
+<li>Rate limiting middleware improvements</li>
+<li>macOS dev-certs improvements</li>
+</ul>
+<p>For more details on the ASP.NET Core work planned for .NET 7 see the full <a href="https://aka.ms/aspnet/roadmap">ASP.NET Core roadmap for .NET 7</a> on GitHub.</p>
+<h2 id="get-started">Get started</h2>
+<p>To get started with ASP.NET Core in .NET 7 Release Candidate 1, <a href="https://dotnet.microsoft.com/download/dotnet/7.0">install the .NET 7 SDK</a>.</p>
+<p>If you&#8217;re on Windows using Visual Studio, we recommend installing the latest <a href="https://visualstudio.com/preview">Visual Studio 2022 preview</a>. If you&#8217;re on macOS, we recommend installing the latest <a href="https://visualstudio.microsoft.com/vs/mac/preview/">Visual Studio 2022 for Mac preview</a>.</p>
+<p>To install the latest .NET WebAssembly build tools, run the following command from an elevated command prompt:</p>
+<pre><code class="language-console">dotnet workload install wasm-tools</code></pre>
+<h2 id="upgrade-an-existing-project">Upgrade an existing project</h2>
+<p>To upgrade an existing ASP.NET Core app from .NET 7 Preview 7 to .NET 7 RC1:</p>
+<ul>
+<li>Update all Microsoft.AspNetCore.* package references to <code>7.0.0-rc.1.*</code>.</li>
+<li>Update all Microsoft.Extensions.* package references to <code>7.0.0-rc.1.*</code>.</li>
+</ul>
+<p>See also the full list of <a href="https://docs.microsoft.com/dotnet/core/compatibility/7.0#aspnet-core">breaking changes</a> in ASP.NET Core for .NET 7.</p>
+<h2 id="dynamic-authentication-requests-in-blazor-webassembly">Dynamic authentication requests in Blazor WebAssembly</h2>
+<p>Blazor provides out-of-the-box support for authentication using OpenID Connect and a variety of identity providers including Azure Active Directory (Azure AD) and Azure AD B2C. In .NET 7, Blazor now supports creating dynamic authentication requests at runtime with custom parameters to handle more advanced authentication scenarios in Blazor WebAssembly apps. To specify additional parameters, use the new <code>InteractiveRequestOptions</code> type and <code>NavigateToLogin</code> helper methods on <code>NavigationManager</code>.</p>
+<p>For example, you can specify a login hint to the identity provider for who to authenticate like this:</p>
+<pre><code class="language-csharp">InteractiveRequestOptions requestOptions = new()
+{
+    Interaction = InteractionType.SignIn,
+    ReturnUrl = NavigationManager.Uri,
+};
+requestOptions.TryAddAdditionalParameter("login_hint", "user@example.com");
+NavigationManager.NavigateToLogin("authentication/login", requestOptions);</code></pre>
+<p>Similarly, you can specify the OpenID Connect <code>prompt</code> parameter, like when you want to force an interactive login:</p>
+<pre><code class="language-csharp">InteractiveRequestOptions requestOptions = new()
+{
+    Interaction = InteractionType.SignIn,
+    ReturnUrl = NavigationManager.Uri,
+};
+requestOptions.TryAddAdditionalParameter("prompt", "login");
+NavigationManager.NavigateToLogin("authentication/login", requestOptions);</code></pre>
+<p>You can specify these options when using <code>IAccessTokenProvider</code> directly to request tokens:</p>
+<pre><code class="language-csharp">var accessTokenResult = await AccessTokenProvider.RequestAccessToken(
+    new AccessTokenRequestOptions
+    {
+        Scopes = new[] { "SecondAPI" }
+    });
+
+if (!accessTokenResult.TryGetToken(out var token))
+{
+    accessTokenResult.InteractionOptions.TryAddAdditionalParameter("login_hint", "user@example.com");
+    NavigationManager.NavigateToLogin(accessTokenResult.InteractiveRequestUrl, accessTokenResult.InteractionOptions);
+}</code></pre>
+<p>You can also specify authentication request options when a token cannot be acquired by the <code>AuthorizationMessageHandler</code> without user interaction:</p>
+<pre><code class="language-csharp">try
+{
+    await Http.GetAsync("/orders");
+
+}
+catch (AccessTokenNotAvailableException ex)
+{
+    ex.Redirect(requestOptions =&gt;
+    {
+        requestOptions.TryAddAdditionalParameter("login_hint", "user@example.com");
+    });
+}</code></pre>
+<p>Any additional parameters specified for the authentication request will be passed through to the underlying authentication library, which then handles them.</p>
+<blockquote><p>Note: Specifying additional parameters for <em>msal.js</em> is not yet fully implemented, but is expected to be completed soon for an upcoming release.</p></blockquote>
+<h2 id="handle-location-changing-events">Handle location changing events</h2>
+<p>Blazor in .NET 7 now has support for handling location changing events. This allows you to warn users about unsaved work or to perform related actions when the user performs a page navigation.</p>
+<p>To handle location changing events, register a handler with the <code>NavigationManager</code> service using the <code>RegisterLocationChangingHandler</code> method. Your handler can then perform async work on a navigation or choose to cancel the navigation by calling <code>PreventNavigation</code> on the <code>LocationChangingContext</code>. <code>RegisterLocationChangingHandler</code> returns an <code>IDisposable</code> instance that when disposed removes the corresponding location changing handler.</p>
+<p>For example, the following handler prevents navigation to the counter page:</p>
+<pre><code class="language-csharp">var registration = NavigationManager.RegisterLocationChangingHandler(async context =&gt;
+{
+    if (context.TargetLocation.EndsWith("counter"))
+    {
+        context.PreventNavigation();
+    }
+});</code></pre>
+<p>Note that your handler will only be called for internal navigations within the app. External navigations can only be handled synchronously using the <code>beforeunload</code> event in JavaScript.</p>
+<p>The new <code>NavigationLock</code> component makes common scenarios for handling location changing events easier. <code>NavigationLock</code> exposes an <code>OnBeforeInternalNavigation</code> callback that you can use to intercept and handle internal location changing events. If you want users to confirm external navigations too, you can use the <code>ConfirmExternalNavigations</code> property, which will hook the <code>beforeunload</code> event for you and trigger the browser specific prompt.</p>
+<pre><code class="language-razor">&lt;EditForm EditContext="editContext" OnValidSubmit="Submit"&gt;
+    ...
+&lt;/EditForm&gt;
+&lt;NavigationLock OnBeforeInternalNavigation="ConfirmNavigation" ConfirmExternalNavigation /&gt;
+
+@code {
+    private readonly EditContext editContext;
+
+    ...
+
+    // Called only for internal navigations
+    // External navigations will trigger a browser specific prompt
+    async Task ConfirmNavigation(LocationChangingContext context)
+    {
+        if (editContext.IsModified())
+        {
+            var isConfirmed = await JS.InvokeAsync&lt;bool&gt;("window.confirm", "Are you sure you want to leave this page?");
+
+            if (!isConfirmed)
+            {
+                context.PreventNavigation();
+            }
+        }
+    }
+}</code></pre>
+<h2 id="blazor-webassembly-debugging-improvements">Blazor WebAssembly debugging improvements</h2>
+<p>Blazor WebAssembly debugging in .NET 7 now has the following improvements:</p>
+<ul>
+<li>Support for the Just My Code setting to show or hide type members not from user code</li>
+<li>Support for inspecting multidimensional arrays</li>
+<li>Call Stack now shows the correct name for async methods</li>
+<li>Improved expression evaluation</li>
+<li>Correct handling of <code>new</code> keyword on derived members</li>
+<li>Support for debugger related attributes in <code>System.Diagnostics</code></li>
+</ul>
+<h2 id="net-webassembly-build-tools-for-net-6-projects">.NET WebAssembly build tools for .NET 6 projects</h2>
+<p>You can now use the .NET WebAssembly build tools with a .NET 6 project when working with the .NET 7 SDK. The new <code>wasm-tools-net6</code> workload includes the .NET WebAssembly build tools for .NET 6 projects so that they can be used with the .NET 7 SDK. To install the new <code>wasm-tools-net6</code> workload run the following command from an elevated command prompt:</p>
+<pre><code class="language-console">dotnet workload install wasm-tools-net6</code></pre>
+<p>The existing <code>wasm-tools</code> workload installs the .NET WebAssembly build tools for .NET 7 projects. However, the .NET 7 version of the .NET WebAssembly build tools are incompatible with existing projects built with .NET 6. Projects using the .NET WebAssembly build tools that need to support both .NET 6 and .NET 7 will need to use multi-targeting.</p>
+<h2 id="net-javascript-interop-on-webassembly">.NET JavaScript interop on WebAssembly</h2>
+<p>.NET 7 introduces a new low-level mechanism for using .NET in JavaScript-based apps. With this new JavaScript interop capability, you can invoke .NET code from JavaScript using the .NET WebAssembly runtime as well call into JavaScript functionality from .NET without any dependency on the Blazor UI component model.</p>
+<p>The easiest way to see the new JavaScript interop functionality in action is using the new experimental templates in the <code>wasm-experimental</code> workload:</p>
+<pre><code class="language-console">dotnet workload install wasm-experimental</code></pre>
+<p>This workload contains two project templates: WebAssembly Browser App, and WebAssembly Console App.
+These templates are experimental, which means the developer workflow for them hasn&#8217;t been fully sorted out yet (for example, these templates don&#8217;t run yet in Visual Studio). But the .NET and JavaScript APIs used in these templates are supported in .NET 7 and provide a foundation for using .NET on WebAssembly from JavaScript.</p>
+<p>You can create a WebAssembly Browser App by running the following command:</p>
+<pre><code class="language-console">dotnet new wasmbrowser</code></pre>
+<p>This template creates a simple web app that demonstrates using .NET and JavaScript together in a browser. The WebAssembly Console App is similar, but runs as a Node.js console app instead of a browser-based web app.</p>
+<p>The JavaScript module in <em>main.js</em> in the created project demonstrates how to run .NET code from JavaScript. The relevant APIs are imported from <em>dotnet.js</em>. These APIs enable you to setup named modules that can be imported into your C# code, as well as call into methods exposed by your .NET code including <code>Program.Main</code>:</p>
+<pre><code class="language-js">import { dotnet } from './dotnet.js'
+
+const is_browser = typeof window != "undefined";
+if (!is_browser) throw new Error(`Expected to be running in a browser`);
+
+// Setup the .NET WebAssembly runtime
+const { setModuleImports, getAssemblyExports, getConfig, runMainAndExit } = await dotnet
+    .withDiagnosticTracing(false)
+    .withApplicationArgumentsFromQuery()
+    .create();
+
+// Set module imports that can be called from .NET
+setModuleImports("main.js", {
+    window: {
+        location: {
+            href: () =&gt; globalThis.window.location.href
+        }
+    }
+});
+
+const config = getConfig();
+const exports = await getAssemblyExports(config.mainAssemblyName);
+const text = exports.MyClass.Greeting(); // Call into .NET from JavaScript
+console.log(text);
+
+document.getElementById("out").innerHTML = `${text}`;
+await runMainAndExit(config.mainAssemblyName, ["dotnet", "is", "great!"]); // Run Program.Main</code></pre>
+<p>To import a JavaScript function so it can be called from C#, use the new <code>JSImportAttribute</code> on a matching method signature:</p>
+<pre><code class="language-csharp">[JSImport("window.location.href", "main.js")]
+internal static partial string GetHRef();</code></pre>
+<p>The first parameter to the <code>JSImportAttribute</code> is the name of the JavaScript function to import and the second parameter is the name of the module, both of which were setup by the <code>setModuleImports</code> call in <em>main.js</em>.</p>
+<p>In the imported method signature you can use .NET types for parameters and return values, which will be marshaled for you. Use the <code>JSMarshalAsAttribute&lt;T&gt;</code> to control how the imported method parameters are marshaled. For example, you might choose to marshal a <code>long</code> as <code>JSType.Number</code> or <code>JSType.BitInt</code>. You can pass <code>Action</code>/<code>Func</code> callbacks as parameters, which will be marshaled as callable JavaScript functions. You can pass both JavaScript and managed object references and they will be marshaled as proxy objects, keeping the object alive across the boundary until the proxy is garbage collected. You can also import and export asynchronous methods with <code>Task</code> result, which will be marshaled as JavaScript promises. Most of the marshaled types work in both directions, as parameters and as return values, on both imported and exported methods.</p>
+<p>To export a .NET method so it can be called from JavaScript, use the <code>JSExportAttribute</code>:</p>
+<pre><code class="language-csharp">[JSExport]
+internal static string Greeting()
+{
+    var text = $"Hello, World! Greetings from {GetHRef()}";
+    Console.WriteLine(text);
+    return text;
+}</code></pre>
+<p>Blazor provides its own JavaScript interop mechanism based on the <code>IJSRuntime</code> interface, which is uniformly supported across all Blazor hosting models. This common asynchronous abstraction enables library authors to build JavaScript interop libraries that can be shared across the Blazor ecosystem and is still the recommend way to do JavaScript interop in Blazor. However, in Blazor WebAssembly apps you also had the option to make synchronous JavaScript interop calls using the <code>IJSInProcessRuntime</code> or even unmarshalled calls using the <code>IJSUnmarshalledRuntime</code>. <code>IJSUnmarshalledRuntime</code> was tricky to use and only partially supported. In .NET 7 <code>IJSUnmarshalledRuntime</code> is now obsolete and should be replaced with the <code>[JSImport]</code>/<code>[JSExport]</code> mechanism. Blazor doesn&#8217;t directly expose the <code>dotnet</code> runtime instance it uses from JavaScript, but it can still be accessed by calling <code>getDotnetRuntime(0)</code>. You can also import JavaScript modules from your C# code by calling <code>JSHost.ImportAsync</code> which makes module&#8217;s exports visible to <code>[JSImport]</code>.</p>
+<h2 id="kestrel-full-certificate-chain-improvements">Kestrel full certificate chain improvements</h2>
+<p><code>HttpsConnectionAdapterOptions</code> has a new <code>ServerCertificateChain</code> property of type <code>X509Certificate2Collection</code>, which makes it easier to validate certificate chains by allowing a full chain including intermediate certificates to be specified. See <a href="https://github.com/dotnet/aspnetcore/issues/21513">dotnet/aspnetcore#21513</a> for more details.</p>
+<h2 id="faster-http-2-uploads">Faster HTTP/2 uploads</h2>
+<p>We&#8217;ve increased Kestrel&#8217;s default HTTP/2 upload connection window size from 128 KB to 1 MB which dramatically improves HTTP/2 upload speeds over high-latency connections using Kestrel&#8217;s default configuration.</p>
+<p>We tested the impact of increasing this limit by uploading a 108 MB file upload using a single stream on localhost after introducing only 10 ms of artificial latency and saw about a 6x improvement in upload speed.</p>
+<p>The screenshot below compares the time taken for a 108 MB upload in Edge&#8217;s dev tools network tab:</p>
+<p><!--<a href="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/http2-window-size-screenshot.png"><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/http2-window-size-screenshot-1024x312.png" alt="Image http2 window size screenshot" width="640" height="195" class="alignnone size-large wp-image-42328" srcset="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/http2-window-size-screenshot-1024x312.png 1024w, https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/http2-window-size-screenshot-300x91.png 300w, https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/http2-window-size-screenshot-768x234.png 768w, https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/http2-window-size-screenshot-1536x467.png 1536w, https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/http2-window-size-screenshot-2048x623.png 2048w" sizes="(max-width: 640px) 100vw, 640px" /></a>-->
+<img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/http2-window-size-screenshot.png" alt="Image http2 window size screenshot" /></p>
+<ul>
+<li>Before: 26.9 seconds</li>
+<li>After: 4.3 seconds</li>
+</ul>
+<h2 id="http-3-improvements">HTTP/3 improvements</h2>
+<p>.NET 7 RC1 continues to improve Kestrel&#8217;s support for HTTP/3. The two main areas of improvement are feature parity with HTTP/1.1 and HTTP/2 and performance.</p>
+<p>The biggest feature in this release is complete support for <a href="https://docs.microsoft.com/dotnet/api/microsoft.aspnetcore.hosting.listenoptionshttpsextensions.usehttps"><code>ListenOptions.UseHttps</code></a> with HTTP/3. Kestrel offers advanced options for configuring connection certificates, such as hooking into <a href="https://wikipedia.org/wiki/Server_Name_Indication">Server Name Indication (SNI)</a>.</p>
+<p>The following example shows how to use an SNI callback to resolve TLS options:</p>
+<pre><code class="language-csharp">var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.ConfigureKestrel(options =&gt;
+{
+    options.ListenAnyIP(8080, listenOptions =&gt;
+    {
+        listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+        listenOptions.UseHttps(new TlsHandshakeCallbackOptions
+        {
+            OnConnection = context =&gt;
+            {
+                var options = new SslServerAuthenticationOptions
+                {
+                    ServerCertificate = ResolveCertForHost(context.ClientHelloInfo.ServerName)
+                };
+                return new ValueTask&lt;SslServerAuthenticationOptions&gt;(options);
+            },
+        });
+    });
+});</code></pre>
+<p>We&#8217;ve also done a lot of work to reduce HTTP/3 allocations in .NET 7 RC1. You can see some of those improvements here:</p>
+<ul>
+<li><a href="https://github.com/dotnet/aspnetcore/pull/42685">HTTP/3: Avoid per-request cancellation token allocations</a></li>
+<li><a href="https://github.com/dotnet/aspnetcore/pull/42708">HTTP/3: Avoid ConnectionAbortedException allocations</a></li>
+<li><a href="https://github.com/dotnet/aspnetcore/pull/42760">HTTP/3: ValueTask pooling</a></li>
+</ul>
+<h2 id="experimental-kestrel-support-for-webtransport-over-http-3">Experimental Kestrel support for WebTransport over HTTP/3</h2>
+<p>We&#8217;re excited to announce built-in experimental support for WebTransport over HTTP/3 in Kestrel. This feature was written by our excellent intern Daniel! WebTransport is a new <a href="https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http3/draft-ietf-webtrans-http3.html#name-establishing-a-transport-ca">draft specification</a> for a transport protocol similar to WebSockets that allows the usage of multiple streams per connection. This can be useful for splitting communication channels and thus avoiding head-of-line blocking. For example, consider an online web-based game where the game state is transmitted on one bidirectional stream, the players&#8217; voices for the game&#8217;s voice chat feature on another bidirectional stream, and the player&#8217;s controls are transmitted on a unidirectional stream. With WebSockets, this would all need to be put on separate connections or squashed into a single stream. With WebTransport, you can keep all the traffic on one connection but separate them into their own streams and, if one stream were to block, the others would continue uninterrupted.</p>
+<p>Additional details will be available in a separate blog post.</p>
+<h2 id="experimental-openapi-support-for-grpc-json-transcoding">Experimental OpenAPI support for gRPC JSON transcoding</h2>
+<p><a href="https://devblogs.microsoft.com/dotnet/announcing-grpc-json-transcoding-for-dotnet/">gRPC JSON transcoding</a> is a new feature in .NET 7 for turning gRPC APIs into RESTful APIs.</p>
+<p>.NET 7 RC1 adds <em>experimental</em> support for generating OpenAPI from gRPC transcoded RESTful APIs. OpenAPI with gRPC JSON transcoding is a highly requested feature, and we&#8217;re pleased to offer a way to combine these great technologies. The NuGet package is experimental in .NET 7 to give us time to explore the best way to integrate these features.</p>
+<p>To enable OpenAPI with gRPC JSON transcoding:</p>
+<ol>
+<li>Add a package reference to <a href="https://www.nuget.org/packages/Microsoft.AspNetCore.Grpc.Swagger">Microsoft.AspNetCore.Grpc.Swagger</a>. The version must be 0.3.0-xxx or greater.</li>
+<li>Configure Swashbuckle in startup. The <code>AddGrpcSwagger</code> method configures Swashbuckle to include gRPC endpoints.</li>
+</ol>
+<pre><code class="language-csharp">var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddGrpc().AddJsonTranscoding();
+builder.Services.AddGrpcSwagger();
+builder.Services.AddSwaggerGen(c =&gt;
+{
+    c.SwaggerDoc("v1",
+        new OpenApiInfo { Title = "gRPC transcoding", Version = "v1" });
+});
+
+var app = builder.Build();
+app.UseSwagger();
+app.UseSwaggerUI(c =&gt;
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+});
+app.MapGrpcService&lt;GreeterService&gt;();
+
+app.Run();</code></pre>
+<p>To confirm that Swashbuckle is generating Swagger for the RESTful gRPC services, start the app and navigate to the Swagger UI page:</p>
+<p><img src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/swaggerui.png" alt="Swagger UI" /></p>
+<h2 id="rate-limiting-middleware-improvements">Rate limiting middleware improvements</h2>
+<p>We&#8217;ve added many features to the rate limiting middleware in .NET 7 RC1 that should make it both more functional, and easier to use.</p>
+<p>We&#8217;ve added attributes which can be used to enable or disable rate limiting on a given endpoint. For example, here&#8217;s how you could apply a policy named <code>MyControllerPolicy</code> to a controller:</p>
+<pre><code class="language-csharp">public class MyController : Controller
+{
+    [EnableRateLimitingAttribute("MyControllerPolicy")]
+    public IActionResult Index()
+    {
+        return View();
+    }
+}</code></pre>
+<p>You can also disable rate limiting entirely on a given endpoint or group of endpoints. Let&#8217;s say you had enabled rate limiting on a group of endpoints:</p>
+<pre><code class="language-csharp">app.MapGroup("/public/todos").RequireRateLimiting("MyGroupPolicy");</code></pre>
+<p>You could then disable rate limiting on a specific endpoint within that group as follows:</p>
+<pre><code class="language-csharp">app.MapGroup("/public/todos/donothing").DisableRateLimiting();</code></pre>
+<p>You can also now apply policies directly to endpoints. Unlike named policies, policies added in this way to not need to be configured on the <code>RateLimiterOptions</code>. Let&#8217;s say you had defined a policy type:</p>
+<pre><code class="language-csharp">public class MyRateLimiterPolicy : IRateLimiterPolicy&lt;string&gt;
+{
+...
+}</code></pre>
+<p>You could add an instance of it directly to an endpoint as follows:</p>
+<pre><code class="language-csharp">app.MapGet("/", () =&gt; "Hello World!").RequireRateLimiting(new MyRateLimiterPolicy());</code></pre>
+<p>Finally, we&#8217;ve updated the <code>RateLimiterOptions</code> convenience methods to take an <code>Action&lt;Options&gt;</code> rather than an <code>Options</code> instance and also added an <code>IServiceCollection</code> extension method for using rate limiting. So, to enable all of the preceding rate limiting policies in your app, you could do the following:</p>
+<pre><code class="language-csharp">builder.Services.AddRateLimiter(options =&gt;
+{
+    options.AddTokenBucketLimiter("MyControllerPolicy", options =&gt;
+    {
+        options.TokenLimit = 1;
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 1;
+        options.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
+        options.TokensPerPeriod = 1;
+    })
+    .AddPolicy&lt;string&gt;("MyGroupPolicy", new MyRateLimiterPolicy());
+});</code></pre>
+<p>This will apply a <code>TokenBucketLimiter</code> to your Controller, your custom <code>MyRateLimiterPolicy</code> to endpoints matching <code>/public/todos</code> (with the exception of <code>/public/todos/donothing</code>), and your custom <code>MyRateLimiterPolicy</code> to <code>/</code>.</p>
+<h2 id="macos-dev-certs-improvements">macOS dev-certs improvements</h2>
+<p>We&#8217;ve made some significant quality-of-life improvements to the experience of using HTTPS development certificates for macOS users in this release, greatly reducing the number of authentication prompts displayed when creating, trusting, reading, and deleting ASP.NET Core HTTPS development certificates. This had been a pain-point for ASP.NET Core developers on macOS when trying to use development certificates in their workflows.</p>
+<p>With this release, the development certificates generated by the <code>dotnet dev-certs</code> tool on macOS have a narrower scope of trust, settings are now added in per-user trust settings instead of system-wide, and Kestrel will be able to bind to these new certificates without needing to access the system keychain. As part of this work, there were also some quality-of-life improvements made, such as reworking some user-facing messages for clarity and precision.</p>
+<p>These changes combine to result in a much smoother experience and far fewer password prompts when using HTTPS during development on macOS.</p>
+<h2 id="see-the-new-blazor-updates-in-action">See the new Blazor updates in action!</h2>
+<p>For live demos of dynamic authentication requests in Blazor WebAssembly, Blazor WebAssembly debugging improvements, and .NET JavaScript interop on WebAssembly, see our recent <a href="https://www.youtube.com/watch?v=-ZSscIhQaRk&amp;list=PLdo4fOcmZ0oX-DBuRG4u58ZTAJgBAeQ-t&amp;index=2">Blazor Community Standup</a>:</p>
+<p><iframe width="100%" height="315" src="https://www.youtube-nocookie.com/embed/-ZSscIhQaRk" allowfullscreen></iframe></p>
+<h2 id="give-feedback">Give feedback</h2>
+<p>We hope you enjoy this preview release of ASP.NET Core in .NET 7. Let us know what you think about these new improvements by filing issues on <a href="https://github.com/dotnet/aspnetcore/issues/new">GitHub</a>.</p>
+<p>Thanks for trying out ASP.NET Core!</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/asp-net-core-updates-in-dotnet-7-rc-1/">ASP.NET Core updates in .NET 7 Release Candidate 1</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://devblogs.microsoft.com/dotnet/asp-net-core-updates-in-dotnet-7-rc-1/feed/</wfw:commentRss>
+			<slash:comments>12</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Announcing .NET 7 Release Candidate 1</title>
+		<link>https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-rc-1/</link>
+					<comments>https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-rc-1/#comments</comments>
+		
+		<dc:creator><![CDATA[Jeremy Likness]]></dc:creator>
+		<pubDate>Wed, 14 Sep 2022 17:56:25 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<guid isPermaLink="false">https://devblogs.microsoft.com/dotnet/?p=42298</guid>
+
+					<description><![CDATA[<p>.NET 7 Release Candidate 1 is the first of two release candidates that developers can now use in production. This post recaps major features included in the fastest .NET version to date.</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-rc-1/">Announcing .NET 7 Release Candidate 1</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Today we announce .NET 7 Release Candidate 1. This is the first of two release candidates (RC) for .NET 7 that are supported in production.</p>
+<p>You can <a href="https://dotnet.microsoft.com/download/dotnet/7.0">download .NET 7 Release Candidate 1</a>, for Windows, macOS, and Linux.</p>
+<ul>
+<li><a href="https://dotnet.microsoft.com/download/dotnet/7.0">Installers and binaries</a></li>
+<li><a href="https://mcr.microsoft.com/catalog?search=dotnet/">Container images</a></li>
+<li><a href="https://github.com/dotnet/core/blob/master/release-notes/7.0/">Linux packages</a></li>
+<li><a href="https://github.com/dotnet/core/tree/master/release-notes/7.0">Release notes</a></li>
+<li><a href="https://github.com/dotnet/core/blob/main/release-notes/7.0/known-issues.md">Known issues</a></li>
+<li><a href="https://github.com/dotnet/core/issues">GitHub issue tracker</a></li>
+</ul>
+<p>.NET 7 Release Candidate 1 has been tested with Visual Studio 17.4 Preview 2. We recommend you use the <a href="https://visualstudio.com/preview">preview channel builds</a> if you want to try .NET 7 with Visual Studio family products. If you&#8217;re on macOS, we recommend using the latest <a href="https://visualstudio.microsoft.com/vs/mac/preview/">Visual Studio 2022 for Mac preview</a>.</p>
+<p>Don&#8217;t forget about <a href="https://dotnetconf.net">.NET Conf 2022</a>. Join us November 8-10, 2022 to celebrate the .NET 7 release!</p>
+<p>In this blog, we&#8217;ll highlight the core themes of .NET 7 and provide you with resources to dive deeper into the details.</p>
+<p>For a more detailed recap of all the features and improvements included in .NET 7 Release Candidate 1, check out the previous .NET 7 Preview blog posts:</p>
+<ul>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-net-7-preview-1/">Announcing .NET 7 Preview 1</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-preview-2/">Announcing .NET 7 Preview 2</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-preview-3/">Announcing .NET 7 Preview 3</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-preview-4/">Announcing .NET 7 Preview 4</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-preview-5/">Announcing .NET 7 Preview 5</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-preview-6/">Announcing .NET 7 Preview 6</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-preview-7/">Announcing .NET 7 Preview 7</a></li>
+</ul>
+<h2 id="net-maui">.NET MAUI</h2>
+<p>.NET Multi-platform App UI (MAUI) unifies Android, iOS, macOS, and Windows APIs into a single API so you can write one app that runs natively on many platforms. .NET MAUI enables you to deliver the best app experiences designed specifically by each platform (Android, iOS, macOS, Windows, and Tizen) while enabling you to craft consistent brand experience through rich styling and graphics. Out of the box, each platform looks and behaves the way it should without any additional widgets or styling required.</p>
+<p>As part of .NET 7, .NET MAUI provides a single project that handles multi-targeting across devices and their platforms. To learn more about the productivity improvements, tooling, and performance enhancements check out these resources:</p>
+<ul>
+<li><a href="https://devblogs.microsoft.com/dotnet/introducing-dotnet-maui-one-codebase-many-platforms/">Introducing .NET MAUI – One Codebase, Many Platforms</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/dotnet-maui-visualstudio-2022-release/">Productivity comes to .NET MAUI in Visual Studio 2022</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/performance-improvements-in-dotnet-maui/">Performance Improvements in .NET MAUI</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/dotnet-conf-focus-on-maui-recap/">.NET Conf Focus on MAUI &#8211; That&#8217;s a wrap!</a></li>
+</ul>
+<p><strong>NOTE: </strong>The Visual Studio experience to try out .NET MAUI with .NET 7 will be available in the upcoming 17.4 Preview 2.1 release.</p>
+<h2 id="cloud-native">Cloud Native</h2>
+<p>Cloud native is a set of best practices for building your apps for and in the cloud to take advantage of resilience, scalability, efficiency, and velocity.</p>
+<p>.NET is a great choice to build cloud native apps. To learn more about cloud native features and improvements in .NET 7, check out these resources:</p>
+<ul>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-builtin-container-support-for-the-dotnet-sdk/">Announcing built-in container support for the .NET SDK</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-grpc-json-transcoding-for-dotnet/">Announcing gRPC JSON transcoding for .NET</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/dotnet-7-comes-to-azure-functions/">.NET 7 comes to Azure Functions &amp; Visual Studio 2022</a></li>
+</ul>
+<h2 id="arm64">ARM64</h2>
+<p>ARM provides a small form factor with exceptional performance and high-power efficiency.</p>
+<p>.NET helps you build applications to run on ARM devices. For more information on how fast .NET 7 runs on ARM64, check out these resources:</p>
+<ul>
+<li><a href="https://devblogs.microsoft.com/dotnet/arm64-performance-improvements-in-dotnet-7/">Arm64 Performance Improvements in .NET 7</a></li>
+</ul>
+<h2 id="modernization">Modernization</h2>
+<p>Being on a modern version of .NET lets you take advantage of lightning-fast performance with a plethora of new features improving your developer quality of life.</p>
+<p>To make the upgrade experience as seamless as possible, the .NET Upgrade Assistant provides you with a guided step-by-step experience to modernize your .NET applications by analyzing and upgrading your project files, code files, and dependencies.</p>
+<p>For more information on how .NET 7 helps you modernize your applications, check out these resources:</p>
+<ul>
+<li><a href="https://devblogs.microsoft.com/dotnet/incremental-asp-net-to-asp-net-core-migration/">Incremental ASP.NET to ASP.NET Core Migration</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/introducing-project-migrations-visual-studio-extension/">Migrating from ASP.NET to ASP.NET Core in Visual Studio</a></li>
+</ul>
+<h2 id="performance">Performance</h2>
+<p>.NET is fast. .NET 7 is the fastest .NET yet. Over a thousand performance-impacting improvements went into .NET 7 impacting reflection, On Stack Replacement(OSR), start-up time, Native AOT, loop optimizations and many other areas.</p>
+<p>For more information on why .NET 7 is the fastest version yet, check out these resources:</p>
+<ul>
+<li><a href="https://devblogs.microsoft.com/dotnet/performance_improvements_in_net_7/">Performance Improvements in .NET 7</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/regular-expression-improvements-in-dotnet-7/">Regular Expression Improvements in .NET 7</a></li>
+</ul>
+<h2 id="contributor-spotlight-filip-navara">Contributor spotlight: Filip Navara</h2>
+<p>A huge &#8220;Thank you&#8221; goes out to all our community members. We deeply appreciate your thoughtful contributions. We asked contributor <a href="https://github.com/filipnavara">@filipnavara</a> to share his thoughts.</p>
+<p><img class="aligncenter" src="https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2022/09/filip_navara.jpeg" alt="Filip Navara" data-wp-editing="1" /></p>
+<p>In Filip&#8217;s own words:</p>
+<p>I started playing with computers as a kid. While visiting my grandpa, I often saw him doing his work in BASIC. He was writing factory automation software, and I inherited my love for all things technical from him. DOS was the standard system back then, and Borland dominated the programming tools. I wanted to understand how programming works and to learn it. Stubbornly I refused all his advice and had to learn everything myself by trial and error. It was foolish, but seeing the little programs come to life was fun.</p>
+<p>Gradually I started programming in different languages, exploring the internet and then the world of open source. I mostly enjoyed coding on low-level software such as compilers, operating systems, or system emulators. In my spare time during high school, I contributed to projects like Wine, ReactOS, QEMU, Binutils, and the MinGW compiler tool set.</p>
+<p>When the first version of .NET Framework came out, I was immediately intrigued. It promised the simplicity of Delphi that I was familiar with, and the C# language was genuinely fun to learn. The timing was perfect since I joined my friends to start a small project to develop an email client application, and we all agreed to build it in .NET. That application, eM Client, kept me occupied throughout my university studies. It is still my current project to this day; even though the team has grown, my responsibilities have shifted, and we&#8217;ve got a lot of very talented programmers to relieve me of my duties.</p>
+<p>Open sourcing of .NET was a big blessing for us and made many things easier. Nowadays, I can focus more on side projects, and contributing to .NET is a natural choice. It allows me to use my knowledge to the full extent, from the low-level details of hardware, and operating system internals, to the high-level frameworks that our email application builds on.</p>
+<p>The open code allowed me to drive a project to port WinForms framework to macOS (based on Mono code but using Cocoa native controls in many places). I started contributing more when .NET 5 unification plan started taking place. It was always a pain point for us that different platforms like Xamarin.Mac and Mono lagged in the supported features behind the .NET we used on Windows. Initially, I started to fill the gaps in Mono base class library, which was already sharing some code with .NET Core. I realized that this game of catching up might not be the best solution, so I started exploring other options like running Xamarin.Mac on CoreCLR. It happened to take place just days before the first MonoVM (Mono runtime in .NET 5+) commits were written. Once I realized what was happening, I jumped on board that plan. All that work happened hidden in the open on GitHub, with an official announcement coming a few months later at the Build conference. It was thrilling to see the progress, to build my own Xamarin runtime build that ran on this early unified MonoVM runtime, that showed the first UI. Eventually, it started even our email client application. It was indeed a game changer for us. With the old .NET Framework, we could not use the new features when they were released. It took years before the deployment of new releases caught up. Now I was in the opposite situation, running bleeding edge bits before everyone else!</p>
+<p>This work on the runtime unification has now successfully concluded, and we released our application with the latest .NET 6 bits to our customers. However, many places in .NET can still be improved, and I enjoy working with the people on the .NET team. I try to drive at least one minor feature for each release. For .NET 6, I focused on getting the iOS cryptography stack working. For .NET 7, I took a stab at a niche API for handling Negotiate/Kerberos/NTLM authentication with the great help of the networking team. While it&#8217;s not a very attractive or visible feature, it was long-term technical debt. The code was lacking in the unit and functional tests; ASP.NET accessed the internals through reflection, which is not NativeAOT friendly; and most importantly, library authors had to use complicated ways to get around the lack of simple public API.</p>
+<p>I sincerely hope to contribute more in the future, and I enjoy seeing other contributors finding their areas of interest and making the whole platform better for everyone!</p>
+<h2 id="support">Support</h2>
+<p>.NET 7 is not a Long-Term Support (LTS) release, so it will receive free support and patches for 18 months from the release date. It’s important to note that the quality of all releases LTS or not is the same. The only difference is the length of support. For more about .NET support policies, see the <a href="https://dotnet.microsoft.com/platform/support/policy/dotnet-core">.NET and .NET Core official support policy</a>.</p>
+<h2 id="roadmaps">Roadmaps</h2>
+<p>Releases of .NET include products, libraries, runtime, and tooling, and represent a collaboration across multiple teams inside and outside Microsoft. You can learn more about these areas by reading the product roadmaps:</p>
+<ul>
+<li><a href="https://github.com/dotnet/aspnetcore/issues/39504">ASP.NET Core 7 and Blazor Roadmap</a></li>
+<li><a href="https://docs.microsoft.com/ef/core/what-is-new/ef-core-7.0/plan">EF 7 Roadmap</a></li>
+<li><a href="https://github.com/dotnet/machinelearning/blob/main/ROADMAP.md">ML.NET</a></li>
+<li><a href="https://github.com/dotnet/maui/wiki/Roadmap">.NET MAUI</a></li>
+<li><a href="https://github.com/dotnet/winforms/blob/main/docs/roadmap.md">WinForms</a></li>
+<li><a href="https://github.com/dotnet/wpf/blob/main/roadmap.md">WPF</a></li>
+<li><a href="https://github.com/NuGet/Home/issues/11571">NuGet</a></li>
+<li><a href="https://github.com/dotnet/roslyn/blob/main/docs/Language%20Feature%20Status.md">Roslyn</a></li>
+<li><a href="https://github.com/dotnet/core/blob/main/roadmap.md">Runtime</a></li>
+</ul>
+<h2 id="closing">Closing</h2>
+<p>We appreciate and <a href="https://dotnet.microsoft.com/thanks">thank you</a> for your all your support and contributions to .NET. Please <a href="https://dotnet.microsoft.com/download/dotnet/7.0">give .NET 7 Release Candidate 1 a try</a> and tell us what you think!</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-rc-1/">Announcing .NET 7 Release Candidate 1</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-rc-1/feed/</wfw:commentRss>
+			<slash:comments>12</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Announcing Entity Framework 7 Release Candidate 1</title>
+		<link>https://devblogs.microsoft.com/dotnet/announcing-ef7-release-candidate-1/</link>
+					<comments>https://devblogs.microsoft.com/dotnet/announcing-ef7-release-candidate-1/#comments</comments>
+		
+		<dc:creator><![CDATA[Jeremy Likness]]></dc:creator>
+		<pubDate>Wed, 14 Sep 2022 17:55:10 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[Entity Framework]]></category>
+		<category><![CDATA[announcement]]></category>
+		<category><![CDATA[Announcements]]></category>
+		<category><![CDATA[Entity Framework Core]]></category>
+		<guid isPermaLink="false">https://devblogs.microsoft.com/dotnet/?p=42294</guid>
+
+					<description><![CDATA[<p>Announcing EF7 Release Candidate 1</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/announcing-ef7-release-candidate-1/">Announcing Entity Framework 7 Release Candidate 1</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Entity Framework Core 7 (EF7) Release Candidate 1 has shipped! The team focused on addressing defects, minor enhancements, and putting the finishing touches on features.</p>
+<p>See the <a href="https://github.com/dotnet/efcore/issues?q=milestone%3A7.0.0-rc1">full list of EF7 RC1 changes</a> on GitHub.</p>
+<p>For a detailed look at what&#8217;s new in EF7, with working samples, check out our newly updated <a href="https://docs.microsoft.com/ef/core/what-is-new/ef-core-7.0/whatsnew">What&#8217;s New in EF7</a> documentation. You can also read the feature deep dives in our previous blog posts:</p>
+<ul>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-ef7-preview7-entity-framework/">EF7 Preview 7 &#8211; Interceptors</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-ef-core-7-preview6-performance-optimizations/">EF7 Preview 6 &#8211; Performance</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/category/dotnet-core/">EF7 Preview 5 &#8211; Table-per-Concrete Type (TPC)</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-entity-framework-7-preview-4/">EF7 Preview 4 &#8211; DDD-friendly converters</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-entity-framework-7-preview-3/">EF7 Preview 3 &#8211; customizable database-first scaffolding templates</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/announcing-entity-framework-7-preview-1/">EF7 Preview 1 &#8211; the beginning</a></li>
+</ul>
+<h2 id="ef7-prerequisites">EF7 Prerequisites</h2>
+<ul>
+<li>EF7 targets .NET 6, which means it can be used on .NET 6 (LTS) or .NET 7.</li>
+<li>EF7 will not run on .NET Framework.</li>
+</ul>
+<p>EF7 is the successor to EF Core 6.0, not to be confused with <a href="https://github.com/dotnet/ef6">EF6</a>. If you are considering upgrading from EF6, please read our guide to <a href="https://docs.microsoft.com/ef/efcore-and-ef6/porting/">port from EF6 to EF Core</a>.</p>
+<h2 id="how-to-get-ef7-rc1">How to get EF7 RC1</h2>
+<p>EF7 is distributed exclusively as a set of NuGet packages. For example, to add the SQL Server provider to your project, you can use the following command using the dotnet tool:</p>
+<pre><code class="language-bash">dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 7.0.0-rc.1.22426.7</code></pre>
+<p>This following table links to the RC1 versions of the EF Core packages and describes what they are used for.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Package</strong></th>
+<th style="text-align: left;"><strong>Purpose</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore</a></td>
+<td style="text-align: left;">The main EF Core package that is independent of specific database providers</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.SqlServer/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore.SqlServer</a></td>
+<td style="text-align: left;">Database provider for Microsoft SQL Server and SQL Azure</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite</a></td>
+<td style="text-align: left;">SQL Server support for spatial types</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Sqlite/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore.Sqlite</a></td>
+<td style="text-align: left;">Database provider for SQLite that includes the native binary for the database engine</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Sqlite.Core/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore.Sqlite.Core</a></td>
+<td style="text-align: left;">Database provider for SQLite <em>without</em> a packaged native binary</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Sqlite.NetTopologySuite/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore.Sqlite.NetTopologySuite</a></td>
+<td style="text-align: left;">SQLite support for spatial types</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Cosmos/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore.Cosmos</a></td>
+<td style="text-align: left;">Database provider for Azure Cosmos DB</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.InMemory/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore.InMemory</a></td>
+<td style="text-align: left;">The in-memory database provider</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Tools/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore.Tools</a></td>
+<td style="text-align: left;">EF Core PowerShell commands for the Visual Studio Package Manager Console; use this to integrate tools like <a href="https://docs.microsoft.com/ef/core/managing-schemas/scaffolding">scaffolding</a> and <a href="https://docs.microsoft.com/ef/core/managing-schemas/migrations/">migrations</a> with Visual Studio</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Design/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore.Design</a></td>
+<td style="text-align: left;">Shared design-time components for EF Core tools</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Proxies/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore.Proxies</a></td>
+<td style="text-align: left;">Lazy-loading and change-tracking proxies</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Abstractions/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore.Abstractions</a></td>
+<td style="text-align: left;">Decoupled EF Core abstractions; use this for features like extended data annotations defined by EF Core</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Relational/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore.Relational</a></td>
+<td style="text-align: left;">Shared EF Core components for relational database providers</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Analyzers/7.0.0-rc.1.22426.7">Microsoft.EntityFrameworkCore.Analyzers</a></td>
+<td style="text-align: left;">C# analyzers for EF Core</td>
+</tr>
+</tbody>
+</table>
+<p>We also published the release candidate 1 of the <a href="https://www.nuget.org/packages/Microsoft.Data.Sqlite.Core/7.0.0-rc.1.22426.7">Microsoft.Data.Sqlite.Core</a> provider for <a href="https://docs.microsoft.com/dotnet/framework/data/adonet/ado-net-overview">ADO.NET</a>.</p>
+<h2 id="installing-the-ef7-command-line-interface-cli">Installing the EF7 Command Line Interface (CLI)</h2>
+<p>Before you can execute EF7 Core migration or scaffolding commands, you&#8217;ll have to install the CLI package as either a global or local tool.</p>
+<p>To install the RC tool globally, install with:</p>
+<pre><code class="language-bash">dotnet tool install --global dotnet-ef --version 7.0.0-rc.1.22426.7 </code></pre>
+<p>If you already have the tool installed, you can upgrade it with the following command:</p>
+<pre><code class="language-bash">dotnet tool update --global dotnet-ef --version 7.0.0-rc.1.22426.7 </code></pre>
+<p>It&#8217;s possible to use this new version of the EF7 CLI with projects that use older versions of the EF Core runtime.</p>
+<h2 id="daily-builds">Daily builds</h2>
+<p>EF7 release candidates are aligned with .NET 7 release candidates. These releases tend to lag behind the latest work on EF7. Consider using the <a href="https://github.com/aspnet/AspNetCore/blob/master/docs/DailyBuilds.md">daily builds</a> instead to get the most up-to-date EF7 features and bug fixes.</p>
+<p>As with the release candidates, the daily builds require .NET 6.</p>
+<h2 id="the-net-data-community-standup">The .NET Data Community Standup</h2>
+<p>The .NET data team is now live streaming every other Wednesday at 10am Pacific Time, 1pm Eastern Time, or 17:00 UTC. Join the stream to ask questions about the data-related topic of your choice, including the latest release candidate.</p>
+<ul>
+<li><a href="https://aka.ms/efstandups">Watch our YouTube playlist</a> of previous shows</li>
+<li><a href="https://live.dot.net">Visit the .NET Community Standup</a> page to preview upcoming shows</li>
+<li><a href="https://github.com/dotnet/efcore/issues/22700">Submit your ideas</a> for a guest, product, demo, or other content to cover</li>
+</ul>
+<h2 id="documentation-and-feedback">Documentation and Feedback</h2>
+<p>The starting point for all EF Core documentation is <a href="https://docs.microsoft.com/ef/">docs.microsoft.com/ef/</a>.</p>
+<p>Please file issues found and any other feedback on the <a href="https://github.com/dotnet/efcore">dotnet/efcore GitHub repo</a>.</p>
+<h2 id="helpful-links">Helpful Links</h2>
+<p>The following links are provided for easy reference and access.</p>
+<ul>
+<li><a href="https://aka.ms/efstandups">EF Core Community Standup Playlist: https://aka.ms/efstandups</a></li>
+<li><a href="https://aka.ms/efdocs">Main documentation: https://aka.ms/efdocs</a></li>
+<li><a href="https://aka.ms/efcorefeedback">Issues and feature requests for EF Core: https://aka.ms/efcorefeedback</a></li>
+<li><a href="https://aka.ms/efroadmap">Entity Framework Roadmap: https://aka.ms/efroadmap</a></li>
+<li><a href="https://github.com/dotnet/efcore/issues/27185">Bi-weekly updates: https://github.com/dotnet/efcore/issues/27185</a></li>
+</ul>
+<h2 id="thank-you-from-the-team">Thank you from the team</h2>
+<p>A big thank you from the EF team to everyone who has used and contributed to EF over the years!</p>
+<p>Welcome to EF7.</p>
+<p>The post <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet/announcing-ef7-release-candidate-1/">Announcing Entity Framework 7 Release Candidate 1</a> appeared first on <a rel="nofollow" href="https://devblogs.microsoft.com/dotnet">.NET Blog</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://devblogs.microsoft.com/dotnet/announcing-ef7-release-candidate-1/feed/</wfw:commentRss>
+			<slash:comments>5</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

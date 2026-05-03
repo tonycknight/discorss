@@ -12,11 +12,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Models.fs" />
-    <Compile Include="Xml.fs" />
     <Compile Include="Rss.fs" />
     <Compile Include="Rss091Parser.fs" />
     <Compile Include="Rss092Parser.fs" />
     <Compile Include="Rss20Parser.fs" />
+    <Compile Include="RdfParser.fs" />
     <Compile Include="FeedReader.fs" />
     <Compile Include="FeedRepository.fs" />
     <Compile Include="FeedProvider.fs" />

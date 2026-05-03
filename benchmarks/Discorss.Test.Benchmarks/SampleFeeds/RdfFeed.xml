@@ -1,0 +1,468 @@
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:admin="http://webns.net/mvcb/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/" xmlns:syn="http://purl.org/rss/1.0/modules/syndication/" xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/">
+  <channel rdf:about="https://slashdot.org/">
+    <title>Slashdot</title>
+    <link>https://slashdot.org/</link>
+    <description>News for nerds, stuff that matters</description>
+    <dc:language>en-us</dc:language>
+    <dc:rights>Copyright Slashdot Media. All Rights Reserved.</dc:rights>
+    <dc:date>2026-05-03T14:43:08+00:00</dc:date>
+    <dc:publisher>Slashdot Media</dc:publisher>
+    <dc:creator>feedback@slashdot.org</dc:creator>
+    <dc:subject>Technology</dc:subject>
+    <syn:updateBase>1970-01-01T00:00+00:00</syn:updateBase>
+    <syn:updateFrequency>1</syn:updateFrequency>
+    <syn:updatePeriod>hourly</syn:updatePeriod>
+    <items>
+      <rdf:Seq>
+        <rdf:li rdf:resource="https://it.slashdot.org/story/26/05/02/234244/ransomware-is-getting-uglier-as-cybercriminals-fake-leaks-and-skip-encryption-entirely?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://tech.slashdot.org/story/26/05/03/0558226/smuggled-starlink-terminals-are-beating-irans-internet-blackout?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://slashdot.org/story/26/05/03/0531224/claude-microsoft-copilot-fail-again-to-predict-the-winners-of-the-kentucky-derby?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://hardware.slashdot.org/story/26/05/03/0112257/chinese-exports-of-green-technologies-surged-to-record-levels-after-iran-war-began?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://science.slashdot.org/story/26/05/02/2252228/former-nasa-engineers-create-ingenious-way-to-save-homes-from-wildfires-using-noise?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://news.slashdot.org/story/26/05/02/1914208/ask-slashdot-are-youtubes-subtitles-appallingly-bad?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://hardware.slashdot.org/story/26/05/02/1828217/the-19b-nuclear-ai-energy-startup-that-couldnt-sign-a-single-client?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://news.slashdot.org/story/26/05/02/1556244/using-drones-for-cloud-seeding-can-trigger-rain-company-claims?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://it.slashdot.org/story/26/05/02/0338227/what-if-tech-company-layoffs-arent-all-about-ai?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://science.slashdot.org/story/26/05/02/0433231/an-amateur-just-solved-a-60-year-old-math-problem---by-asking-ai?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://tech.slashdot.org/story/26/05/02/0552238/costumed-crowd-speedruns-scientology-building-for-social-media-trend?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://science.slashdot.org/story/26/04/30/1548214/retina-scan-for-diabetes-could-also-reduce-deaths-during-pregnancy-in-developing-countries?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://linux.slashdot.org/story/26/05/02/0625247/linux-percentage-of-steam-users-doubled-in-one-year?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://news.slashdot.org/story/26/05/02/0257206/marvel-dc-game-publishers-launch-rival-events-saturday-for-free-giveaways?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+        <rdf:li rdf:resource="https://slashdot.org/story/26/05/02/0010242/gamestop-is-preparing-offer-for-ebay?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed" />
+      </rdf:Seq>
+    </items>
+    <image rdf:resource="https://a.fsdn.com/sd/topics/topicslashdot.gif" />
+    <textinput rdf:resource="https://slashdot.org/search.pl" />
+  </channel>
+  <image rdf:about="https://a.fsdn.com/sd/topics/topicslashdot.gif">
+    <title>Slashdot</title>
+    <url>https://a.fsdn.com/sd/topics/topicslashdot.gif</url>
+    <link>https://slashdot.org/</link>
+  </image>
+  <item rdf:about="https://it.slashdot.org/story/26/05/02/234244/ransomware-is-getting-uglier-as-cybercriminals-fake-leaks-and-skip-encryption-entirely?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>Ransomware Is Getting Uglier As Cybercriminals Fake Leaks and Skip Encryption Entirely</title>
+    <link>https://it.slashdot.org/story/26/05/02/234244/ransomware-is-getting-uglier-as-cybercriminals-fake-leaks-and-skip-encryption-entirely?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      "Ransomware activity jumped again in Q1 2026," writes Slashdot reader BrianFagioli, "with 2,638 victim posts on leak sites, up 22% year over year," according to a report from cybersecurity company ReliaQuest.
+
+      But the bigger shift is how messy the ecosystem has become. Established groups like Akira and Qilin are still active, while newer players like The Gentlemen surged into the top tier with a 588 percent spike in activity. At the same time, questionable leak sites such as 0APT and ALP-001 are muddying the waters by posting possibly fake breach claims, forcing companies to investigate incidents that may not even be real.
+
+      Meanwhile, actors like ShinyHunters are showing that ransomware does not always need encryption anymore. By targeting identity systems and SaaS platforms, attackers can steal data using legitimate access, often through phishing or even phone-based social engineering, and then extort victims without deploying traditional malware. With a record 91 active leak sites and faster attack timelines, the report suggests defenders should focus less on tracking specific groups and more on stopping common tactics like credential theft, remote access abuse, and large-scale data exfiltration.&lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=Ransomware+Is+Getting+Uglier+As+Cybercriminals+Fake+Leaks+and+Skip+Encryption+Entirely%3A+https%3A%2F%2Fit.slashdot.org%2Fstory%2F26%2F05%2F02%2F234244%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fit.slashdot.org%2Fstory%2F26%2F05%2F02%2F234244%2Fransomware-is-getting-uglier-as-cybercriminals-fake-leaks-and-skip-encryption-entirely%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://it.slashdot.org/story/26/05/02/234244/ransomware-is-getting-uglier-as-cybercriminals-fake-leaks-and-skip-encryption-entirely?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23981418&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-03T14:34:00+00:00</dc:date>
+    <dc:subject>security</dc:subject>
+    <slash:department>ransom-where</slash:department>
+    <slash:section>it</slash:section>
+    <slash:hit_parade>0,0,0,0,0,0,0</slash:hit_parade>
+  </item>
+  <item rdf:about="https://tech.slashdot.org/story/26/05/03/0558226/smuggled-starlink-terminals-are-beating-irans-internet-blackout?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>Smuggled Starlink Terminals are Beating Iran's Internet Blackout</title>
+    <link>https://tech.slashdot.org/story/26/05/03/0558226/smuggled-starlink-terminals-are-beating-irans-internet-blackout?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      An anonymous reader shared this report from the BBC:
+
+      "If even one extra person is able to access the internet, I think it's successful and it's worth it," says Sahand. The Iranian man is visibly anxious, speaking to the BBC outside Iran, as he carefully explains how he is part of a clandestine network smuggling satellite internet technology &amp;mdash; which is illegal in Iran &amp;mdash; into the country. Sahand, whose name we have changed, fears for family members and other contacts inside the country. "If I was identified by the Iranian regime, they might make those I'm in touch with in Iran pay the price," he says.
+
+      For more than two months, Iran has been in digital darkness as the government maintains one of the longest-running national internet shutdowns ever recorded worldwide... Sahand says he has sent a dozen [Starlink terminals] to Iran since January and "we are actively looking for other ways to smuggle in more". The human rights organisation Witness estimated in January that there are at least 50,000 Starlink terminals in Iran. Activists say the number is likely to have risen...
+
+      Last year, the Iranian government passed legislation that made using, buying or selling Starlink devices punishable by up to two years in prison. The jail term for distributing or importing more than 10 devices can be up to 10 years. State-affiliated media has reported multiple cases of people being arrested for selling and buying Starlink terminals, including four people &amp;mdash; two of them foreign nationals &amp;mdash; arrested last month for "importing satellite internet equipment".
+
+      "The BBC contacted SpaceX for more details about the use of Starlink in the country but did not receive a response."&lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=Smuggled+Starlink+Terminals+are+Beating+Iran's+Internet+Blackout%3A+https%3A%2F%2Ftech.slashdot.org%2Fstory%2F26%2F05%2F03%2F0558226%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Ftech.slashdot.org%2Fstory%2F26%2F05%2F03%2F0558226%2Fsmuggled-starlink-terminals-are-beating-irans-internet-blackout%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://tech.slashdot.org/story/26/05/03/0558226/smuggled-starlink-terminals-are-beating-irans-internet-blackout?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23981568&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-03T11:34:00+00:00</dc:date>
+    <dc:subject>internet</dc:subject>
+    <slash:department>network-effects</slash:department>
+    <slash:section>technology</slash:section>
+    <slash:comments>21</slash:comments>
+    <slash:hit_parade>21,20,16,13,2,0,0</slash:hit_parade>
+  </item>
+  <item rdf:about="https://slashdot.org/story/26/05/03/0531224/claude-microsoft-copilot-fail-again-to-predict-the-winners-of-the-kentucky-derby?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>Claude, Microsoft Copilot Fail Again to Predict the Winners of the Kentucky Derby</title>
+    <link>https://slashdot.org/story/26/05/03/0531224/claude-microsoft-copilot-fail-again-to-predict-the-winners-of-the-kentucky-derby?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      In 2016 an online "swarm intelligence" platform generated a correct prediction for the Kentucky Derby &amp;mdash; naming all four top finishers in order. (But its 2017 predictions weren't even close.) Slashdot checked in again on how modern AI systems performed in 2023, 2024, and 2025 &amp;mdash; but their predictions were still pretty bad. Would AI-generated Derby predictions be any better in 2026?
+
+      This year's winner was 24-to-1 longshot "Golden Tempo" &amp;mdash; though a lot of oddsmakers had favored a horse named Further Ado (which ultimately only finished 11th). So when USA Today prompted Microsoft Copilot for its own picks for the Kentucky Derby, Copilot also went with Further Ado. (Even worse, it predicted Golden Tempo would come in... 13th.)
+
+      Here's how Copilot's picks actually performed...
+      Further Ado (finished 11th)Chief Wallabee (finished 4th)The Puma (SCRATCHED)Renegade (finished 2nd)Commandment (finished 7th)So Happy (finished 9th)Emerging Market (finished 10th)Danon Bourbon (finished 5th)Potente (finished 12th)Incredibolt (finished 6th)Robusta (finished 14th)Ocelli (finished 3rd)Golden Tempo (finished 1st)Pavlovian (finished 18th)Great White (SCRATCHED)Wonder Dean (finished 8th) Litmus Test (finished 17th)Albus (finished 15th)Six Speed (finished 13th)Intrepido (finished 16th)
+      Copilot was told to use the latest odds, conditions, and analysis of favorites, best bets, expert picks, previous results and race history with the post positions, according to USA Today.
+
+      And meanwhile, Yahoo Sports asked Claude "to simulate the race using the opening odds, draw and potential track conditions. We also asked it to factor in some human predictions."
+
+      Like Microsoft Copilot, Claude also picked Further Ado to finish first (though it came in 11th) &amp;mdash; and predicted that Golden Tempo (the eventual first-place finisher) would finish 12th.
+
+
+      Further Ado (finished 11th)The Puma (SCRATCHED)Commandment (finished 7th)Chief Wallabee (finished 4th)Renegade (finished 2nd)Emerging Market (finished 10th)So Happy (finished 9th)Incredibolt (finished 6th)Danon Bourbon (finished 5th)Potente (finished 12th)Pavlovian (finished 18th)Golden Tempo (finished 1st) Litmus Test (finished 17th)Albus (finished 15th)Wonder Dean (finished 8th)Six Speed (finished 13th)Intrepido (finished 16th)&lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=Claude%2C+Microsoft+Copilot+Fail+Again+to+Predict+the+Winners+of+the+Kentucky+Derby%3A+https%3A%2F%2Fslashdot.org%2Fstory%2F26%2F05%2F03%2F0531224%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fslashdot.org%2Fstory%2F26%2F05%2F03%2F0531224%2Fclaude-microsoft-copilot-fail-again-to-predict-the-winners-of-the-kentucky-derby%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://slashdot.org/story/26/05/03/0531224/claude-microsoft-copilot-fail-again-to-predict-the-winners-of-the-kentucky-derby?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23981558&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-03T07:34:00+00:00</dc:date>
+    <dc:subject>ai</dc:subject>
+    <slash:department>neigh-sayers</slash:department>
+    <slash:section>slashdot</slash:section>
+    <slash:comments>20</slash:comments>
+    <slash:hit_parade>20,20,16,14,2,0,0</slash:hit_parade>
+  </item>
+  <item rdf:about="https://hardware.slashdot.org/story/26/05/03/0112257/chinese-exports-of-green-technologies-surged-to-record-levels-after-iran-war-began?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>Chinese Exports of Green Technologies Surged to Record Levels After Iran War Began</title>
+    <link>https://hardware.slashdot.org/story/26/05/03/0112257/chinese-exports-of-green-technologies-surged-to-record-levels-after-iran-war-began?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      "The war in Iran has sent oil-starved countries scrambling for fuel," CNN reported this week. And many of those countries now want renewable fuels, the article points out, "leaving them turning to the renewables king of the planet: China."
+
+      Chinese exports of solar technology, batteries and electric vehicles all reached record highs in March, according to energy think tank Ember, a sign that the historic oil supply shock is accelerating the adoption of clean energy around the world... A Thursday report from Ember said China exported 68 gigawatts of solar technology in March, surpassing the previous record set in August by 50%. Fifty countries set new records for Chinese solar imports, with the most significant growth coming from emerging markets in Asia and Africa hit hardest by the energy crisis, according to the think tank. "Fossil shocks are boosting the solar surge," said Euan Graham, senior analyst at Ember, in the report. "Solar has already become the engine of the global economy, and now the current fossil fuel price shocks are taking it up a gear."
+
+      Ember said exports of solar, batteries and EVs in total rose 70% in March year over year, according to Chinese customs data... China's battery exports reached $10 billion in March, with particularly high growth rates in the European Union, Australia and India, Ember said. Uncertainty over when the Strait of Hormuz will reopen has spurred deeper regional anxieties about energy securi"ty, helping to hasten the transition to clean energy, analysts said.
+      The article notes how different countries are reacting to fuel
+
+
+      Asian nations that depend on the Middle East for energy imports "are trying to mitigate fuel shortages by encouraging energy conservation and shortening work hours."
+      The UK's Energy Secretary said this week that the country needed to reduce its reliance on gas for electricity. "As we face the second fossil fuel shock in less than 5 years, the lesson for our country is clear: The era of fossil fuel security is over, and the era of clean energy security must come of age."
+      Pakistan "has been spared some of the impact from the war, since it began drastically importing cheap Chinese solar panels a few years ago. Using solar energy rather than costly oil imports is estimated to save the country billions of dollars each year."
+      "According to the China Passenger Car Association, Chinese exports of electric vehicles and hybrids hit a record high in March, increasing 140% compared with the same period a year ago."
+
+
+      Thanks to Slashdot reader AleRunner for sharing the article.
+      &lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=Chinese+Exports+of+Green+Technologies+Surged+to+Record+Levels+After+Iran+War+Began%3A+https%3A%2F%2Fhardware.slashdot.org%2Fstory%2F26%2F05%2F03%2F0112257%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fhardware.slashdot.org%2Fstory%2F26%2F05%2F03%2F0112257%2Fchinese-exports-of-green-technologies-surged-to-record-levels-after-iran-war-began%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://hardware.slashdot.org/story/26/05/03/0112257/chinese-exports-of-green-technologies-surged-to-record-levels-after-iran-war-began?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23981488&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-03T03:34:00+00:00</dc:date>
+    <dc:subject>power</dc:subject>
+    <slash:department>going-green</slash:department>
+    <slash:section>hardware</slash:section>
+    <slash:comments>88</slash:comments>
+    <slash:hit_parade>88,86,63,59,16,9,4</slash:hit_parade>
+  </item>
+  <item rdf:about="https://science.slashdot.org/story/26/05/02/2252228/former-nasa-engineers-create-ingenious-way-to-save-homes-from-wildfires-using-noise?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>Former NASA Engineers Create Ingenious Way To Save Homes From Wildfires Using Noise</title>
+    <link>https://science.slashdot.org/story/26/05/02/2252228/former-nasa-engineers-create-ingenious-way-to-save-homes-from-wildfires-using-noise?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      "Scientists have created a miraculous new way to stop fires from spreading through neighborhoods using nothing but sound," reports the New York Post:
+
+      Former NASA engineers with California-based Sonic Fire Tech found that using sound waves can snuff out blazes and potentially be used to stop another Pacific Palisades inferno... The technology works by targeting oxygen molecules using low-frequency sound waves that vibrate them, stopping the fire from growing. "Sound waves vibrate the oxygen faster than the fuel can use it, and break the chemical reaction of the flame," Remington Hotchkis, Chief Commercialization Officer at Sonic Fire Tech told The Post.
+
+      The San Bernardino County Fire Department recently tested out the equipment using a backpack version and the results were incredible. Video shows firefighters fighting small blazes on a shrub and a stove top fire with the technology putting it out... In the home application, the system would be alerted/activated if there was a fire, sending the sound waves through a home duct system, essentially snuffing out the blaze. The sound waves can reach as far as 30ft from a home, the report noted. The sound is also harmless to pets and humans.
+      The article includes this quote that an executive at the company gave local news station KMPH. "Our former NASA engineers are rocket scientists, and they say it seems like magic, but it's just physics."&lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=Former+NASA+Engineers+Create+Ingenious+Way+To+Save+Homes+From+Wildfires+Using+Noise%3A+https%3A%2F%2Fscience.slashdot.org%2Fstory%2F26%2F05%2F02%2F2252228%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fscience.slashdot.org%2Fstory%2F26%2F05%2F02%2F2252228%2Fformer-nasa-engineers-create-ingenious-way-to-save-homes-from-wildfires-using-noise%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://science.slashdot.org/story/26/05/02/2252228/former-nasa-engineers-create-ingenious-way-to-save-homes-from-wildfires-using-noise?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23981412&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-03T01:34:00+00:00</dc:date>
+    <dc:subject>science</dc:subject>
+    <slash:department>flame-wars</slash:department>
+    <slash:section>science</slash:section>
+    <slash:comments>37</slash:comments>
+    <slash:hit_parade>37,37,31,25,4,4,2</slash:hit_parade>
+  </item>
+  <item rdf:about="https://news.slashdot.org/story/26/05/02/1914208/ask-slashdot-are-youtubes-subtitles-appallingly-bad?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>Ask Slashdot: Are YouTube's Subtitles 'Appallingly Bad'?</title>
+    <link>https://news.slashdot.org/story/26/05/02/1914208/ask-slashdot-are-youtubes-subtitles-appallingly-bad?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      Long-time Slashdot reader Anne Thwacks frequently uses YouTube's subtitles "not to disturb others in the room, or because my hearing is not very good." But they say there's a new problem.
+
+      "The subtitling is terrible!"
+
+      Almost every sentence has a huge error. Proper names are more often wrong than right. Non-English place names are almost always mangled to barely recognizable. And no effort whatsoever is made to use context to figure out whether a place name is Russian or Arabic, and often complete garbage is used in place of a common French, Spanish or Italian name!
+
+      If AI actually works (I have my doubts about this), surely it would be possible to figure out language contexts. If it is about an event in Italy, then expect a lot of Italian names! If it is about the Russia-Ukraine war, then expect places in Russia or Ukraine to be more plausible than mindless gobbledygook! Does YouTube not know that there are places in the world that are not in America? (However, plenty of names of people and places famous in America are also regularly screwed up.)
+
+      They argue the subtitles are "appallingly bad" &amp;mdash; and that "the situation seems to be getting worse," wondering why the problem isn't addressed with some basic spell-checking. ("I'm sure that the vast majority of foul-ups could be fixed by the use of a dictionary.") Have any Slashdot readers seen similar problems? A friend of mine noticed that YouTube's subtitles even bungled this innocuous song from the 1966.
+      ANNETTE FUNICELLO: "If your love is true love, you can tell by his touch."
+      YOUTUBE SUBTITLE: "If your love is too lava, you can tell by his touch..."
+
+      Share your own experiences and thoughts in the comments. And do you think YouTube's subtitles are "appallingly bad"?&lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=Ask+Slashdot%3A+Are+YouTube's+Subtitles+'Appallingly+Bad'%3F%3A+https%3A%2F%2Fnews.slashdot.org%2Fstory%2F26%2F05%2F02%2F1914208%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fnews.slashdot.org%2Fstory%2F26%2F05%2F02%2F1914208%2Fask-slashdot-are-youtubes-subtitles-appallingly-bad%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.slashdot.org/story/26/05/02/1914208/ask-slashdot-are-youtubes-subtitles-appallingly-bad?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23981296&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-02T22:34:00+00:00</dc:date>
+    <dc:subject>youtube</dc:subject>
+    <slash:department>spelling-flame</slash:department>
+    <slash:section>news</slash:section>
+    <slash:comments>77</slash:comments>
+    <slash:hit_parade>77,76,67,54,5,0,0</slash:hit_parade>
+  </item>
+  <item rdf:about="https://hardware.slashdot.org/story/26/05/02/1828217/the-19b-nuclear-ai-energy-startup-that-couldnt-sign-a-single-client?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>The $19B "Nuclear AI" Energy Startup That Couldn't Sign a Single Client</title>
+    <link>https://hardware.slashdot.org/story/26/05/02/1828217/the-19b-nuclear-ai-energy-startup-that-couldnt-sign-a-single-client?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      "Nuclear AI startup" Fermi had hoped to build power plants generating 17 gigawatts of electricity, remembers Bloomberg, "three times the amount typically consumed by New York City."
+
+      Hyperscalers could install their data centers on the site itself and tap directly into that power, which would come first from natural gas turbines and later from nuclear reactors. The pitch ticked so many boxes &amp;mdash; artificial intelligence, nuclear energy, political connections &amp;mdash; that some investors found it irresistible. Fermi went public in October worth more than $19 billion in market value, despite reporting no revenue or signed customers.
+
+      Now, the startup's board has fired its top executive, Toby Neugebauer, after months of negotiations failed to secure a single client. Chief Financial Officer Miles Everson left as well... Fermi's stock, meanwhile, has tumbled 84% from its peak. The company's more than 5,000-acre site in the Texas panhandle &amp;mdash; dubbed Project Matador, or the President Donald J. Trump Advanced Energy and Intelligence Campus &amp;mdash; remains mostly unfinished. And some analysts see a cautionary tale of the market's AI enthusiasm running ahead of reality, with investors betting on companies whose grand projects may never get built...
+
+      The idea of giving data centers their own, dedicated power supply not dependent on the grid may sound tempting, but former US Department of Energy official Jigar Shah said banks don't want to finance it. The grid, drawing power from many sources, is more reliable than a handful of expensive, on-site plants, he said. He considers Fermi a failure "of monumental proportions" and says similar, off-grid data center projects elsewhere deserve more skepticism than they've received... "We're allowing these types of projects to continue to be viewed as viable when they most certainly are not," said Shah, who ran the department's Loan Programs Office during the Biden administration....
+
+      "It was a piece of dirt with a dream," an investor who visited the site in February told the short sellers, Fuzzy Panda Research.&lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=The+%2419B+%22Nuclear+AI%22+Energy+Startup+That+Couldn't+Sign+a+Single+Client%3A+https%3A%2F%2Fhardware.slashdot.org%2Fstory%2F26%2F05%2F02%2F1828217%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fhardware.slashdot.org%2Fstory%2F26%2F05%2F02%2F1828217%2Fthe-19b-nuclear-ai-energy-startup-that-couldnt-sign-a-single-client%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://hardware.slashdot.org/story/26/05/02/1828217/the-19b-nuclear-ai-energy-startup-that-couldnt-sign-a-single-client?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23981256&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-02T21:34:00+00:00</dc:date>
+    <dc:subject>power</dc:subject>
+    <slash:department>power-plays</slash:department>
+    <slash:section>hardware</slash:section>
+    <slash:comments>38</slash:comments>
+    <slash:hit_parade>38,37,30,27,10,7,3</slash:hit_parade>
+  </item>
+  <item rdf:about="https://news.slashdot.org/story/26/05/02/1556244/using-drones-for-cloud-seeding-can-trigger-rain-company-claims?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>Using Drones for Cloud-Seeding Can Trigger Rain, Company Claims</title>
+    <link>https://news.slashdot.org/story/26/05/02/1556244/using-drones-for-cloud-seeding-can-trigger-rain-company-claims?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      Monday a company called Rainmaker announced their rain-triggering technology had produced 143 million gallons of freshwater for Utah and Oregon residents &amp;mdash; making them "the first private company in history to validate the results of cloud seeding operations."
+
+      The Deseret News reports:
+
+      Founded in 2023, Rainmaker uses drones to disperse silver iodide into clouds, then they track precipitation with advanced radar. However, Rainmaker &amp;mdash; and every other rain-enhancement company &amp;mdash; has been up against the notoriously difficult challenge of validation. Since there is no control set to test, and because the weather is chaotic and variable, the Government Accountability Office declares the benefits of the technology to be "unproven." To overcome this evaluation challenge, Rainmaker flies drones in unique patterns when seeding. Then operators compare distinct radar and satellite features with where their drones operated.
+      As of April, Rainmaker found 82 unambiguous seeding signatures, which show their seeding operations directly caused precipitation. In Utah and Oregon alone, the company said its cloud-seeding efforts have added enough water to match the annual usage of about 1,750 households. However, "this figure likely represents only a small fraction of Rainmaker's total generation this season," the company said in their press release... Their drone precision, combined with their radar systems, have produced satellite images proving a direct correlation between the seeding and precipitation. Some images show cloud holes or regions of depressed cloud tops after seeding.
+
+      Rainmaker's announcement promises they'll "go forward and continue our mission to refill the Great Salt Lake, end drought in the American West and deliver water abundance wherever it is needed most around the world." (Rainmaker currently operates in Utah, Idaho, Oregon, California and Colorado.)
+      The director of Utah's Natural Resources Department told the Deseret News that with cloud seeding, "cost per unit of water is so low; it really is the smartest thing we can be doing with our money," Ferry said.&lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=Using+Drones+for+Cloud-Seeding+Can+Trigger+Rain%2C+Company+Claims%3A+https%3A%2F%2Fnews.slashdot.org%2Fstory%2F26%2F05%2F02%2F1556244%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fnews.slashdot.org%2Fstory%2F26%2F05%2F02%2F1556244%2Fusing-drones-for-cloud-seeding-can-trigger-rain-company-claims%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.slashdot.org/story/26/05/02/1556244/using-drones-for-cloud-seeding-can-trigger-rain-company-claims?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23981176&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-02T20:34:00+00:00</dc:date>
+    <dc:subject>earth</dc:subject>
+    <slash:department>seeding-in-the-rain</slash:department>
+    <slash:section>news</slash:section>
+    <slash:comments>22</slash:comments>
+    <slash:hit_parade>22,22,21,19,5,2,1</slash:hit_parade>
+  </item>
+  <item rdf:about="https://it.slashdot.org/story/26/05/02/0338227/what-if-tech-company-layoffs-arent-all-about-ai?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>What if Tech Company Layoffs Aren't All About AI?</title>
+    <link>https://it.slashdot.org/story/26/05/02/0338227/what-if-tech-company-layoffs-arent-all-about-ai?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      "Running a Big Tech company during Silicon Valley's AI mania may not necessarily require fewer workers or cost less," writes the Washington Post:
+
+      Amazon, Google and Meta together have roughly the same number of employees now as they did during an industry-wide hiring binge in 2022, company disclosures show. Growing costs for technical workers and related expenses have often outpaced sales recently. The tech giants' big AI bet hasn't yet paid for itself.
+
+      That means AI might be killing jobs not through its labor-saving wizardry but by increasing spending so much that CEOs are pressured to find savings, giving them cover to consciously uncouple from their workforces. Marc Andreessen, a prominent start-up investor and a Meta board director, put it bluntly on a recent podcast. Big company layoffs are a fix for overstaffing and changing economic conditions, he said, but AI provides a convenient scapegoat. "Now they all have the silver bullet excuse: 'Ah, it's AI,'" he said...
+      "Almost every company that does layoffs is blaming AI, whether or not it really is about AI," Sam Altman, CEO of ChatGPT owner OpenAI, said at a March conference when he listed explanations for AI's unpopularity in the United States.
+      "Recent history suggests Big Tech companies might not be moving toward a future with fewer workers," the article concludes, "but recalibrating to spend the same, or more, on different people and projects."
+
+      So in the end, "AI might soon reduce hiring," the article acknowledges, "But the reluctance or inability of the largest tech firms to cut too deeply so far could also show that the path to making a workforce AI-ready &amp;mdash; whatever that means &amp;mdash; isn't a predictable straight line charting declining headcount."&lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=What+if+Tech+Company+Layoffs+Aren't+All+About+AI%3F%3A+https%3A%2F%2Fit.slashdot.org%2Fstory%2F26%2F05%2F02%2F0338227%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fit.slashdot.org%2Fstory%2F26%2F05%2F02%2F0338227%2Fwhat-if-tech-company-layoffs-arent-all-about-ai%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://it.slashdot.org/story/26/05/02/0338227/what-if-tech-company-layoffs-arent-all-about-ai?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23980812&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-02T19:34:00+00:00</dc:date>
+    <dc:subject>ai</dc:subject>
+    <slash:department>great-escapegoat</slash:department>
+    <slash:section>it</slash:section>
+    <slash:comments>26</slash:comments>
+    <slash:hit_parade>26,25,24,22,5,2,1</slash:hit_parade>
+  </item>
+  <item rdf:about="https://science.slashdot.org/story/26/05/02/0433231/an-amateur-just-solved-a-60-year-old-math-problem---by-asking-ai?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>An Amateur Just Solved a 60-Year-Old Math Problem - by Asking AI</title>
+    <link>https://science.slashdot.org/story/26/05/02/0433231/an-amateur-just-solved-a-60-year-old-math-problem---by-asking-ai?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      Slashdot reader joshuark writes: Scientific American reports that a ChatGPT AI has proved a conjecture with a method no human had developed. A 23-year-old student Liam Price just cracked a 60-year-old problem that world-class mathematicians have tried and failed to solve. The new solution that Price got in response to a single prompt to GPT-5.4 Pro was posted on www.erdosproblems.com, a website devoted to the Erds problems. The question Price solved &amp;mdash; or prompted ChatGPT to solve&amp;mdash;concerns special sets of whole numbers, where no number in the set can be evenly divided by any other...
+
+      Price sent it to his occasional collaborator Kevin Barreto, a second-year undergraduate in mathematics at the University of Cambridge. The duo had jump-started the AI-for-Erds craze late last year by prompting a free version of ChatGPT with open problems chosen at random from the Erds problems website. Reviewing Price's message, Barreto realized what they had was special, and experts whom he notified quickly took notice.&lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=An+Amateur+Just+Solved+a+60-Year-Old+Math+Problem+-+by+Asking+AI%3A+https%3A%2F%2Fscience.slashdot.org%2Fstory%2F26%2F05%2F02%2F0433231%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fscience.slashdot.org%2Fstory%2F26%2F05%2F02%2F0433231%2Fan-amateur-just-solved-a-60-year-old-math-problem---by-asking-ai%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://science.slashdot.org/story/26/05/02/0433231/an-amateur-just-solved-a-60-year-old-math-problem---by-asking-ai?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23980838&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-02T18:34:00+00:00</dc:date>
+    <dc:subject>ai</dc:subject>
+    <slash:department>do-the-math</slash:department>
+    <slash:section>science</slash:section>
+    <slash:comments>66</slash:comments>
+    <slash:hit_parade>66,64,54,39,14,8,5</slash:hit_parade>
+  </item>
+  <item rdf:about="https://tech.slashdot.org/story/26/05/02/0552238/costumed-crowd-speedruns-scientology-building-for-social-media-trend?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>Costumed Crowd 'Speedruns' Scientology Building For Social Media Trend</title>
+    <link>https://tech.slashdot.org/story/26/05/02/0552238/costumed-crowd-speedruns-scientology-building-for-social-media-trend?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      Last Saturday someone dressed as Jesus "was among the dozens of people in costumes and masks seen on a video forcing open the door of a Scientology building on Hollywood Boulevard," reports the Los Angeles Times, "after a tug-of-war with a security guard."
+
+      The footage posted on TikTok and Instagram shows the group sprinting up and down stairs and clashing with black-shirted security guards, giggling and gasping to catch their breath while church members scream at them to leave. On their way out &amp;mdash; as security guards approach armed with fire extinguishers &amp;mdash; one of the sprinters stops and dances to celebrate their successful escape, a move reminiscent of a taunt from the video game Fortnite. For weeks, groups of people have barged into two of the church's Hollywood properties, racing through hallways and tussling with security guards, trying to see how far they can get before they are forced to leave by church staff...
+
+      Church officials say the incidents are not a game and have accused the speed runners of "hate crimes." After dozens on Saturday stormed the Ivar Avenue building that houses an exhibit dedicated to the church's founder, science fiction author L. Ron Hubbard, the external door handles were removed from all three of Scientology's properties on Hollywood Boulevard by Sunday morning. Guards could be seen blocking the doorway to one building on Monday afternoon...
+
+      No arrests have been made.
+
+      A report from the Associated Press cites a joke left on one of the videos: that if runners reach the top of the building, they'll find Tom Cruise.
+
+      One commenter on a recent TikTok video of a speedrun asked why people are doing this, and another user simply replied, "because it's fun."
+
+
+      The 18-year-old who started the trend told the Hollywood Reporter his original video has been viewed over 100 million times. "From there on out, I pretty much knew that Scientology was like a free gateway to a lot of views."
+      Vulture notes that "there's even a Roblox re-creation of the trend, made using the 'maps; drawn from actual videos"&lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=Costumed+Crowd+'Speedruns'+Scientology+Building+For+Social+Media+Trend%3A+https%3A%2F%2Ftech.slashdot.org%2Fstory%2F26%2F05%2F02%2F0552238%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Ftech.slashdot.org%2Fstory%2F26%2F05%2F02%2F0552238%2Fcostumed-crowd-speedruns-scientology-building-for-social-media-trend%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://tech.slashdot.org/story/26/05/02/0552238/costumed-crowd-speedruns-scientology-building-for-social-media-trend?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23980858&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-02T17:34:00+00:00</dc:date>
+    <dc:subject>social</dc:subject>
+    <slash:department>mission-impossible</slash:department>
+    <slash:section>technology</slash:section>
+    <slash:comments>89</slash:comments>
+    <slash:hit_parade>89,88,80,67,10,7,5</slash:hit_parade>
+  </item>
+  <item rdf:about="https://science.slashdot.org/story/26/04/30/1548214/retina-scan-for-diabetes-could-also-reduce-deaths-during-pregnancy-in-developing-countries?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>Retina Scan for Diabetes Could Also Reduce Deaths During Pregnancy in Developing Countries</title>
+    <link>https://science.slashdot.org/story/26/04/30/1548214/retina-scan-for-diabetes-could-also-reduce-deaths-during-pregnancy-in-developing-countries?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      This week Bill Gates wrote a blog post about a special camera from medtech startup Remidio, which delivers high-resolution images of a patient's retina in seconds. The camera plugs into a phone running an AI system that watches for early signs of diabetes &amp;mdash; all without needing a blood draw, eye dilation, or a dibetes specialist. It's already been used in 40 countries for more than 15 million patients.
+
+
+
+      But that same hardware, with different software, can also flag the conditions that drive so many dangerous pregnancies. Gestational diabetes sharply increases the risk of pre-eclampsia [a spike in blood pressure during pregnancy responsible for half a million fetal deaths every year and 70,000 maternal deaths]... In most of rural sub-Saharan Africa or South Asia, it usually isn't screened for at all, because the standard test requires a lab. A retinal scan offers a different way in.
+
+      Remidio's device is currently being used in India to screen pregnant women for conditions that drive stillbirth. And researchers are now adapting the same hardware to screen for anemia and hypertension, too... [S]mall, portable, affordable diagnostics in the hands of community health workers are exactly the kind of lever that can start to move a number that hasn't moved in a long time.&lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=Retina+Scan+for+Diabetes+Could+Also+Reduce+Deaths+During+Pregnancy+in+Developing+Countries%3A+https%3A%2F%2Fscience.slashdot.org%2Fstory%2F26%2F04%2F30%2F1548214%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fscience.slashdot.org%2Fstory%2F26%2F04%2F30%2F1548214%2Fretina-scan-for-diabetes-could-also-reduce-deaths-during-pregnancy-in-developing-countries%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://science.slashdot.org/story/26/04/30/1548214/retina-scan-for-diabetes-could-also-reduce-deaths-during-pregnancy-in-developing-countries?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23979382&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-02T16:34:00+00:00</dc:date>
+    <dc:subject>medicine</dc:subject>
+    <slash:department>eye-hope</slash:department>
+    <slash:section>science</slash:section>
+    <slash:comments>18</slash:comments>
+    <slash:hit_parade>18,16,15,15,2,0,0</slash:hit_parade>
+  </item>
+  <item rdf:about="https://linux.slashdot.org/story/26/05/02/0625247/linux-percentage-of-steam-users-doubled-in-one-year?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>Linux Percentage of Steam Users Doubled in One Year</title>
+    <link>https://linux.slashdot.org/story/26/05/02/0625247/linux-percentage-of-steam-users-doubled-in-one-year?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      Steam on Linux use in March "had skyrocketed to 5.33%..." reports Phoronix, "easily the highest level we've seen Steam on Linux at since its inception more than a decade ago."
+
+      So what happened in April?
+      [April's results] point to Linux having a 4.52% marketshare on Steam, a drop of 0.81% compared to March. Year-over-year it's roughly double with Steam on Linux in April 2025 being at 2.27%. Or two years ago for April 2024, Steam on Linux was at 1.9%.
+
+      &lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=Linux+Percentage+of+Steam+Users+Doubled+in+One+Year%3A+https%3A%2F%2Flinux.slashdot.org%2Fstory%2F26%2F05%2F02%2F0625247%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Flinux.slashdot.org%2Fstory%2F26%2F05%2F02%2F0625247%2Flinux-percentage-of-steam-users-doubled-in-one-year%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://linux.slashdot.org/story/26/05/02/0625247/linux-percentage-of-steam-users-doubled-in-one-year?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23980868&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-02T15:34:00+00:00</dc:date>
+    <dc:subject>linux</dc:subject>
+    <slash:department>year-of-the-Linux-Steam-console</slash:department>
+    <slash:section>linux</slash:section>
+    <slash:comments>36</slash:comments>
+    <slash:hit_parade>36,36,30,25,3,2,1</slash:hit_parade>
+  </item>
+  <item rdf:about="https://news.slashdot.org/story/26/05/02/0257206/marvel-dc-game-publishers-launch-rival-events-saturday-for-free-giveaways?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>Marvel, DC, Game Publishers Launch Rival Events Saturday for Free Giveaways</title>
+    <link>https://news.slashdot.org/story/26/05/02/0257206/marvel-dc-game-publishers-launch-rival-events-saturday-for-free-giveaways?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      The once-a-year free comic book giveaway "is splitting in two," according to a local news report.
+
+      Launched in 2002 by Diamond Comic Distributor, comic book giants like Marvel and DC have historically participated together. But things changed after Diamond Comic Distributors went bankrupt in 2025, "leaving other companies to swoop in and pick up where Diamond left off."
+
+      The rights to the "Free Comic Book Day" brand were sold to Universal Distribution, which plans to bring Free Comic Book Day back on Saturday. On the same day, Penguin Random House plans to launch a rival event called Comics Giveaway Day. This means you'll still get plenty of free comics, but this time they will be separated, with some coming under the Free Comic Book Day branding and others arriving under the Comics Giveaway Day branding. Free Comic Book Day will include publishers like DC, Image, Dynamite and Archie Comics. Comics Giveaway Day will include publishers such as Marvel, Dark Horse, Boom! Studios and Tokyopop...
+
+      The other big change coming this year is the introduction of game publishers Wizards of the Coast and Upper Deck to the lineup, as part of Universal Distribution's Free Comic Book Day. Wizards of the Coast is known for its tabletop role-playing game Dungeons &amp;amp; Dragons, as well as its trading card game Magic: The Gathering. Upper Deck is best known for its sports trading cards and entertainment collectibles, along with deck-building games like the Legendary series...
+
+      In addition to adding these game makers, Universal plans to expand Free Comic Book Day to include what are colloquially referred to as your friendly local game stores.
+
+      Marvel's offerings this year include a special Alien, Predator &amp;amp; Planet of the Apes one-shot, while D.C. is offering the first chapter of their upcoming graphic novel Aquamanatee. Other comics include Avatar: The Last Airbender &amp;mdash; Legends from Dark Horse Comics and
+      Sonic the Hedgehog from IDW Publishing.&lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=Marvel%2C+DC%2C+Game+Publishers+Launch+Rival+Events+Saturday+for+Free+Giveaways%3A+https%3A%2F%2Fnews.slashdot.org%2Fstory%2F26%2F05%2F02%2F0257206%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fnews.slashdot.org%2Fstory%2F26%2F05%2F02%2F0257206%2Fmarvel-dc-game-publishers-launch-rival-events-saturday-for-free-giveaways%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.slashdot.org/story/26/05/02/0257206/marvel-dc-game-publishers-launch-rival-events-saturday-for-free-giveaways?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23980790&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>EditorDavid</dc:creator>
+    <dc:date>2026-05-02T14:34:00+00:00</dc:date>
+    <dc:subject>books</dc:subject>
+    <slash:department>free-as-in-comic-books</slash:department>
+    <slash:section>news</slash:section>
+    <slash:comments>1</slash:comments>
+    <slash:hit_parade>1,1,1,1,0,0,0</slash:hit_parade>
+  </item>
+  <item rdf:about="https://slashdot.org/story/26/05/02/0010242/gamestop-is-preparing-offer-for-ebay?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed">
+    <title>GameStop Is Preparing Offer For eBay</title>
+    <link>https://slashdot.org/story/26/05/02/0010242/gamestop-is-preparing-offer-for-ebay?utm_source=rss1.0mainlinkanon&amp;utm_medium=feed</link>
+    <description>
+      GameStop is reportedly preparing a potential offer for eBay, an unusually ambitious move given that eBay's roughly $46 billion market value is nearly four times GameStop's. Reuters reports: GameStop is preparing an offer for eBay as CEO Ryan Cohen pursues plans to boost the struggling videogame retailer's market value more than tenfold, the Wall Street Journal reported on Friday. Shares of eBay, which has a market capitalization of about $46 billion, soared about 14% in extended trading. GameStop gained 4%. The company has a market value of nearly $12 billion.
+
+      GameStop has been quietly building a stake in eBay's shares ahead of a potential offer, the report said, citing people familiar with the matter. If eBay is not receptive, Cohen could decide to take the offer directly to the e-commerce company's shareholders, the Journal said.&lt;p&gt;&lt;div class="share_submission" style="position:relative;"&gt;
+      &lt;a class="slashpop" href="http://twitter.com/home?status=GameStop+Is+Preparing+Offer+For+eBay%3A+https%3A%2F%2Fslashdot.org%2Fstory%2F26%2F05%2F02%2F0010242%2F%3Futm_source%3Dtwitter%26utm_medium%3Dtwitter"&gt;&lt;img src="https://a.fsdn.com/sd/twitter_icon_large.png"&gt;&lt;/a&gt;
+      &lt;a class="slashpop" href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fslashdot.org%2Fstory%2F26%2F05%2F02%2F0010242%2Fgamestop-is-preparing-offer-for-ebay%3Futm_source%3Dslashdot%26utm_medium%3Dfacebook"&gt;&lt;img src="https://a.fsdn.com/sd/facebook_icon_large.png"&gt;&lt;/a&gt;
+
+
+
+      &lt;/div&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="https://slashdot.org/story/26/05/02/0010242/gamestop-is-preparing-offer-for-ebay?utm_source=rss1.0moreanon&amp;amp;utm_medium=feed"&gt;Read more of this story&lt;/a&gt; at Slashdot.&lt;/p&gt;&lt;iframe src="https://slashdot.org/slashdot-it.pl?op=discuss&amp;amp;id=23980710&amp;amp;smallembed=1" style="height: 300px; width: 100%; border: none;"&gt;&lt;/iframe&gt;
+    </description>
+    <dc:creator>BeauHD</dc:creator>
+    <dc:date>2026-05-02T11:00:00+00:00</dc:date>
+    <dc:subject>business</dc:subject>
+    <slash:department>meme-stocks-meets-marketplace</slash:department>
+    <slash:section>slashdot</slash:section>
+    <slash:comments>46</slash:comments>
+    <slash:hit_parade>46,45,43,36,11,3,0</slash:hit_parade>
+  </item>
+  <textinput rdf:about="https://slashdot.org/search.pl">
+    <title>Search Slashdot</title>
+    <description>Search Slashdot stories</description>
+    <name>query</name>
+    <link>https://slashdot.org/search.pl</link>
+  </textinput>
+</rdf:RDF>

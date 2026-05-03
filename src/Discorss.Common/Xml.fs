@@ -1,6 +1,5 @@
-﻿namespace Discorss.Feeds
+﻿namespace Discorss
 
-open System
 open System.Xml.Linq
 
 module XmlNs =
@@ -13,13 +12,24 @@ module XmlNs =
 module Xml =
     let xn (ns: string) (name: string) = XName.Get(name, ns)
 
-    let docElement name (doc: XDocument) = doc.Descendants(name) |> Seq.tryHead
+    let docName (doc: XDocument) =
+        match doc.Root |> Option.ofNull |> Option.map _.Name with
+        | Some n ->
+            n.LocalName
+            |> Option.ofNull
+            |> Option.map Strings.lower
+            |> Option.defaultValue ""
+        | _ -> ""
 
-    let docElements name (doc: XDocument) = doc.Descendants(name)
+    let docElements name (doc: XDocument) =
+        doc.Descendants() |> Seq.filter (fun e -> e.Name.LocalName = name)
 
-    let element name (value: XElement) = value.Elements(name) |> Seq.tryHead
+    let docElement name (doc: XDocument) = doc |> docElements name |> Seq.tryHead
 
-    let elements name (value: XElement) = value.Elements(name)
+    let elements name (value: XElement) =
+        value.Elements() |> Seq.filter (fun e -> e.Name.LocalName = name)
+
+    let element name (value: XElement) = value |> elements name |> Seq.tryHead
 
     let elementValue name (value: XElement) =
         value |> element name |> Option.map (fun a -> a.Value)
