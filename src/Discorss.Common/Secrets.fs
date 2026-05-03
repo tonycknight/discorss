@@ -26,7 +26,7 @@ type StubSecretProvider(secrets: (string * string) seq) =
             | _ -> ""
 
 [<ExcludeFromCodeCoverage>]
-type SecretProvider(config: AppConfiguration) =
+type SecretProvider() =
 
     let secrets = Map.empty
 
