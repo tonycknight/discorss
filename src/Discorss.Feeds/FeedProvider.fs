@@ -8,6 +8,4 @@ type IFeedProvider =
 type FeedProvider(client: Discorss.IExternalHttpClient) =
 
     interface IFeedProvider with
-        // TODO: check cache
-
         member this.GetFeedAsync(uri) = uri |> FeedReader.readAsync client

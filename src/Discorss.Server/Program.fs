@@ -14,7 +14,7 @@ type Startup() =
         services.AddHostedService<ServiceStartup>()
 
     let serviceCollection =
-        Discorss.Feeds.Service.WebApp.services
+        Discorss.Feeds.Bootstrap.services
         >> Discorss.Indexing.Service.WebApp.services
         >> Discorss.Ingestion.Bootstrap.services
         >> Discorss.Documents.Bootstrap.services
