@@ -40,7 +40,19 @@ module RdfParserTests =
         feed.description |> should equal "News for nerds, stuff that matters"
 
         feed.entries |> should haveLength 15
-        feed.entries |> Seq.forall (fun e -> e.title |> String.IsNullOrWhiteSpace |> not) |> should equal true
-        feed.entries |> Seq.forall (fun e -> e.description |> String.IsNullOrWhiteSpace |> not) |> should equal true
-        feed.entries |> Seq.forall (fun e -> e.author |> String.IsNullOrWhiteSpace |> not) |> should equal true
-        feed.entries |> Seq.forall (fun e -> e.uri |> String.IsNullOrWhiteSpace |> not) |> should equal true
+
+        feed.entries
+        |> Seq.forall (fun e -> e.title |> String.IsNullOrWhiteSpace |> not)
+        |> should equal true
+
+        feed.entries
+        |> Seq.forall (fun e -> e.description |> String.IsNullOrWhiteSpace |> not)
+        |> should equal true
+
+        feed.entries
+        |> Seq.forall (fun e -> e.author |> String.IsNullOrWhiteSpace |> not)
+        |> should equal true
+
+        feed.entries
+        |> Seq.forall (fun e -> e.uri |> String.IsNullOrWhiteSpace |> not)
+        |> should equal true

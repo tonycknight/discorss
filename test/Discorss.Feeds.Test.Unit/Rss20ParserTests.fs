@@ -43,7 +43,19 @@ module Rss20ParserTests =
         |> should equal "Free. Cross-platform. Open source. A developer platform for building all your apps."
 
         feed.entries |> should haveLength 10
-        feed.entries |> Seq.forall (fun e -> e.title |> String.IsNullOrWhiteSpace |> not) |> should equal true
-        feed.entries |> Seq.forall (fun e -> e.description |> String.IsNullOrWhiteSpace |> not) |> should equal true
-        feed.entries |> Seq.forall (fun e -> e.author |> String.IsNullOrWhiteSpace |> not) |> should equal true
-        feed.entries |> Seq.forall (fun e -> e.uri |> String.IsNullOrWhiteSpace |> not) |> should equal true
+
+        feed.entries
+        |> Seq.forall (fun e -> e.title |> String.IsNullOrWhiteSpace |> not)
+        |> should equal true
+
+        feed.entries
+        |> Seq.forall (fun e -> e.description |> String.IsNullOrWhiteSpace |> not)
+        |> should equal true
+
+        feed.entries
+        |> Seq.forall (fun e -> e.author |> String.IsNullOrWhiteSpace |> not)
+        |> should equal true
+
+        feed.entries
+        |> Seq.forall (fun e -> e.uri |> String.IsNullOrWhiteSpace |> not)
+        |> should equal true

@@ -45,6 +45,11 @@ module Rss092ParserTests =
             "A high-fidelity Grateful Dead song every day. This is where we're experimenting with enclosures on RSS news items that download when you're not using your computer. If it works (it will) it will be the end of the Click-And-Wait multimedia experience on the Internet. "
 
         feed.entries |> should haveLength 17
-        feed.entries |> Seq.forall (fun e -> e.author |> String.IsNullOrWhiteSpace |> not) |> should equal true
-        feed.entries |> Seq.forall (fun e -> e.description |> String.IsNullOrWhiteSpace |> not) |> should equal true
-        
+
+        feed.entries
+        |> Seq.forall (fun e -> e.author |> String.IsNullOrWhiteSpace |> not)
+        |> should equal true
+
+        feed.entries
+        |> Seq.forall (fun e -> e.description |> String.IsNullOrWhiteSpace |> not)
+        |> should equal true

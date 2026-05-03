@@ -23,12 +23,12 @@ type TokenisationBenchmarks() =
         let alphabet = "abcdefghijklmnopqrstuvwxyz" |> Array.ofSeq
         let pick () = alphabet.[rng.Next(0, alphabet.Length)]
 
-        let createWord size =            
-            let cs = [| 0 .. size |] |> Array.map (fun i -> pick ())
+        let createWord size =
+            let cs = [| 0..size |] |> Array.map (fun i -> pick ())
             new String(cs)
-             
-        let createWords size = 
-            [ 0 .. size ] |> Seq.map createWord |> Strings.join " "
+
+        let createWords size =
+            [ 0..size ] |> Seq.map createWord |> Strings.join " "
 
         this.Text <- createWords this.Size
 

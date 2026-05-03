@@ -8,7 +8,7 @@ module Rss =
     let rssVersion (xml: XDocument) =
         match xml |> Xml.docElement "rss" with
         | Some rss -> rss |> Xml.attributeValue "version"
-        | None -> 
+        | None ->
             match Xml.docName xml with
             | "rdf" -> Some "rdf"
             | _ -> None

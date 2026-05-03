@@ -12,16 +12,22 @@ module XmlNs =
 module Xml =
     let xn (ns: string) (name: string) = XName.Get(name, ns)
 
-    let docName (doc: XDocument) = 
+    let docName (doc: XDocument) =
         match doc.Root |> Option.ofNull |> Option.map _.Name with
-        | Some n -> n.LocalName |> Option.ofNull |> Option.map Strings.lower |> Option.defaultValue ""
+        | Some n ->
+            n.LocalName
+            |> Option.ofNull
+            |> Option.map Strings.lower
+            |> Option.defaultValue ""
         | _ -> ""
 
-    let docElements name (doc: XDocument) = doc.Descendants() |> Seq.filter (fun e -> e.Name.LocalName = name)
+    let docElements name (doc: XDocument) =
+        doc.Descendants() |> Seq.filter (fun e -> e.Name.LocalName = name)
 
     let docElement name (doc: XDocument) = doc |> docElements name |> Seq.tryHead
 
-    let elements name (value: XElement) = value.Elements() |> Seq.filter (fun e -> e.Name.LocalName = name)
+    let elements name (value: XElement) =
+        value.Elements() |> Seq.filter (fun e -> e.Name.LocalName = name)
 
     let element name (value: XElement) = value |> elements name |> Seq.tryHead
 

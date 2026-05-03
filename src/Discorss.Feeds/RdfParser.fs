@@ -4,7 +4,7 @@ open System
 open System.Xml.Linq
 open Discorss
 
-module RdfParser = 
+module RdfParser =
     let parseChannel (xml: XDocument) =
         match xml |> Xml.docElement "channel" with
         | Some channel ->
@@ -43,6 +43,7 @@ module RdfParser =
                   description = description |> Rss.dehtmlify
                   updated = DateTimeOffset.UtcNow
                   entries = parseEntries xml }
+
             result |> Some
 
     let (|IsRdf|_|) (xml: XDocument) =
