@@ -91,7 +91,8 @@ type FeedIngestionActor
             return! loop inbox
         }
 
-    let actor = MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
+    let actor =
+        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
 
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg

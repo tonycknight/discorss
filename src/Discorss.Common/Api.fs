@@ -10,7 +10,7 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Logging
 
 module Api =
-    
+
     [<Literal>]
     let servicePort = 8081
 
@@ -43,22 +43,19 @@ module ApiStartup =
                 lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestPropertiesAndHeaders)
 
     let addApiConfig (services: IServiceCollection) =
-        services
-            .AddOptions<AppConfiguration>()
-            .BindConfiguration(AppConfiguration.sectionName)
-            .ValidateOnStart()
-            |> ignore
+        services.AddOptions<AppConfiguration>().BindConfiguration(AppConfiguration.sectionName).ValidateOnStart()
+        |> ignore
+
         services
 
     let addApiHttp (services: IServiceCollection) =
-        services
-            .AddHttpClient()
-            .AddSingleton<IExternalHttpClient, ExternalHttpClient>()
+        services.AddHttpClient().AddSingleton<IExternalHttpClient, ExternalHttpClient>()
 
     let addMicrobroker (services: IServiceCollection) =
         let config (sp: System.IServiceProvider) =
-            let appConfig = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<AppConfiguration>>()
-            
+            let appConfig =
+                sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<AppConfiguration>>()
+
             { MicrobrokerConfiguration.brokerBaseUrl = appConfig.Value.microbrokerServiceUrl
               throttleMaxTime = appConfig.Value.microbrokerThrottle }
 
@@ -70,14 +67,17 @@ module ApiStartup =
     let addCaching (services: IServiceCollection) = services.AddMemoryCache()
 
     let addApi<'a when 'a :> IServiceCollection> =
-        addApiLogging >> addApiConfig >> addApiHttp >> addWebFramework >> addMicrobroker >> addCaching
+        addApiLogging
+        >> addApiConfig
+        >> addApiHttp
+        >> addWebFramework
+        >> addMicrobroker
+        >> addCaching
 
     let configureAppConfig (args: string[]) (whbc: IConfigurationBuilder) =
-        whbc.AddJsonFile("appsettings.json", false, true)
-            .AddEnvironmentVariables("Discorss_")
-            .AddCommandLine args
+        whbc.AddJsonFile("appsettings.json", false, true).AddEnvironmentVariables("Discorss_").AddCommandLine args
         |> ignore
-        
+
 
 module ApiValidation =
     let getRequest<'a> (ctx: HttpContext) =

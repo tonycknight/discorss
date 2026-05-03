@@ -9,10 +9,6 @@ type IDocumentRepository =
 type StubDocumentRepository() =
 
     interface IDocumentRepository with
-        member this.SetDocumentAsync (value: Document) =
-            task { ignore 0}
+        member this.SetDocumentAsync(value: Document) = task { ignore 0 }
 
-        member this.GetDocumentAsync (value: string) =
-            task { return None }
-    
-    
+        member this.GetDocumentAsync(value: string) = task { return None }

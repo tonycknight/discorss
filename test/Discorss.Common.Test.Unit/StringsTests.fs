@@ -54,6 +54,3 @@ module StringsTests =
     [<Property(Verbose = true)>]
     let ``sha512 produces base64 string`` (NonEmptyString value) =
         Strings.sha512 value |> System.Convert.FromBase64String |> (<>) Array.empty
-
-
-

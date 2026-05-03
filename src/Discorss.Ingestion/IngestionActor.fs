@@ -7,7 +7,13 @@ open Microsoft.Extensions.Logging
 open Microsoft.Extensions.Options
 
 [<ExcludeFromCodeCoverage>]
-type IngestionActor(logFactory: ILoggerFactory, config: IOptions<AppConfiguration>, feedActor: FeedIngestionActor, docActor: DocumentIngestionActor) as self =
+type IngestionActor
+    (
+        logFactory: ILoggerFactory,
+        config: IOptions<AppConfiguration>,
+        feedActor: FeedIngestionActor,
+        docActor: DocumentIngestionActor
+    ) as self =
 
     let log = logFactory.CreateLogger<IngestionActor>()
     let cancellation = new System.Threading.CancellationTokenSource()
@@ -32,10 +38,10 @@ type IngestionActor(logFactory: ILoggerFactory, config: IOptions<AppConfiguratio
             | ActorMessage.IngestFeed _ -> msg |> Actor.post feedActor
             | ActorMessage.FeedEntry e ->
                 log.LogTrace $"Received feedentry {e.uri}..."
-                e |> Models.toDocument |> ActorMessage.Document |> (Actor.post docActor)                
-            | ActorMessage.Document d -> 
+                e |> Models.toDocument |> ActorMessage.Document |> (Actor.post docActor)
+            | ActorMessage.Document d ->
                 log.LogTrace $"Received document {d.uri}..."
-                ignore 0 // TODO: 
+                ignore 0 // TODO:
             | ActorMessage.GetActorStats rc -> inbox |> getStats |> rc.Reply
             | _ -> ignore 0
 
@@ -45,7 +51,8 @@ type IngestionActor(logFactory: ILoggerFactory, config: IOptions<AppConfiguratio
     let actor =
         MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
 
-    member this.QueueNames = [ Discorss.Queues.QueueNames.feedEntries; Discorss.Queues.QueueNames.documents ]
+    member this.QueueNames =
+        [ Discorss.Queues.QueueNames.feedEntries; Discorss.Queues.QueueNames.documents ]
 
     interface IActor with
         member this.GetStats() =

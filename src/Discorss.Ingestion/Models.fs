@@ -6,13 +6,14 @@ open Discorss.Feeds
 
 module Models =
     let sha512 (value: FeedEntry) =
-        let xs = 
+        let xs =
             seq {
                 value.author
                 value.title
                 value.description
                 value.content
-            } |> Strings.join ""
+            }
+            |> Strings.join ""
 
         Strings.sha512 xs
 

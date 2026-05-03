@@ -6,8 +6,8 @@ open System
 type AppConfiguration =
     { microbrokerServiceUrl: string
       microbrokerThrottle: TimeSpan
-      documentIngestionWindow: TimeSpan 
-      queuePollFrequency: TimeSpan 
+      documentIngestionWindow: TimeSpan
+      queuePollFrequency: TimeSpan
       feedIngestionFrequency: TimeSpan }
 
     static member sectionName = "Discorss"
@@ -16,5 +16,5 @@ type AppConfiguration =
         { AppConfiguration.microbrokerServiceUrl = "http://localhost:8080"
           microbrokerThrottle = TimeSpan.FromSeconds 2.
           documentIngestionWindow = TimeSpan.FromMinutes 60.
-          queuePollFrequency = TimeSpan.FromSeconds 5. 
+          queuePollFrequency = TimeSpan.FromSeconds 5.
           feedIngestionFrequency = TimeSpan.FromSeconds 15. }

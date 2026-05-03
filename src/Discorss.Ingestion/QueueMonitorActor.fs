@@ -8,7 +8,13 @@ open Microsoft.Extensions.Logging
 open Microsoft.Extensions.Options
 
 [<ExcludeFromCodeCoverage>]
-type QueueMonitorActor(logFactory: ILoggerFactory, config: IOptions<AppConfiguration>, broker: IMicrobrokerProxy, ingestionActor: IngestionActor) as self =
+type QueueMonitorActor
+    (
+        logFactory: ILoggerFactory,
+        config: IOptions<AppConfiguration>,
+        broker: IMicrobrokerProxy,
+        ingestionActor: IngestionActor
+    ) as self =
 
     let log = logFactory.CreateLogger<QueueMonitorActor>()
 
