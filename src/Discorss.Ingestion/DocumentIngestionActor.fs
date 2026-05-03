@@ -66,7 +66,8 @@ type DocumentIngestionActor
                         do! forwardDocument d
                         setCachedDocHash d
                     | _ -> ignore 0
-
+                else
+                    log.LogTrace $"Skipping document {d.uri} as already ingested"
             | ActorMessage.GetActorStats rc -> inbox |> Actor.getStats (self.GetType().Name) |> rc.Reply
             | _ -> ignore 0
 
