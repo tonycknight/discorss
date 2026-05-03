@@ -1,11 +1,10 @@
-﻿namespace Discorss.Feeds
+namespace Discorss.Feeds
 
 open System
 open System.Xml.Linq
 open Discorss
 
-module Rss20Parser =
-
+module RdfParser = 
     let parseChannel (xml: XDocument) =
         match xml |> Xml.docElement "channel" with
         | Some channel ->
@@ -22,31 +21,31 @@ module Rss20Parser =
               title = e |> Xml.elementValueDefault "title" |> Rss.dehtmlify
               description = e |> Xml.elementValueDefault "description" |> Rss.dehtmlify
               author = e |> Xml.elementValueDefault "creator"
-              content = e |> Xml.elementValueDefault "encoded" |> Rss.dehtmlify
+              content = e |> Xml.elementValueDefault "content" |> Rss.dehtmlify
               categories = e |> Xml.elementValues "category" |> Array.ofSeq }
 
         xml |> Xml.docElements "item" |> Seq.map parse |> List.ofSeq
 
     let isMatch (xml: XDocument) =
         match Rss.rssVersion xml with
-        | Some "2.0" -> true
+        | Some "rdf" -> true
         | _ -> false
 
     let parse url (xml: XDocument) =
 
-        let title, description = parseChannel xml
+        match parseChannel xml with
+        | ("", "") -> None
+        | (title, description) ->
+            let result =
+                { Feed.uri = url
+                  feedType = FeedType.Rss20
+                  title = title |> Rss.dehtmlify
+                  description = description |> Rss.dehtmlify
+                  updated = DateTimeOffset.UtcNow
+                  entries = parseEntries xml }
+            result |> Some
 
-        let result =
-            { Feed.uri = url
-              feedType = FeedType.Rss20
-              title = title |> Rss.dehtmlify
-              description = description |> Rss.dehtmlify
-              updated = DateTimeOffset.UtcNow
-              entries = parseEntries xml }
-
-        result |> Some
-
-    let (|IsRss20|_|) (xml: XDocument) =
+    let (|IsRdf|_|) (xml: XDocument) =
         match xml |> isMatch with
         | true -> Some true
         | _ -> None

@@ -1,4 +1,4 @@
-﻿namespace Discorss.Feeds.Test.Unit
+namespace Discorss.Feeds.Test.Unit
 
 open System
 open System.Xml.Linq
@@ -7,17 +7,15 @@ open FsCheck
 open FsCheck.Xunit
 open FsUnit.Xunit
 
-module Rss20ParserTests =
-
+module RdfParserTests =
     let sampleDoc () =
-        "MsRss20Feed.xml" |> TestHelpers.sampleFeedAsString |> XDocument.Parse
-
+        "RdfFeed.xml" |> TestHelpers.sampleFeedAsString |> XDocument.Parse
 
     [<Xunit.Fact>]
     let ``isMatch empty XML doc`` () =
         let doc = new XDocument()
 
-        let r = Rss20Parser.isMatch doc
+        let r = RdfParser.isMatch doc
 
         r |> should equal false
 
@@ -25,7 +23,7 @@ module Rss20ParserTests =
     let ``isMatch sample feed doc`` () =
         let doc = sampleDoc ()
 
-        let r = Rss20Parser.isMatch doc
+        let r = RdfParser.isMatch doc
 
         r |> should equal true
 
@@ -34,15 +32,14 @@ module Rss20ParserTests =
         let doc = sampleDoc ()
         let url = "http://test.org"
 
-        let feed = Rss20Parser.parse url doc |> Option.get
+        let feed = RdfParser.parse url doc |> Option.get
 
         feed.uri |> should equal url
-        feed.title |> should equal ".NET Blog"
+        feed.title |> should equal "Slashdot"
 
-        feed.description
-        |> should equal "Free. Cross-platform. Open source. A developer platform for building all your apps."
+        feed.description |> should equal "News for nerds, stuff that matters"
 
-        feed.entries |> should haveLength 10
+        feed.entries |> should haveLength 15
         feed.entries |> Seq.forall (fun e -> e.title |> String.IsNullOrWhiteSpace |> not) |> should equal true
         feed.entries |> Seq.forall (fun e -> e.description |> String.IsNullOrWhiteSpace |> not) |> should equal true
         feed.entries |> Seq.forall (fun e -> e.author |> String.IsNullOrWhiteSpace |> not) |> should equal true

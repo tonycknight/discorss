@@ -17,7 +17,8 @@ module FeedReader =
         | Rss20Parser.IsRss20 x -> Rss20Parser.parse |> Some
         | Rss092Parser.IsRss092 x -> Rss092Parser.parse |> Some
         | Rss091Parser.IsRss091 x -> Rss091Parser.parse |> Some
-        | _ -> None
+        | RdfParser.IsRdf x -> RdfParser.parse |> Some
+        | _ -> None // TODO:
 
     let private parseXmlToFeed url (xml: XDocument) =
         match parser xml with

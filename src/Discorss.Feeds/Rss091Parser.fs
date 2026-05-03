@@ -21,8 +21,8 @@ module Rss091Parser =
               uri = e |> Xml.elementValueDefault "link"
               title = e |> Xml.elementValueDefault "title"
               description = e |> Xml.elementValueDefault "description"
-              author = e |> Xml.elementValueDefault (Xml.xn XmlNs.dcns "creator")
-              content = e |> Xml.elementValueDefault (Xml.xn XmlNs.contentns "encoded")
+              author = e |> Xml.elementValueDefault "creator"
+              content = e |> Xml.elementValueDefault "encoded"
               categories = e |> Xml.elementValues "category" |> Array.ofSeq }
 
         xml |> Xml.docElements "item" |> Seq.map parse |> List.ofSeq
