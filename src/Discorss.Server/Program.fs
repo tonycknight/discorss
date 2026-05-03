@@ -48,7 +48,7 @@ module Program =
             .ConfigureWebHostDefaults(fun whb ->
                 whb
                     .UseStartup<Startup>()
-                    .UseUrls($"http://*:{ApiPorts.servicePort}")
+                    .UseUrls($"http://*:{Api.servicePort}")
                     .ConfigureAppConfiguration(ApiStartup.configureAppConfig args)
                 |> ignore)
             .Build()

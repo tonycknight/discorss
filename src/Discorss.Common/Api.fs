@@ -10,16 +10,12 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Logging
 
 module Api =
+    
+    [<Literal>]
+    let servicePort = 8081
 
     let heartbeatRoute: HttpHandler =
         route "/heartbeat" >=> noResponseCaching >=> json [ "OK" ]
-
-    let config (sp: System.IServiceProvider) =
-        let c = AppConfiguration.defaultConfig
-
-        sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>().GetSection("Discorss").Bind(c)
-
-        c
 
     let errorHandler: ErrorHandler =
         fun (ex: exn) (logger: ILogger) ->
@@ -49,7 +45,7 @@ module ApiStartup =
     let addApiConfig (services: IServiceCollection) =
         services
             .AddOptions<AppConfiguration>()
-            .BindConfiguration(nameof(AppConfiguration))
+            .BindConfiguration(AppConfiguration.sectionName)
             .ValidateOnStart()
             |> ignore
 
