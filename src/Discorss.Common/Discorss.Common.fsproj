@@ -11,7 +11,6 @@
     <Compile Include="Seq.fs" />
     <Compile Include="Strings.fs" />
     <Compile Include="Configuration.fs" />
-    <Compile Include="Secrets.fs" />
     <Compile Include="Http.fs" />
     <Compile Include="Html.fs" />
     <Compile Include="Mongo.fs" />

@@ -49,16 +49,12 @@ type IInternalHttpClient =
     abstract member PostAsync: url: string -> content: string -> Task<HttpRequestResponse>
 
 [<ExcludeFromCodeCoverage>]
-type InternalHttpClient(httpClient: HttpClient, secrets: Security.ISecretProvider) =
+type InternalHttpClient(httpClient: HttpClient) =
     let httpSend = Http.send httpClient
-
-    let appendApiKey (req: HttpRequestMessage) =
-        req.Headers.Add("x-api-key", secrets.GetSecretValue "apikey")
-        req
 
     let getReq (url: string) =
         let result = new HttpRequestMessage(HttpMethod.Get, url)
-        result |> appendApiKey
+        result
 
     let pushJsonReq (method: HttpMethod) (url: string) (content: string) =
         let result = new HttpRequestMessage(method, url)
@@ -70,7 +66,7 @@ type InternalHttpClient(httpClient: HttpClient, secrets: Security.ISecretProvide
                 System.Net.Mime.MediaTypeNames.Application.Json
             )
 
-        result |> appendApiKey
+        result
 
     let putJsonReq = pushJsonReq HttpMethod.Put
 

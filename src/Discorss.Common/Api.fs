@@ -48,9 +48,7 @@ module ApiStartup =
             .BindConfiguration(AppConfiguration.sectionName)
             .ValidateOnStart()
             |> ignore
-
         services
-            .AddSingleton<Discorss.Security.ISecretProvider>(new Discorss.Security.StubSecretProvider())
 
     let addApiHttp (services: IServiceCollection) =
         services
