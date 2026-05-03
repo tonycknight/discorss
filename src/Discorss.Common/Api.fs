@@ -53,7 +53,6 @@ module ApiStartup =
     let addApiHttp (services: IServiceCollection) =
         services
             .AddHttpClient()
-            .AddSingleton<IInternalHttpClient, InternalHttpClient>()
             .AddSingleton<IExternalHttpClient, ExternalHttpClient>()
 
     let addMicrobroker (services: IServiceCollection) =

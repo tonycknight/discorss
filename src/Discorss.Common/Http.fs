@@ -43,41 +43,6 @@ module Http =
                 return HttpExceptionRequestResponse(ex)
         }
 
-type IInternalHttpClient =
-    abstract member GetAsync: url: string -> Task<HttpRequestResponse>
-    abstract member PutAsync: url: string -> content: string -> Task<HttpRequestResponse>
-    abstract member PostAsync: url: string -> content: string -> Task<HttpRequestResponse>
-
-[<ExcludeFromCodeCoverage>]
-type InternalHttpClient(httpClient: HttpClient) =
-    let httpSend = Http.send httpClient
-
-    let getReq (url: string) =
-        let result = new HttpRequestMessage(HttpMethod.Get, url)
-        result
-
-    let pushJsonReq (method: HttpMethod) (url: string) (content: string) =
-        let result = new HttpRequestMessage(method, url)
-
-        result.Content <-
-            new System.Net.Http.StringContent(
-                content,
-                Text.Encoding.UTF8,
-                System.Net.Mime.MediaTypeNames.Application.Json
-            )
-
-        result
-
-    let putJsonReq = pushJsonReq HttpMethod.Put
-
-    let postJsonReq = pushJsonReq HttpMethod.Post
-
-    interface IInternalHttpClient with
-        member this.GetAsync url = url |> getReq |> httpSend
-        member this.PutAsync url content = content |> putJsonReq url |> httpSend
-        member this.PostAsync url content = content |> postJsonReq url |> httpSend
-
-
 type IExternalHttpClient =
     abstract member GetAsync: url: string -> Task<HttpRequestResponse>
 
