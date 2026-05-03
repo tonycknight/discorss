@@ -1,6 +1,5 @@
-﻿namespace Discorss.Feeds
+﻿namespace Discorss
 
-open System
 open System.Xml.Linq
 
 module XmlNs =

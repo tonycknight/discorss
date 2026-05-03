@@ -2,6 +2,7 @@
 
 open System
 open System.Xml.Linq
+open Discorss
 
 module Rss20Parser =
 
