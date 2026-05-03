@@ -5,8 +5,10 @@ open System.Diagnostics.CodeAnalysis
 open System.Threading.Tasks
 
 type IFeedRepository =
-    abstract member GetFeedInfosAsync: unit -> Task<seq<FeedInfo>>
+    abstract member GetFeedInfoAsync: string -> Task<FeedInfo option>
+    abstract member GetFeedInfosAsync: unit -> Task<FeedInfo[]>
     abstract member SetFeedInfoAsync: FeedInfo -> Task
+    abstract member SetFeedLastUpdateAsync: FeedInfo -> Task
 
 [<ExcludeFromCodeCoverage>]
 type StubFeedRepository(feedUris) =
@@ -36,11 +38,30 @@ type StubFeedRepository(feedUris) =
         )
 
     interface IFeedRepository with
-        member this.GetFeedInfosAsync() = task { return feedCache.Values }
+        member this.GetFeedInfoAsync(uri) =
+            task {
+                let (ok, feed) = feedCache.TryGetValue(uri)
+                return if ok then Some feed else None
+            }
+
+        member this.GetFeedInfosAsync() =
+            task { return feedCache.Values |> Seq.toArray }
 
         member this.SetFeedInfoAsync(feed: FeedInfo) =
             task {
                 feedCache.[feed.uri] <-
                     { feed with
                         updated = DateTimeOffset.UtcNow }
+            }
+
+        member this.SetFeedLastUpdateAsync(feed: FeedInfo) =
+            task {
+                let (ok, feed2) = feedCache.TryGetValue(feed.uri)
+                let feed = if ok then feed2 else feed
+
+                let feed =
+                    { feed with
+                        updated = DateTimeOffset.UtcNow }
+
+                feedCache.[feed.uri] <- feed
             }

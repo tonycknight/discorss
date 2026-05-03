@@ -2,7 +2,7 @@
 
 open System
 open Discorss
-open Discorss.Indexing
+open Discorss.Documents
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
@@ -20,9 +20,12 @@ module WebAppHandlers =
                     let words =
                         { Document.uri = req.uri
                           title = req.title
+                          publication = req.publication
                           description = req.description
                           content = req.content
-                          author = req.author }
+                          categories = req.categories
+                          author = req.author
+                          sha512 = "" }
                         |> da.Words
 
                     return! Successful.OK words next ctx
@@ -39,10 +42,13 @@ module WebAppHandlers =
 
                     let doc =
                         { Document.uri = req.uri
+                          publication = req.publication
+                          categories = req.categories
                           title = req.title
                           description = req.description
                           content = req.content
-                          author = req.author }
+                          author = req.author
+                          sha512 = "" }
 
                     let stats = da.Statistics doc
 
@@ -58,9 +64,12 @@ module WebAppHandlers =
                     let doc =
                         { Document.uri = req.uri
                           title = req.title
+                          publication = req.publication
                           description = req.description
                           content = req.content
-                          author = req.author }
+                          categories = req.categories
+                          author = req.author
+                          sha512 = "" }
 
                     let stats = doc |> sp.GetRequiredService<Indexing.IDocumentAnalyser>().Statistics
 

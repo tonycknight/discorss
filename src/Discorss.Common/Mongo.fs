@@ -6,6 +6,7 @@ open MongoDB.Driver
 
 [<ExcludeFromCodeCoverage>]
 module Mongo =
+    let private idFilter id = sprintf @"{ _id: ""%s"" }" id
 
     let dbClient (connection: string) =
         let settings = connection |> MongoClientSettings.FromConnectionString

@@ -1,13 +1,6 @@
 ﻿namespace Discorss.Indexing
 
-
-type Document =
-    { uri: string
-      author: string
-      title: string
-      description: string
-      content: string }
-
+open System
 
 type DocumentStatistics =
     { uri: string

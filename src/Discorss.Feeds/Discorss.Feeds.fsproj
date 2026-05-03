@@ -20,6 +20,7 @@
     <Compile Include="FeedReader.fs" />
     <Compile Include="FeedRepository.fs" />
     <Compile Include="FeedProvider.fs" />
+    <Compile Include="Bootstrap.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />

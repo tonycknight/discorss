@@ -10,10 +10,15 @@ open Giraffe
 
 type Startup() =
 
+    let backgroundServices (services: IServiceCollection) =
+        services.AddHostedService<ServiceStartup>()
+
     let serviceCollection =
-        Discorss.Feeds.Service.WebApp.services
+        Discorss.Feeds.Bootstrap.services
         >> Discorss.Indexing.Service.WebApp.services
-        >> Discorss.Ingestion.Service.WebApp.services
+        >> Discorss.Ingestion.Bootstrap.services
+        >> Discorss.Documents.Bootstrap.services
+        >> backgroundServices
 
     let routes (app: IApplicationBuilder) =
         subRouteCi
@@ -37,14 +42,14 @@ type Startup() =
 module Program =
 
     [<EntryPoint>]
-    let main _ =
+    let main args =
         Host
             .CreateDefaultBuilder()
             .ConfigureWebHostDefaults(fun whb ->
                 whb
                     .UseStartup<Startup>()
-                    .UseUrls($"http://*:{ApiPorts.servicePort}")
-                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig)
+                    .UseUrls($"http://*:{Api.servicePort}")
+                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig args)
                 |> ignore)
             .Build()
             .Run()

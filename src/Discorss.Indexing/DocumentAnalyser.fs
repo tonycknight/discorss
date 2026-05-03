@@ -2,6 +2,7 @@
 
 open System
 open Discorss
+open Discorss.Documents
 
 type IDocumentAnalyser =
     abstract member Statistics: Document -> DocumentStatistics

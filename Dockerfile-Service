@@ -2,7 +2,7 @@ ARG BuildVersion
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
-EXPOSE 63529
+EXPOSE 8081
 
 RUN apt-get update && apt-get install -y adduser
 

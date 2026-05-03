@@ -9,14 +9,11 @@ type ActorMessage =
     | Stop
     | Start
     | GetFeeds
-    | QueryFeeds of AsyncReplyChannel<string[]>
-    | Feeds of urls: Discorss.Feeds.FeedInfo[]
-    | AddFeed of url: string
-    | RemoveFeed of url: string
-    | FetchFeed of url: string
+    | IngestFeed of url: string
     | IngestFeeds
-    // TODO: | IngestFeed
-    | Documents of docs: Discorss.Indexing.Document[]
-    | IndexDoc of doc: Discorss.Indexing.Document
+    | FeedEntry of entry: Discorss.Feeds.FeedEntry
+    | Document of docs: Discorss.Documents.Document
+    | IndexDocument of doc: Discorss.Documents.Document
     | GetActorStats of rc: AsyncReplyChannel<ActorStats>
     | ActorStats of stats: ActorStats
+    | PollQueue of queueName: string

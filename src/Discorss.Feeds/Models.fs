@@ -17,7 +17,7 @@ type FeedEntry =
       description: string
       author: string
       content: string
-      categories: string list }
+      categories: string[] }
 
 type Feed =
     { feedType: FeedType

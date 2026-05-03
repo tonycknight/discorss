@@ -43,7 +43,9 @@ module WebAppHandlers =
                         let result = json { ApiErrorResult.errors = [| msg |] }
                         return! RequestErrors.unprocessableEntity result next ctx
                     | _ ->
-                        let result = json { ApiErrorResult.errors = [| "Internal error" |] }
+                        let result =
+                            json { ApiErrorResult.errors = [| $"Internal error: {feed.GetType()}" |] }
+
                         return! ServerErrors.internalError result next ctx
 
             }

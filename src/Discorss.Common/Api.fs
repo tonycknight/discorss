@@ -3,6 +3,7 @@
 open Discorss
 open Discorss.ApiModels
 open Giraffe
+open Microbroker.Client
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
@@ -10,15 +11,11 @@ open Microsoft.Extensions.Logging
 
 module Api =
 
+    [<Literal>]
+    let servicePort = 8081
+
     let heartbeatRoute: HttpHandler =
         route "/heartbeat" >=> noResponseCaching >=> json [ "OK" ]
-
-    let config (sp: System.IServiceProvider) =
-        let c = AppConfiguration.defaultConfig
-
-        sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>().GetSection("Discorss").Bind(c)
-
-        c
 
     let errorHandler: ErrorHandler =
         fun (ex: exn) (logger: ILogger) ->
@@ -46,27 +43,41 @@ module ApiStartup =
                 lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestPropertiesAndHeaders)
 
     let addApiConfig (services: IServiceCollection) =
+        services.AddOptions<AppConfiguration>().BindConfiguration(AppConfiguration.sectionName).ValidateOnStart()
+        |> ignore
+
         services
-            .AddSingleton<AppConfiguration>(fun sp -> Api.config sp)
-            .AddSingleton<IExternalHttpClient, ExternalHttpClient>()
-            .AddSingleton<Discorss.Security.ISecretProvider>(new Discorss.Security.StubSecretProvider())
 
     let addApiHttp (services: IServiceCollection) =
-        services
-            .AddHttpClient()
-            .AddSingleton<IInternalHttpClient, InternalHttpClient>()
-            .AddSingleton<IExternalHttpClient, ExternalHttpClient>()
-            .AddSingleton<Discorss.Messaging.IMessageHubClient, Discorss.Messaging.MessageHubClient>()
+        services.AddHttpClient().AddSingleton<IExternalHttpClient, ExternalHttpClient>()
 
+    let addMicrobroker (services: IServiceCollection) =
+        let config (sp: System.IServiceProvider) =
+            let appConfig =
+                sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<AppConfiguration>>()
+
+            { MicrobrokerConfiguration.brokerBaseUrl = appConfig.Value.microbrokerServiceUrl
+              throttleMaxTime = appConfig.Value.microbrokerThrottle }
+
+        DependencyInjection.addServices services
+        |> DependencyInjection.addConfiguration config
 
     let addWebFramework (services: IServiceCollection) = services.AddGiraffe()
 
-    let addApi<'a when 'a :> IServiceCollection> =
-        addApiLogging >> addApiConfig >> addApiHttp >> addWebFramework
+    let addCaching (services: IServiceCollection) = services.AddMemoryCache()
 
-    let configureAppConfig (whbc: IConfigurationBuilder) =
-        whbc.AddJsonFile("appsettings.json", false, true).AddEnvironmentVariables("Discorss_")
+    let addApi<'a when 'a :> IServiceCollection> =
+        addApiLogging
+        >> addApiConfig
+        >> addApiHttp
+        >> addWebFramework
+        >> addMicrobroker
+        >> addCaching
+
+    let configureAppConfig (args: string[]) (whbc: IConfigurationBuilder) =
+        whbc.AddJsonFile("appsettings.json", false, true).AddEnvironmentVariables("Discorss_").AddCommandLine args
         |> ignore
+
 
 module ApiValidation =
     let getRequest<'a> (ctx: HttpContext) =

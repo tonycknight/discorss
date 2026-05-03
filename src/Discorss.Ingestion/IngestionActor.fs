@@ -1,46 +1,58 @@
 ﻿namespace Discorss.Ingestion
 
+open System
 open System.Diagnostics.CodeAnalysis
 open Discorss
+open Microsoft.Extensions.Logging
+open Microsoft.Extensions.Options
 
 [<ExcludeFromCodeCoverage>]
-type IngestionActor(config: AppConfiguration, http: IInternalHttpClient) as self =
+type IngestionActor
+    (
+        logFactory: ILoggerFactory,
+        config: IOptions<AppConfiguration>,
+        feedActor: FeedIngestionActor,
+        docActor: DocumentIngestionActor
+    ) as self =
 
-    let feedsActor = new FeedsActor(self, config, http) :> IActor
+    let log = logFactory.CreateLogger<IngestionActor>()
+    let cancellation = new System.Threading.CancellationTokenSource()
+
+    let postIngestTimer =
+        (fun args -> ActorMessage.IngestFeeds |> Actor.post self)
+        |> Actor.createTimer config.Value.feedIngestionFrequency
 
     let getStats inbox =
-        async {
-            let myStats = Actor.getStats $"{self.GetType()}" inbox
+        Actor.getStats (self.GetType().Name) inbox
 
-            let! feedsStats = feedsActor.GetStats()
+    let rec loop (inbox: MailboxProcessor<ActorMessage>) =
+        task {
+            let! msg = inbox.Receive()
 
-            return
-                { myStats with
-                    childStats = [ feedsStats ] }
+            match msg with
+            | ActorMessage.Start -> do postIngestTimer.Enabled <- true
+            | ActorMessage.Stop ->
+                do postIngestTimer.Enabled <- false
+                do cancellation.Cancel()
+            | ActorMessage.IngestFeeds
+            | ActorMessage.IngestFeed _ -> msg |> Actor.post feedActor
+            | ActorMessage.FeedEntry e ->
+                log.LogTrace $"Received feedentry {e.uri}..."
+                e |> Models.toDocument |> ActorMessage.Document |> (Actor.post docActor)
+            | ActorMessage.Document d ->
+                log.LogTrace $"Received document {d.uri}..."
+                ignore 0 // TODO:
+            | ActorMessage.GetActorStats rc -> inbox |> getStats |> rc.Reply
+            | _ -> ignore 0
+
+            return! loop inbox
         }
 
     let actor =
-        MailboxProcessor<ActorMessage>.Start(fun inbox ->
-            let rec loop () =
-                async {
-                    let! msg = inbox.Receive()
+        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
 
-                    match msg with
-                    | ActorMessage.GetFeeds
-                    | ActorMessage.AddFeed _
-                    | ActorMessage.RemoveFeed _
-                    | ActorMessage.FetchFeed _
-                    | ActorMessage.Feeds _ -> msg |> feedsActor.Post
-                    | ActorMessage.IngestFeeds -> ignore 0
-                    | ActorMessage.Documents _
-                    | ActorMessage.IndexDoc _ -> ignore 0 // TODO:
-                    | ActorMessage.GetActorStats rc -> inbox |> getStats |> Async.RunSynchronously |> rc.Reply // TODO: ewww
-                    | m -> ignore 0
-
-                    return! loop ()
-                }
-
-            loop ())
+    member this.QueueNames =
+        [ Discorss.Queues.QueueNames.feedEntries; Discorss.Queues.QueueNames.documents ]
 
     interface IActor with
         member this.GetStats() =

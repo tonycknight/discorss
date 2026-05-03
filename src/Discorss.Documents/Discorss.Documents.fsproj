@@ -6,14 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="CombinatorsTests.fs" />
-    <Compile Include="StringsTests.fs" />
-    <Compile Include="SeqTests.fs" />
-    <Compile Include="HtmlTests.fs" />
+    <Compile Include="Models.fs" />
+    <Compile Include="DocumentRepository.fs" />
+    <Compile Include="Bootstrap.fs" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Discorss.Common\Discorss.Common.fsproj" />
+    <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
   </ItemGroup>
-  
+
 </Project>

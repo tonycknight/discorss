@@ -1,34 +1,27 @@
 ﻿namespace Discorss.Queues
 
 open System
-open System.Threading.Tasks
-open Discorss.Messaging
+open Microbroker.Client
 
-type QueueInfo = { name: string; count: int }
+module QueueNames =
 
-type IQueue =
-    abstract member GetNextAsync: unit -> Task<QueueMessage option>
-    abstract member PushAsync: message: QueueMessage -> Task
-    abstract member GetInfoAsync: unit -> Task<QueueInfo>
+    [<Literal>]
+    let feedEntries = "discorss_feedentries"
 
-type MemoryQueue(name: string) =
+    [<Literal>]
+    let documents = "discorss_documents"
 
-    let queue = new System.Collections.Concurrent.ConcurrentQueue<QueueMessage>()
+module Messages =
+    let toQueueMessage (value: 'a) =
+        { MicrobrokerMessage.messageType = value.GetType().AssemblyQualifiedName
+          content = Newtonsoft.Json.JsonConvert.SerializeObject value
+          created = DateTimeOffset.UtcNow
+          active = DateTimeOffset.UtcNow
+          expiry = DateTimeOffset.MaxValue }
 
-    interface IQueue with
-        member this.GetInfoAsync() =
-            task {
-                return
-                    { QueueInfo.name = name
-                      count = queue.Count }
-            }
-
-        member this.GetNextAsync() =
-            task {
-                return
-                    match queue.TryDequeue() with
-                    | true, msg -> Some msg
-                    | false, _ -> None
-            }
-
-        member this.PushAsync message = task { queue.Enqueue message }
+    let fromQueueMessage<'a> (msg: MicrobrokerMessage) =
+        try
+            msg.content |> Newtonsoft.Json.JsonConvert.DeserializeObject<'a> |> Some
+        with
+        | :? Newtonsoft.Json.JsonReaderException as ex -> None
+        | :? Newtonsoft.Json.JsonSerializationException as ex -> None

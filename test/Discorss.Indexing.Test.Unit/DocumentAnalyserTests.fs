@@ -1,6 +1,7 @@
 ﻿namespace Discorss.Indexing.Tests.Unit
 
 open System
+open Discorss.Documents
 open Discorss.Indexing
 open FsCheck
 open FsUnit.Xunit
@@ -17,7 +18,10 @@ module DocumentAnalyserTests =
               author = ""
               title = ""
               description = ""
-              content = "" }
+              publication = DateTimeOffset.UtcNow
+              categories = [||]
+              content = ""
+              sha512 = "" }
 
         let words = analyser.Words(doc) |> Array.ofSeq
 
@@ -35,7 +39,10 @@ module DocumentAnalyserTests =
               author = expected.[1]
               title = expected.[0]
               description = expected.[2]
-              content = expected.[3] }
+              publication = DateTimeOffset.UtcNow
+              categories = [||]
+              content = expected.[3]
+              sha512 = "" }
 
         let words = analyser.Words(doc) |> Array.ofSeq
 
@@ -52,7 +59,10 @@ module DocumentAnalyserTests =
               author = ""
               title = ""
               description = ""
-              content = "" }
+              publication = DateTimeOffset.UtcNow
+              categories = [||]
+              content = ""
+              sha512 = "" }
 
         let stats = analyser.Statistics(doc)
 
@@ -71,7 +81,10 @@ module DocumentAnalyserTests =
               author = words.[0]
               title = words.[0]
               description = words.[0]
-              content = words.[0] }
+              publication = DateTimeOffset.UtcNow
+              categories = [||]
+              content = words.[0]
+              sha512 = "" }
 
         let stats = analyser.Statistics(doc)
 

@@ -16,13 +16,13 @@ module Rss092Parser =
     let parseEntries (xml: XDocument) =
         let parse (e: XElement) =
             { FeedEntry.id = e |> Xml.elementValueDefault "link"
-              publication = DateTimeOffset.Now
+              publication = DateTimeOffset.UtcNow
               uri = e |> Xml.elementValueDefault "link"
               title = e |> Xml.elementValueDefault "title"
               description = e |> Xml.elementValueDefault "description"
               author = e |> Xml.elementValueDefault (Xml.xn XmlNs.dcns "creator")
               content = e |> Xml.elementValueDefault (Xml.xn XmlNs.contentns "encoded")
-              categories = e |> Xml.elementValues "category" |> List.ofSeq }
+              categories = e |> Xml.elementValues "category" |> Array.ofSeq }
 
         xml |> Xml.docElements "item" |> Seq.map parse |> List.ofSeq
 
