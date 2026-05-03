@@ -42,14 +42,14 @@ type Startup() =
 module Program =
 
     [<EntryPoint>]
-    let main _ =
+    let main args =
         Host
             .CreateDefaultBuilder()
             .ConfigureWebHostDefaults(fun whb ->
                 whb
                     .UseStartup<Startup>()
                     .UseUrls($"http://*:{ApiPorts.servicePort}")
-                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig)
+                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig args)
                 |> ignore)
             .Build()
             .Run()

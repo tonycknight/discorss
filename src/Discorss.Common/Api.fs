@@ -48,8 +48,12 @@ module ApiStartup =
 
     let addApiConfig (services: IServiceCollection) =
         services
-            .AddSingleton<AppConfiguration>(fun sp -> Api.config sp)
-            .AddSingleton<IExternalHttpClient, ExternalHttpClient>()
+            .AddOptions<AppConfiguration>()
+            .BindConfiguration(nameof(AppConfiguration))
+            .ValidateOnStart()
+            |> ignore
+
+        services
             .AddSingleton<Discorss.Security.ISecretProvider>(new Discorss.Security.StubSecretProvider())
 
     let addApiHttp (services: IServiceCollection) =
@@ -60,10 +64,10 @@ module ApiStartup =
 
     let addMicrobroker (services: IServiceCollection) =
         let config (sp: System.IServiceProvider) =
-            let appConfig = sp.GetRequiredService<AppConfiguration>()
+            let appConfig = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<AppConfiguration>>()
             
-            { MicrobrokerConfiguration.brokerBaseUrl = appConfig.microbrokerServiceUrl
-              throttleMaxTime = appConfig.microbrokerThrottle }
+            { MicrobrokerConfiguration.brokerBaseUrl = appConfig.Value.microbrokerServiceUrl
+              throttleMaxTime = appConfig.Value.microbrokerThrottle }
 
         DependencyInjection.addServices services
         |> DependencyInjection.addConfiguration config
@@ -75,9 +79,12 @@ module ApiStartup =
     let addApi<'a when 'a :> IServiceCollection> =
         addApiLogging >> addApiConfig >> addApiHttp >> addWebFramework >> addMicrobroker >> addCaching
 
-    let configureAppConfig (whbc: IConfigurationBuilder) =
-        whbc.AddJsonFile("appsettings.json", false, true).AddEnvironmentVariables("Discorss_")
+    let configureAppConfig (args: string[]) (whbc: IConfigurationBuilder) =
+        whbc.AddJsonFile("appsettings.json", false, true)
+            .AddEnvironmentVariables("Discorss_")
+            .AddCommandLine args
         |> ignore
+        
 
 module ApiValidation =
     let getRequest<'a> (ctx: HttpContext) =

@@ -5,9 +5,10 @@ open Discorss
 open Microbroker.Client
 open Microsoft.Extensions.Caching.Memory
 open Microsoft.Extensions.Logging
+open Microsoft.Extensions.Options
 
 [<ExcludeFromCodeCoverage>]
-type DocumentIngestionActor(logFactory: ILoggerFactory, config: AppConfiguration, cache: IMemoryCache, docRepo: Documents.IDocumentRepository, broker: IMicrobrokerProxy) as self =
+type DocumentIngestionActor(logFactory: ILoggerFactory, config: IOptions<AppConfiguration>, cache: IMemoryCache, docRepo: Documents.IDocumentRepository, broker: IMicrobrokerProxy) as self =
 
     let log = logFactory.CreateLogger<DocumentIngestionActor>()
         
@@ -16,7 +17,7 @@ type DocumentIngestionActor(logFactory: ILoggerFactory, config: AppConfiguration
 
     let setCachedDocHash document =
         let key = cacheKey document
-        let options = Caching.cacheOptions () |> Caching.expiry config.documentIngestionWindow
+        let options = Caching.cacheOptions () |> Caching.expiry config.Value.documentIngestionWindow
         cache.Set(key, document.sha512, options) |> ignore
 
     let hasCacheDelta document = 

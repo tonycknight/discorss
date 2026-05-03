@@ -4,16 +4,17 @@ open System
 open System.Diagnostics.CodeAnalysis
 open Discorss
 open Microsoft.Extensions.Logging
+open Microsoft.Extensions.Options
 
 [<ExcludeFromCodeCoverage>]
-type IngestionActor(logFactory: ILoggerFactory, config: AppConfiguration, feedActor: FeedIngestionActor, docActor: DocumentIngestionActor) as self =
+type IngestionActor(logFactory: ILoggerFactory, config: IOptions<AppConfiguration>, feedActor: FeedIngestionActor, docActor: DocumentIngestionActor) as self =
 
     let log = logFactory.CreateLogger<IngestionActor>()
     let cancellation = new System.Threading.CancellationTokenSource()
 
     let postIngestTimer =
         (fun args -> ActorMessage.IngestFeeds |> Actor.post self)
-        |> Actor.createTimer config.feedIngestionFrequency
+        |> Actor.createTimer config.Value.feedIngestionFrequency
 
     let getStats inbox =
         Actor.getStats (self.GetType().Name) inbox
