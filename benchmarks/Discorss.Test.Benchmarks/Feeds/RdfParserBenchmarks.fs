@@ -10,14 +10,14 @@ open Discorss.Test.Benchmarks
 [<RankColumn>]
 [<JsonExporterAttribute.Full>]
 [<GcServerAttribute(true)>]
-type Rss20ParserBenchmarks() =
+type RdfParserBenchmarks() =
 
     [<GlobalSetup>]
     member this.GlobalSetup() =
         this.Text <- TestHelpers.sampleFeedAsString this.SampleFileName
         this.Doc <- this.Text |> XDocument.Parse
 
-    [<Params("MsRss20Feed.xml", "Rss20Feed.xml")>]
+    [<Params("RdfFeed.xml")>]
     member val SampleFileName = "" with get, set
 
     member val Text = "" with get, set
@@ -25,8 +25,8 @@ type Rss20ParserBenchmarks() =
 
     [<Benchmark>]
     member this.Parse() =
-        this.Doc |> Rss20Parser.parse "http://url" |> ignore
+        this.Doc |> RdfParser.parse "http://url" |> ignore
 
     [<Benchmark>]
     member this.ParseWithLoad() =
-        this.Text |> XDocument.Parse |> Rss20Parser.parse "http://url" |> ignore
+        this.Text |> XDocument.Parse |> RdfParser.parse "http://url" |> ignore

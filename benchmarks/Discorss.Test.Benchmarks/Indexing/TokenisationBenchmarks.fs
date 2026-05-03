@@ -13,13 +13,24 @@ open Discorss.Indexing
 type TokenisationBenchmarks() =
 
     [<Params(0, 1, 2, 4, 8, 16, 32, 64, 128, 256)>]
-    member val Count = 0 with get, set
+    member val Size = 0 with get, set
 
     member val Text = "" with get, set
 
-    [<IterationSetup>]
-    member this.Setup() =
-        this.Text <- [ 0 .. this.Count ] |> Seq.map (fun i -> new String('a', i)) |> Strings.join " "
+    [<GlobalSetup>]
+    member this.GlobalSetup() =
+        let rng = new Random()
+        let alphabet = "abcdefghijklmnopqrstuvwxyz" |> Array.ofSeq
+        let pick () = alphabet.[rng.Next(0, alphabet.Length)]
+
+        let createWord size =            
+            let cs = [| 0 .. size |] |> Array.map (fun i -> pick ())
+            new String(cs)
+             
+        let createWords size = 
+            [ 0 .. size ] |> Seq.map createWord |> Strings.join " "
+
+        this.Text <- createWords this.Size
 
     [<Benchmark>]
     member this.``wordSplit``() =
