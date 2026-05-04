@@ -28,6 +28,7 @@ type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILo
     let collection =
         Mongo.initCollection "uri" config.Value.mongoDbName colName config.Value.mongoConnection
         |> Mongo.setIndex "publication"
+        |> Mongo.setIndex "categories"
 
     interface IDocumentRepository with
         member this.SetDocumentAsync(value: Document) =

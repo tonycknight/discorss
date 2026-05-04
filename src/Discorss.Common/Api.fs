@@ -14,6 +14,13 @@ module Api =
     [<Literal>]
     let servicePort = 8081
 
+    let validContentTypes =
+        let json = System.Net.Mime.MediaTypeNames.Application.Json
+        [ json; $"{json}; charset=utf-8" ]
+
+    let isValidContentType (ctx: HttpContext) =
+        validContentTypes |> Seq.contains ctx.Request.ContentType
+
     let heartbeatRoute: HttpHandler =
         route "/heartbeat" >=> noResponseCaching >=> json [ "OK" ]
 
@@ -33,6 +40,21 @@ module Api =
             logger.LogInformation($"Request remote IP: {ctx.Connection.RemoteIpAddress}:{ctx.Connection.RemotePort}")
             next ctx
 
+    let getRequest<'a> (ctx: HttpContext) =
+        task {
+            if isValidContentType ctx |> not then
+                return Choice1Of2 "Invalid content type"
+            else
+                try
+                    let! msg = ctx.BindModelAsync<'a>()
+
+                    return
+                        match System.Object.ReferenceEquals(msg, null) with
+                        | false -> Choice2Of2 msg
+                        | true -> Choice1Of2 "Invalid request"
+                with ex ->
+                    return Choice1Of2 "Invalid request"
+        }
 
 module ApiStartup =
 

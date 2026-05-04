@@ -22,9 +22,6 @@ type IngestionActor
         (fun args -> ActorMessage.IngestFeeds |> Actor.post self)
         |> Actor.createTimer config.Value.feedIngestionFrequency
 
-    let getStats inbox =
-        Actor.getStats (self.GetType().Name) inbox
-
     let rec loop (inbox: MailboxProcessor<ActorMessage>) =
         task {
             let! msg = inbox.Receive()
@@ -42,7 +39,6 @@ type IngestionActor
             | ActorMessage.Document d ->
                 log.LogTrace $"Received document {d.uri}..."
                 ignore 0 // TODO:
-            | ActorMessage.GetActorStats rc -> inbox |> getStats |> rc.Reply
             | _ -> ignore 0
 
             return! loop inbox
@@ -56,7 +52,7 @@ type IngestionActor
 
     interface IActor with
         member this.GetStats() =
-            actor.PostAndAsyncReply(fun rc -> ActorMessage.GetActorStats rc)
+            actor |> Actor.getStats (self.GetType().Name)
 
         member this.Post(msg: ActorMessage) = actor.Post msg
 

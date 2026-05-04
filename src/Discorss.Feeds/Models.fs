@@ -30,6 +30,7 @@ type Feed =
 type FeedInfo =
     { uri: string
       title: string
+      description: string
       updated: DateTime
       lastFetched: DateTime }
 
@@ -47,6 +48,7 @@ module BsonMapping =
         |> setDocId (value feed.uri)
         |> setProperty "uri" (value feed.uri)
         |> setProperty "title" (value feed.title)
+        |> setProperty "description" (value feed.description)
         |> setProperty "updated" (value feed.updated)
         |> setProperty "lastFetched" (value feed.lastFetched)
 
@@ -55,5 +57,6 @@ module BsonMapping =
 
         { FeedInfo.uri = document |> asString "uri"
           title = document |> asString "title"
+          description = document |> asString "description"
           updated = document |> getProperty "updated" |> asDateTime
           lastFetched = document |> getProperty "lastFetched" |> asDateTime }

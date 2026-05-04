@@ -16,4 +16,5 @@ module WebApp =
                        >=> choose
                                [ routeCif "/%s/" (fun url ->
                                      publicResponseCaching 5 None >=> WebAppHandlers.getFeed sp url)
-                                 route "/" >=> (noResponseCaching >=> WebAppHandlers.getFeeds sp) ] ])
+                                 route "/" >=> (noResponseCaching >=> WebAppHandlers.getFeeds sp) ]
+                       PUT >=> choose [ route "/" >=> WebAppHandlers.setFeed sp ] ])

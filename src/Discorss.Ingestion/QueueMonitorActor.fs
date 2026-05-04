@@ -43,7 +43,7 @@ type QueueMonitorActor
 
     interface IActor with
         member this.GetStats() =
-            actor.PostAndAsyncReply(fun rc -> ActorMessage.GetActorStats rc)
+            actor |> Actor.getStats (self.GetType().Name)
 
         member this.Post(msg: ActorMessage) = actor.Post msg
 

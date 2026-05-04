@@ -20,17 +20,30 @@ module Uri =
 
 [<ExcludeFromCodeCoverage>]
 module Http =
+    let private body (resp: HttpResponseMessage) =
+        task {
+            let! body =
+                match resp.Content.Headers.ContentEncoding |> Seq.tryHead with
+                | Some x when x = "gzip" ->
+                    task {
+                        use s = resp.Content.ReadAsStream(System.Threading.CancellationToken.None)
+                        return Strings.fromGzip s
+                    }
+                | _ -> resp.Content.ReadAsStringAsync()
+
+            return body
+        }
 
     let parse (resp: HttpResponseMessage) =
         match resp.IsSuccessStatusCode with
         | true ->
             task {
-                let! body = resp.Content.ReadAsStringAsync()
+                let! body = body resp
                 return HttpOkRequestResponse(resp.StatusCode, body)
             }
         | false ->
             task {
-                let! body = resp.Content.ReadAsStringAsync()
+                let! body = body resp
                 return HttpErrorRequestResponse(resp.StatusCode, body)
             }
 
@@ -50,9 +63,11 @@ type IExternalHttpClient =
 type ExternalHttpClient(httpClient: HttpClient) =
     let httpSend = Http.send httpClient
 
-    // TODO: log req/resp?
     let req (url: string) =
-        new HttpRequestMessage(HttpMethod.Get, url)
+        let result = new HttpRequestMessage(HttpMethod.Get, url)
+        result.Headers.Add("User-Agent", "discorss")
+        result.Headers.Add("Accept-Encoding", "gzip")
+        result
 
     interface IExternalHttpClient with
         member this.GetAsync(url) = url |> req |> httpSend

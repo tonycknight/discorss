@@ -14,6 +14,7 @@ module BsonMappingTests =
 
         result.uri |> should equal feed.uri
         result.title |> should equal feed.title
+        result.description |> should equal feed.description
         result.updated |> should equal feed.updated
         result.lastFetched |> should equal feed.lastFetched
 

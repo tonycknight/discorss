@@ -12,7 +12,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="FsCheck.Xunit" Version="3.3.3" />
-    <PackageReference Include="FSharp.Core" Version="10.1.203" />
+    <PackageReference Include="FSharp.Core" Version="10.1.202" />
     <PackageReference Include="FsUnit.xUnit" Version="7.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
     <PackageReference Include="NSubstitute" Version="5.3.0" />
