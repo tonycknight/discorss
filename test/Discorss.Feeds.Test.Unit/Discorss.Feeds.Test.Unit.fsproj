@@ -6,7 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="TestHelpers.fs" />
-    <Compile Include="BsonMapping.fs" />
+    <Compile Include="BsonMappingTests.fs" />
     <Compile Include="FeedReaderTests.fs" />
     <None Include="SampleFeeds\RdfFeed.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

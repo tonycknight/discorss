@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Include="TestHelpers.fs" />
+    <Compile Include="Feeds\MongoFeedRepositoryTests.fs" />    
     <Compile Include="Documents\MongoDocumentRepositoryTests.fs" />
   </ItemGroup>
 
@@ -20,6 +21,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Discorss.Common\Discorss.Common.fsproj" />
     <ProjectReference Include="..\..\src\Discorss.Documents\Discorss.Documents.fsproj" />
+    <ProjectReference Include="..\..\src\Discorss.Feeds\Discorss.Feeds.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Feeds\" />
   </ItemGroup>
 
 </Project>

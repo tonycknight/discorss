@@ -8,7 +8,7 @@ open FsUnit.Xunit
 module BsonMappingTests =
 
     [<Property>]
-    let ``toBson / fromBson is symmetric`` (feed: FeedInfo) =
+    let ``toBson fromBson is symmetric`` (feed: FeedInfo) =
 
         let result = feed |> BsonMapping.toBson |> BsonMapping.fromBson
 

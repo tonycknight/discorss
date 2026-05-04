@@ -45,9 +45,10 @@ module BsonMapping =
     let toBson (feed: FeedInfo) =
         newObject ()
         |> setDocId (value feed.uri)
+        |> setProperty "uri" (value feed.uri)
         |> setProperty "title" (value feed.title)
-        |> setProperty "updated" (value feed.updated)
-        |> setProperty "lastFetched" (value feed.lastFetched)
+        |> setProperty "updated" (value feed.updated.DateTime)
+        |> setProperty "lastFetched" (value feed.lastFetched.DateTime)
 
     let fromBson (document: BsonDocument) =
         let asString key = getProperty key >> asString
