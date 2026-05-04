@@ -37,3 +37,24 @@ type FeedReadResult =
     | Xml of doc: System.Xml.Linq.XDocument
     | Feed of feed: Feed
     | Error of message: string
+
+module BsonMapping =
+    open Discorss.MongoBson
+    open MongoDB.Bson
+
+    let toBson (feed: FeedInfo) =
+        newObject ()
+        |> setDocId (value feed.uri)
+        |> setProperty "title" (value feed.title)
+        |> setProperty "updated" (value feed.updated)
+        |> setProperty "lastFetched" (value feed.lastFetched)
+
+    let fromBson (document: BsonDocument) =
+        let asString key = getProperty key >> asString
+
+        { FeedInfo.uri = document |> asString "uri" 
+          title = document |> asString "title"
+          updated = document |> getProperty "updated" |> asDateTimeOffset
+          lastFetched = document |> getProperty "lastFetched" |> asDateTimeOffset
+        }
+
