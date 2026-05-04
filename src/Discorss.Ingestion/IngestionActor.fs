@@ -35,7 +35,7 @@ type IngestionActor
             | ActorMessage.IngestFeed _ -> msg |> Actor.post feedActor
             | ActorMessage.FeedEntry e ->
                 log.LogTrace $"Received feedentry {e.uri}..."
-                e |> Models.toDocument |> ActorMessage.Document |> (Actor.post docActor)
+                e |> ActorMessage.FeedEntry |> (Actor.post docActor)
             | ActorMessage.Document d ->
                 log.LogTrace $"Received document {d.uri}..."
                 ignore 0 // TODO:

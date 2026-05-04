@@ -59,7 +59,8 @@ type DocumentIngestionActor
     let rec loop (inbox: MailboxProcessor<ActorMessage>) =
         task {
             match! inbox.Receive() with
-            | ActorMessage.Document d ->
+            | ActorMessage.FeedEntry fe ->
+                let d = Models.toDocument fe
                 if hasCacheDelta d then
                     match! writeDocument d with
                     | Some d ->
