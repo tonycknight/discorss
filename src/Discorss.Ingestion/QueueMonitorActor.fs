@@ -30,7 +30,7 @@ type QueueMonitorActor
             match msg with
             | ActorMessage.PollQueue queueName ->
                 log.LogTrace $"Polling queue {queueName}..."
-                do! Actor.pollEntryQueue broker queueName (Actor.post ingestionActor)
+                do! Actor.pollActorMessageQueue broker queueName (Actor.post ingestionActor)
             | ActorMessage.Start -> do timers |> List.iter (fun t -> t.Enabled <- true)
             | ActorMessage.Stop -> do timers |> List.iter (fun t -> t.Enabled <- false)
             | _ -> ignore msg
