@@ -68,7 +68,6 @@ type DocumentIngestionActor
                     | _ -> ignore 0
                 else
                     log.LogTrace $"Skipping document {d.uri} as already ingested"
-            | ActorMessage.GetActorStats rc -> inbox |> Actor.getStats (self.GetType().Name) |> rc.Reply
             | _ -> ignore 0
 
             return! loop inbox
@@ -80,7 +79,6 @@ type DocumentIngestionActor
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg
 
-        member this.GetStats() =
-            actor.PostAndAsyncReply(fun rc -> ActorMessage.GetActorStats rc)
+        member this.GetStats() = actor |> Actor.getStats (self.GetType().Name)
 
         member this.ReplyAsync(msg: ActorMessage) = actor.PostAndAsyncReply(fun rc -> msg)

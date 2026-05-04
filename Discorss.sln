@@ -64,6 +64,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "http", "http", "{536019B8-79CF-49B5-B42A-7BC52DC0A002}"
 	ProjectSection(SolutionItems) = preProject
 		http\Feeds.http = http\Feeds.http
+		http\Ingestion.http = http\Ingestion.http
 	EndProjectSection
 EndProject
 Global

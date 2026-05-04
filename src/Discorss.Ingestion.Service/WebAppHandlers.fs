@@ -1,6 +1,7 @@
 ﻿namespace Discorss.Ingestion.Service
 
 open System
+open System.Threading.Tasks
 open Discorss
 open Discorss.Ingestion
 open Microsoft.AspNetCore.Http
@@ -9,27 +10,22 @@ open Giraffe
 
 module WebAppHandlers =
 
-    let actor (sp: IServiceProvider) =
-        sp.GetRequiredService<Ingestion.IngestionActor>() :> IActor
-
-    let testIngestion (sp: IServiceProvider) =
-
-        fun (next: HttpFunc) (ctx: HttpContext) ->
-            task {
-                // TODO: placeholder
-                let actor = actor sp
-
-                ActorMessage.GetFeeds |> actor.Post
-
-
-                return! Successful.OK [] next ctx
-            }
+    let ingestionActor (sp: IServiceProvider) = sp.GetRequiredService<Ingestion.IngestionActor>() :> IActor
+    let feedActor (sp: IServiceProvider) = sp.GetRequiredService<Ingestion.FeedIngestionActor>() :> IActor
+    let docActor (sp: IServiceProvider) = sp.GetRequiredService<Ingestion.DocumentIngestionActor>() :> IActor
+    let queueActor (sp: IServiceProvider) = sp.GetRequiredService<Ingestion.QueueMonitorActor>() :> IActor
 
     let getActorStats (sp: IServiceProvider) =
 
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                let! result = (actor sp).GetStats()
-
-                return! Successful.OK result next ctx
+                let results = 
+                    [| 
+                        (ingestionActor sp).GetStats()
+                        (docActor sp).GetStats()
+                        (queueActor sp).GetStats()
+                        (feedActor sp).GetStats()
+                    |]
+                                    
+                return! Successful.OK results next ctx
             }
