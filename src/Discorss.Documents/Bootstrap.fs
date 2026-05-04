@@ -10,7 +10,11 @@ module Bootstrap =
         use sp = services.BuildServiceProvider()
         let config = sp.GetRequiredService<IOptions<AppConfiguration>>()
 
-        if config.Value.mongoConnection |> Strings.isEmptyWhitespace then
-            services.AddSingleton<IDocumentRepository, StubDocumentRepository>()
-        else
-            services.AddSingleton<IDocumentRepository, MongoDocumentRepository>()
+        let services =
+            if config.Value.mongoConnection |> Strings.isEmptyWhitespace then
+                services.AddSingleton<IDocumentRepository, StubDocumentRepository>()
+            else
+                services.AddSingleton<IDocumentRepository, MongoDocumentRepository>()
+
+        services.AddSingleton<IDocumentNotificationWriter, DocumentNotificationWriter>()
+                .AddSingleton<IDocumentNotificationReader, DocumentNotificationReader>()

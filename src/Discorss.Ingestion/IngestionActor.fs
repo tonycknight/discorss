@@ -13,6 +13,7 @@ type IngestionActor
         config: IOptions<AppConfiguration>,
         feedActor: FeedIngestionActor,
         docActor: DocumentIngestionActor,
+        notificationWriter: Documents.IDocumentNotificationWriter,
         broker: Microbroker.Client.IMicrobrokerProxy
     ) as self =
 
@@ -51,10 +52,9 @@ type IngestionActor
                 log.LogTrace $"Received feedentry {e.uri}..."
                 e |> ActorMessage.FeedEntry |> (Actor.post docActor)
             | ActorMessage.Document d ->
-                log.LogTrace $"Received document {d.uri}..."
-                let m = d.uri |> ActorMessage.DocumentNotification |> Queues.Messages.toQueueMessage
-                do! broker.PostAsync (Queues.QueueNames.documentNotifications, m)
-                
+                log.LogTrace $"Received document {d.uri}..."                
+                do! notificationWriter.SetAsync d
+                                
             | _ -> ignore 0
 
             return! loop inbox

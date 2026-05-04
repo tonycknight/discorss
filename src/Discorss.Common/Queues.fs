@@ -22,6 +22,13 @@ module Messages =
           active = DateTimeOffset.UtcNow
           expiry = DateTimeOffset.MaxValue }
 
+    let toRawMessage (value: string) =
+        { MicrobrokerMessage.messageType = value.GetType().AssemblyQualifiedName
+          content = value
+          created = DateTimeOffset.UtcNow
+          active = DateTimeOffset.UtcNow
+          expiry = DateTimeOffset.MaxValue }
+
     let fromQueueMessage<'a> (msg: MicrobrokerMessage) =
         try
             msg.content |> Newtonsoft.Json.JsonConvert.DeserializeObject<'a> |> Some
