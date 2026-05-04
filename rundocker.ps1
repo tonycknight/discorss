@@ -9,4 +9,4 @@ param (
     [string]$DbName = "discorss-tests"
 )
 
-docker run -it --rm -p 8081:8081 discorss --Discorss:microbrokerServiceUrl=$Microbroker --Discorss:mongoConnection=$ConnectionString --Discorss:mongoDbName=$DbName 
+docker run -it --rm -p 8081:8081 discorss.server --Discorss:microbrokerServiceUrl=$Microbroker --Discorss:mongoConnection=$ConnectionString --Discorss:mongoDbName=$DbName 
