@@ -2,16 +2,32 @@
 version: '3.4'
 
 services:
-  discorss-feedservice:
-    image: discorss.feeds.service
-    build:
-      context: .
-      dockerfile: Dockerfile-FeedService
-      target: discorss.feeds.service
+  mongodb:
+    image: "mongodb/mongodb-community-server:latest"
+    networks:
+      - discorssnetwork
+    ports:
+      - "27017:27017"
 
-  discorss-messagehubservice:
-    image: discorss.messagehub.service
-    build:
-      context: .
-      dockerfile: Dockerfile-MessageHubService
-      target: discorss.messagehub.service
+  microbroker:
+    image: "ghcr.io/tonycknight/microbroker:v0.2.1"
+    depends_on: [mongodb]
+    networks:
+      - discorssnetwork
+    ports:
+      - "8080:8080"
+    command: '--mongoConnection=mongodb://mongodb:27017 --hostUrls=http://+:8080'
+
+  discorss:
+    image: discorss
+    networks:
+      - discorssnetwork
+    ports:
+      - "8081:8081"    
+    command: '--Discorss:microbrokerServiceUrl=http://microbroker:8080 --Discorss:mongoConnection=mongodb://mongodb:27017'
+
+networks:
+  discorssnetwork:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
