@@ -22,8 +22,8 @@ type StubFeedRepository(feedUris) =
         |> List.map (fun u ->
             { FeedInfo.uri = u
               title = ""
-              updated = DateTimeOffset.MinValue
-              lastFetched = DateTimeOffset.MinValue })
+              updated = DateTime.MinValue
+              lastFetched = DateTime.MinValue })
 
     let feedCache =
         feeds
@@ -55,7 +55,7 @@ type StubFeedRepository(feedUris) =
             task {
                 feedCache.[feed.uri] <-
                     { feed with
-                        updated = DateTimeOffset.UtcNow }
+                        updated = DateTime.UtcNow }
 
                 return feed
             }
@@ -67,7 +67,7 @@ type StubFeedRepository(feedUris) =
 
                 let feed =
                     { feed with
-                        updated = DateTimeOffset.UtcNow }
+                        updated = DateTime.UtcNow }
 
                 feedCache.[feed.uri] <- feed
             }
@@ -118,7 +118,7 @@ type MongoFeedRepository(config: IOptions<AppConfiguration>, logFactory: ILogger
                 match persistedFeed with
                 | None -> ignore 0
                 | Some feed ->
-                    let feed = { feed with lastFetched = DateTimeOffset.UtcNow }
+                    let feed = { feed with lastFetched = DateTime.UtcNow }
                     let! x = this.SetFeedInfoAsync feed
                     ignore 0
             }

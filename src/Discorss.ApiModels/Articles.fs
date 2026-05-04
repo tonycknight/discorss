@@ -6,7 +6,7 @@ open System
 type ArticleRequest =
     { uri: string
       title: string
-      publication: DateTimeOffset
+      publication: DateTime
       description: string
       author: string
       content: string

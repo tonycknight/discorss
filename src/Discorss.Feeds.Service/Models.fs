@@ -17,7 +17,7 @@ module Mapping =
               title = value.title
               description = value.description
               updated = value.updated
-              lastFetched = System.DateTimeOffset.UtcNow }
+              lastFetched = System.DateTime.UtcNow }
           entries =
             value.entries
             |> Seq.map (fun e ->

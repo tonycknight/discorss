@@ -17,7 +17,7 @@ module MongoDocumentRepositoryTests =
 
             let document =
                 { Document.uri = $"http://localhost/{Guid.NewGuid()}"
-                  publication = DateTimeOffset.UtcNow
+                  publication = DateTime.UtcNow
                   author = "test author name"
                   title = "test doc title"
                   description = "test description"
@@ -40,7 +40,7 @@ module MongoDocumentRepositoryTests =
 
             let document =
                 { Document.uri = $"http://localhost/{Guid.NewGuid()}"
-                  publication = DateTimeOffset.UtcNow.Date |> DateTimeOffset
+                  publication = DateTime.UtcNow
                   author = "test author name"
                   title = "test doc title"
                   description = "test description"
@@ -67,6 +67,6 @@ module MongoDocumentRepositoryTests =
             persistedDocument.Value.content |> should equal document.content
             persistedDocument.Value.author |> should equal document.author
             persistedDocument.Value.sha512 |> should equal document.sha512
-            persistedDocument.Value.publication |> should equal document.publication
+            persistedDocument.Value.publication.ToLongTimeString () |> should equal (document.publication.ToLongTimeString())
             persistedDocument.Value.categories |> should equalSeq document.categories
         }

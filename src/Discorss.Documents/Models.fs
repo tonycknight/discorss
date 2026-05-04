@@ -4,7 +4,7 @@ open System
 
 type Document =
     { uri: string
-      publication: DateTimeOffset
+      publication: DateTime
       author: string
       title: string
       description: string
@@ -25,7 +25,7 @@ module BsonMapping =
         |> setProperty "description" (value document.description)
         |> setProperty "author" (value document.author)
         |> setProperty "sha512" (value document.sha512)
-        |> setProperty "publication" (value document.publication.DateTime)
+        |> setProperty "publication" (value document.publication)
         |> setProperty "categories" (value document.categories)
         |> setProperty "updated" (value DateTime.UtcNow)
 
@@ -38,5 +38,5 @@ module BsonMapping =
           description = document |> asString "description"
           author = document |> asString "author"
           sha512 = document |> asString "sha512"
-          publication = document |> getProperty "publication" |> asDateTimeOffset
+          publication = document |> getProperty "publication" |> asDateTime
           categories = document |> getProperty "categories" |> asStringArray }

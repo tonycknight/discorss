@@ -19,8 +19,8 @@ module MongoFeedRepositoryTests =
             let feed = 
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
                   title = "test doc title"
-                  updated = DateTimeOffset.UtcNow
-                  lastFetched = DateTimeOffset.UtcNow }
+                  updated = DateTime.UtcNow
+                  lastFetched = DateTime.UtcNow }
 
             let! result = repo.SetFeedInfoAsync feed
 
@@ -40,16 +40,16 @@ module MongoFeedRepositoryTests =
             let feed = 
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
                   title = "test doc title"
-                  updated = DateTimeOffset.UtcNow.Date |> DateTimeOffset
-                  lastFetched = DateTimeOffset.UtcNow.Date |> DateTimeOffset }
+                  updated = DateTime.UtcNow
+                  lastFetched = DateTime.UtcNow }
 
             let! result = repo.SetFeedInfoAsync feed
 
             let feed = 
                 { feed with 
                     title = Guid.NewGuid().ToString() 
-                    updated = DateTimeOffset.UtcNow.Date |> DateTimeOffset
-                    lastFetched = DateTimeOffset.UtcNow.Date |> DateTimeOffset }
+                    updated = DateTime.UtcNow
+                    lastFetched = DateTime.UtcNow }
 
             let! result = repo.SetFeedInfoAsync feed
 
@@ -57,8 +57,8 @@ module MongoFeedRepositoryTests =
 
             result.uri |> should equal feed.uri
             result.title |> should equal feed.title
-            persistedFeed.Value.updated |> should equal feed.updated
-            persistedFeed.Value.lastFetched |> should equal feed.lastFetched
+            persistedFeed.Value.updated.ToLongTimeString () |> should equal (feed.updated.ToLongTimeString())
+            persistedFeed.Value.lastFetched.ToLongTimeString() |> should equal (feed.lastFetched.ToLongTimeString())
         }
 
     [<Xunit.Fact>]
@@ -72,8 +72,8 @@ module MongoFeedRepositoryTests =
             let feed = 
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
                   title = "test doc title"
-                  updated = DateTimeOffset.UtcNow.Date |> DateTimeOffset
-                  lastFetched = DateTimeOffset.UtcNow.Date |> DateTimeOffset }
+                  updated = DateTime.UtcNow
+                  lastFetched = DateTime.UtcNow }
 
             let! result = repo.SetFeedInfoAsync feed
 
@@ -94,8 +94,8 @@ module MongoFeedRepositoryTests =
             let feed = 
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
                   title = "test doc title"
-                  updated = DateTimeOffset.UtcNow.Date |> DateTimeOffset
-                  lastFetched = DateTimeOffset.UtcNow.Date |> DateTimeOffset }
+                  updated = DateTime.UtcNow
+                  lastFetched = DateTime.UtcNow }
 
             let! result = repo.SetFeedInfoAsync feed
 
@@ -103,8 +103,8 @@ module MongoFeedRepositoryTests =
 
             result.uri |> should equal feed.uri
             result.title |> should equal feed.title
-            persistedFeed.Value.updated |> should equal feed.updated
-            persistedFeed.Value.lastFetched |> should equal feed.lastFetched
+            persistedFeed.Value.updated.ToLongTimeString() |> should equal (feed.updated.ToLongTimeString())
+            persistedFeed.Value.lastFetched.ToLongTimeString() |> should equal (feed.lastFetched.ToLongTimeString())
         }
 
     [<Xunit.Fact>]
@@ -115,12 +115,12 @@ module MongoFeedRepositoryTests =
             let repo =
                 new MongoFeedRepository(opts, TestHelpers.logFactory ()) :> IFeedRepository
         
-            let date = DateTimeOffset.UtcNow.AddDays(-1) 
+            let date = DateTime.UtcNow.AddDays(-1) 
             let feed = 
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
                   title = "test doc title"
-                  updated = date.DateTime |> DateTimeOffset
-                  lastFetched = date.DateTime |> DateTimeOffset }
+                  updated = date
+                  lastFetched = date }
 
             let! result = repo.SetFeedInfoAsync feed
             
@@ -131,5 +131,5 @@ module MongoFeedRepositoryTests =
             persistedFeed.Value.lastFetched |> should be (greaterThan date)
             persistedFeed.Value.uri |> should equal feed.uri
             persistedFeed.Value.title |> should equal feed.title
-            persistedFeed.Value.updated |> should equal feed.updated
+            persistedFeed.Value.updated.ToLongTimeString() |> should equal (feed.updated.ToLongTimeString())
         }

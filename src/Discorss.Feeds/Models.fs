@@ -11,7 +11,7 @@ type FeedType =
 
 type FeedEntry =
     { id: string
-      publication: DateTimeOffset
+      publication: DateTime
       uri: string
       title: string
       description: string
@@ -24,14 +24,14 @@ type Feed =
       title: string
       uri: string
       description: string
-      updated: DateTimeOffset
+      updated: DateTime
       entries: FeedEntry list }
 
 type FeedInfo =
     { uri: string
       title: string
-      updated: DateTimeOffset
-      lastFetched: DateTimeOffset }
+      updated: DateTime
+      lastFetched: DateTime }
 
 type FeedReadResult =
     | Xml of doc: System.Xml.Linq.XDocument
@@ -47,15 +47,15 @@ module BsonMapping =
         |> setDocId (value feed.uri)
         |> setProperty "uri" (value feed.uri)
         |> setProperty "title" (value feed.title)
-        |> setProperty "updated" (value feed.updated.DateTime)
-        |> setProperty "lastFetched" (value feed.lastFetched.DateTime)
+        |> setProperty "updated" (value feed.updated)
+        |> setProperty "lastFetched" (value feed.lastFetched)
 
     let fromBson (document: BsonDocument) =
         let asString key = getProperty key >> asString
 
         { FeedInfo.uri = document |> asString "uri" 
           title = document |> asString "title"
-          updated = document |> getProperty "updated" |> asDateTimeOffset
-          lastFetched = document |> getProperty "lastFetched" |> asDateTimeOffset
+          updated = document |> getProperty "updated" |> asDateTime
+          lastFetched = document |> getProperty "lastFetched" |> asDateTime
         }
 
