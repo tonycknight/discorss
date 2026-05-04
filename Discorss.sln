@@ -61,6 +61,11 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Discorss.Tests.Integration"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Discorss.Documents.Test.Unit", "test\Discorss.Documents.Test.Unit\Discorss.Documents.Test.Unit.fsproj", "{FADF2311-988B-4B0F-8707-D7451112C85B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "http", "http", "{536019B8-79CF-49B5-B42A-7BC52DC0A002}"
+	ProjectSection(SolutionItems) = preProject
+		http\Feeds.http = http\Feeds.http
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
