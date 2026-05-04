@@ -79,6 +79,7 @@ type DocumentIngestionActor
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg
 
-        member this.GetStats() = actor |> Actor.getStats (self.GetType().Name)
+        member this.GetStats() =
+            actor |> Actor.getStats (self.GetType().Name)
 
         member this.ReplyAsync(msg: ActorMessage) = actor.PostAndAsyncReply(fun rc -> msg)

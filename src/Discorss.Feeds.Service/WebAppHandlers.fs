@@ -9,7 +9,9 @@ open Microsoft.Extensions.DependencyInjection
 open Giraffe
 
 module WebAppHandlers =
-    let private feedRepo (sp: IServiceProvider) = sp.GetRequiredService<IFeedRepository>()
+    let private feedRepo (sp: IServiceProvider) =
+        sp.GetRequiredService<IFeedRepository>()
+
     let private feedProvider (sp: IServiceProvider) = sp.GetRequiredService<IFeedProvider>()
 
     let getFeeds (sp: IServiceProvider) =
@@ -51,33 +53,32 @@ module WebAppHandlers =
     let setFeed (sp: IServiceProvider) =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                
+
                 match! Api.getRequest<ApiModels.FeedInfo> ctx with
-                | Choice1Of2 error -> 
+                | Choice1Of2 error ->
                     let result = json { ApiErrorResult.errors = [| error |] }
                     return! RequestErrors.badRequest result next ctx
                 | Choice2Of2 req ->
                     try
                         match! (feedProvider sp).GetFeedAsync req.uri with
-                        | FeedReadResult.Feed fr -> 
-                            let feed = 
+                        | FeedReadResult.Feed fr ->
+                            let feed =
                                 { FeedInfo.uri = req.uri
                                   title = fr.title
                                   description = fr.description
                                   updated = DateTime.UtcNow
                                   lastFetched = DateTime.MinValue }
-                        
+
                             let! result = (feedRepo sp).SetFeedInfoAsync feed
-                        
+
                             return! Successful.ok (result |> Mapping.toFeedInfoApiModel |> json) next ctx
                         | FeedReadResult.Xml _ ->
                             let result = json { ApiErrorResult.errors = [| "An error occurred." |] }
                             return! ServerErrors.internalError result next ctx
-                        | FeedReadResult.Error err -> 
+                        | FeedReadResult.Error err ->
                             let result = json { ApiErrorResult.errors = [| $"An error occurred: {err}" |] }
                             return! ServerErrors.internalError result next ctx
-                    with
-                    | ex ->
+                    with ex ->
                         let result = json { ApiErrorResult.errors = [| "An error occurred." |] }
                         return! ServerErrors.internalError result next ctx
             }

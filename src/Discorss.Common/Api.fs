@@ -41,12 +41,13 @@ module Api =
             next ctx
 
     let getRequest<'a> (ctx: HttpContext) =
-        task {            
+        task {
             if isValidContentType ctx |> not then
                 return Choice1Of2 "Invalid content type"
             else
                 try
                     let! msg = ctx.BindModelAsync<'a>()
+
                     return
                         match System.Object.ReferenceEquals(msg, null) with
                         | false -> Choice2Of2 msg

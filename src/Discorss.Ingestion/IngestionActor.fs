@@ -21,7 +21,7 @@ type IngestionActor
     let postIngestTimer =
         (fun args -> ActorMessage.IngestFeeds |> Actor.post self)
         |> Actor.createTimer config.Value.feedIngestionFrequency
-            
+
     let rec loop (inbox: MailboxProcessor<ActorMessage>) =
         task {
             let! msg = inbox.Receive()
@@ -51,7 +51,8 @@ type IngestionActor
         [ Discorss.Queues.QueueNames.feedEntries; Discorss.Queues.QueueNames.documents ]
 
     interface IActor with
-        member this.GetStats() = actor |> Actor.getStats (self.GetType().Name)
+        member this.GetStats() =
+            actor |> Actor.getStats (self.GetType().Name)
 
         member this.Post(msg: ActorMessage) = actor.Post msg
 
