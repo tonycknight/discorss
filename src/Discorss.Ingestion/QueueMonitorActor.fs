@@ -38,12 +38,30 @@ type QueueMonitorActor
             return! loop inbox
         }
 
+    let queueStats () =
+        task {
+            let! queueCounts = ingestionActor.QueueNames |> Array.ofSeq |> broker.GetQueueCountsAsync
+
+            return
+                queueCounts
+                |> Seq.map (fun qc ->
+                    { ActorStats.name = qc.name
+                      queueCount = qc.count
+                      childStats = [] })
+                |> List.ofSeq
+        }
+
     let actor =
         MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
 
     interface IActor with
         member this.GetStats() =
-            actor |> Actor.getStats (self.GetType().Name)
+            task {
+                let stats = actor |> Actor.getStats (self.GetType().Name)
+                let! queueStats = queueStats ()
+
+                return { stats with childStats = queueStats }
+            }
 
         member this.Post(msg: ActorMessage) = actor.Post msg
 

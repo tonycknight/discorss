@@ -2,7 +2,7 @@
 
 type ActorStats =
     { name: string
-      queueCount: int
+      queueCount: int64
       childStats: ActorStats list }
 
 type ActorMessage =

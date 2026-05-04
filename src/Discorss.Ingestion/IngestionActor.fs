@@ -52,7 +52,7 @@ type IngestionActor
 
     interface IActor with
         member this.GetStats() =
-            actor |> Actor.getStats (self.GetType().Name)
+            actor |> Actor.getStats (self.GetType().Name) |> Task.ofResult
 
         member this.Post(msg: ActorMessage) = actor.Post msg
 

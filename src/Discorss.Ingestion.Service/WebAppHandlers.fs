@@ -20,7 +20,9 @@ module WebAppHandlers =
                        sp.GetRequiredService<Ingestion.FeedIngestionActor>() :> IActor
                        sp.GetRequiredService<Ingestion.DocumentIngestionActor>() :> IActor |]
 
-                let results = actors |> Array.map _.GetStats() |> Array.sortBy (fun x -> x.name)
+                let tasks = actors |> Array.map _.GetStats()
 
-                return! Successful.OK results next ctx
+                let! results = Task.WhenAll tasks
+
+                return! Successful.OK (results |> Array.sortBy _.name) next ctx
             }
