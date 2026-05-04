@@ -44,7 +44,7 @@ type DocumentIngestionActor
                 return
                     match doc with
                     | Some doc -> doc.sha512 <> document.sha512
-                    | None -> false
+                    | None -> true
                 
             with ex ->
                 log.LogError (ex, $"Error fetching document {document.uri}")
