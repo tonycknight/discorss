@@ -40,9 +40,9 @@ type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILo
                 return value
             }
 
-        member this.GetDocumentAsync(value: string) =
+        member this.GetDocumentAsync(key: string) =
             task {
-                let! xs = $"{{ _id: '{value}' }}" |> Mongo.getMany<BsonDocument> collection
+                let! xs = $"{{ _id: '{key}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromBson |> Seq.tryHead
             }
