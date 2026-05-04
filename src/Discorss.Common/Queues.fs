@@ -11,6 +11,9 @@ module QueueNames =
     [<Literal>]
     let documents = "discorss_documents"
 
+    [<Literal>]
+    let documentNotifications = "discorss_document_notifications"
+
 module Messages =
     let toQueueMessage (value: 'a) =
         { MicrobrokerMessage.messageType = value.GetType().AssemblyQualifiedName

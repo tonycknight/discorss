@@ -12,7 +12,8 @@ type IngestionActor
         logFactory: ILoggerFactory,
         config: IOptions<AppConfiguration>,
         feedActor: FeedIngestionActor,
-        docActor: DocumentIngestionActor
+        docActor: DocumentIngestionActor,
+        broker: Microbroker.Client.IMicrobrokerProxy
     ) as self =
 
     let log = logFactory.CreateLogger<IngestionActor>()
@@ -38,7 +39,9 @@ type IngestionActor
                 e |> ActorMessage.FeedEntry |> (Actor.post docActor)
             | ActorMessage.Document d ->
                 log.LogTrace $"Received document {d.uri}..."
-                ignore 0 // TODO:
+                let m = d.uri |> ActorMessage.DocumentNotification |> Queues.Messages.toQueueMessage
+                do! broker.PostAsync (Queues.QueueNames.documentNotifications, m)
+                
             | _ -> ignore 0
 
             return! loop inbox

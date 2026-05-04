@@ -29,6 +29,7 @@ type DocumentIngestionActor
             Caching.cacheOptions () |> Caching.expiry config.Value.documentIngestionWindow
 
         cache.Set(key, document.sha512, options) |> ignore
+        document
 
     let hasCacheDelta document =
         match cacheKey document |> cache.TryGetValue with
@@ -65,8 +66,7 @@ type DocumentIngestionActor
                 if hasCacheDelta d then
                     match! writeDocument d with
                     | Some d ->
-                        do! forwardDocument d
-                        setCachedDocHash d
+                        do! d |> setCachedDocHash |> forwardDocument
                     | _ -> ignore 0
                 else
                     log.LogTrace $"Skipping document {d.uri} as already ingested"

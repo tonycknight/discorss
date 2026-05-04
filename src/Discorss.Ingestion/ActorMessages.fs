@@ -13,6 +13,7 @@ type ActorMessage =
     | IngestFeeds
     | FeedEntry of entry: Discorss.Feeds.FeedEntry
     | Document of docs: Discorss.Documents.Document
+    | DocumentNotification of uri: string
     | IndexDocument of doc: Discorss.Documents.Document
     | ActorStats of stats: ActorStats
     | PollQueue of queueName: string
