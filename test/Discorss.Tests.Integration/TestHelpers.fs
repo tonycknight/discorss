@@ -7,13 +7,13 @@ open Microsoft.Extensions.Options
 open NSubstitute
 
 module TestHelpers =
-    let config() = { AppConfiguration.defaultConfig with mongoDbName = "discorss_inttests" }
+    let config () =
+        { AppConfiguration.defaultConfig with
+            mongoDbName = "discorss_inttests" }
 
-    let configOptions (config: AppConfiguration) =        
-        let result = Substitute.For<IOptions<AppConfiguration>>()        
+    let configOptions (config: AppConfiguration) =
+        let result = Substitute.For<IOptions<AppConfiguration>>()
         result.Value.Returns config |> ignore
         result
 
-    let logFactory() =
-        Substitute.For<ILoggerFactory>()
-
+    let logFactory () = Substitute.For<ILoggerFactory>()

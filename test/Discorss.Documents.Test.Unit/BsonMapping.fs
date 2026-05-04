@@ -9,7 +9,7 @@ module BsonMappingTests =
 
     [<Property>]
     let ``toBson / fromBson is symmetric`` (doc: Document) =
-        
+
         let result = doc |> BsonMapping.toBson |> BsonMapping.fromBson
 
         result.uri |> should equal doc.uri
@@ -22,4 +22,3 @@ module BsonMappingTests =
         result.categories |> should equalSeq doc.categories
 
         true
-    

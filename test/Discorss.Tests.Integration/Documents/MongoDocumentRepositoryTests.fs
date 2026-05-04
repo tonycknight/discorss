@@ -6,15 +6,16 @@ open Discorss.Tests.Integration
 open FsUnit.Xunit
 
 module MongoDocumentRepositoryTests =
-    
+
     [<Xunit.Fact>]
-    let ``SetDocumentAsync writes one``() =
+    let ``SetDocumentAsync writes one`` () =
         task {
             let opts = TestHelpers.config () |> TestHelpers.configOptions
 
-            let repo = new MongoDocumentRepository(opts, TestHelpers.logFactory()) :> IDocumentRepository
+            let repo =
+                new MongoDocumentRepository(opts, TestHelpers.logFactory ()) :> IDocumentRepository
 
-            let document = 
+            let document =
                 { Document.uri = $"http://localhost/{Guid.NewGuid()}"
                   publication = DateTimeOffset.UtcNow
                   author = "test author name"
@@ -22,22 +23,22 @@ module MongoDocumentRepositoryTests =
                   description = "test description"
                   content = "test content"
                   categories = [| "tag1"; "tag2" |]
-                  sha512 = "test sha"
-                }
+                  sha512 = "test sha" }
 
             let! result = repo.SetDocumentAsync document
-            
+
             result.uri |> should equal document.uri
         }
 
     [<Xunit.Fact>]
-    let ``SetDocumentAsync updates one``() =
+    let ``SetDocumentAsync updates one`` () =
         task {
             let opts = TestHelpers.config () |> TestHelpers.configOptions
 
-            let repo = new MongoDocumentRepository(opts, TestHelpers.logFactory()) :> IDocumentRepository
+            let repo =
+                new MongoDocumentRepository(opts, TestHelpers.logFactory ()) :> IDocumentRepository
 
-            let document = 
+            let document =
                 { Document.uri = $"http://localhost/{Guid.NewGuid()}"
                   publication = DateTimeOffset.UtcNow.Date |> DateTimeOffset
                   author = "test author name"
@@ -45,16 +46,15 @@ module MongoDocumentRepositoryTests =
                   description = "test description"
                   content = "test content"
                   categories = [| "tag1"; "tag2" |]
-                  sha512 = "test sha"
-                }
+                  sha512 = "test sha" }
 
             let! result = repo.SetDocumentAsync document
-            
-            let document = 
-                { document with 
-                    description = Guid.NewGuid().ToString(); 
-                    title = Guid.NewGuid().ToString(); 
-                    content = Guid.NewGuid().ToString(); 
+
+            let document =
+                { document with
+                    description = Guid.NewGuid().ToString()
+                    title = Guid.NewGuid().ToString()
+                    content = Guid.NewGuid().ToString()
                     author = Guid.NewGuid().ToString() }
 
             let! result = repo.SetDocumentAsync document

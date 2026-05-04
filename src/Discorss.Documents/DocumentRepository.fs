@@ -19,33 +19,30 @@ type StubDocumentRepository() =
         member this.GetDocumentAsync(value: string) = task { return None }
 
 type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILoggerFactory) =
-    
+
     [<Literal>]
     let colName = "Documents"
 
     let log = logFactory.CreateLogger<MongoDocumentRepository>()
 
-    let collection = 
+    let collection =
         Mongo.initCollection "uri" config.Value.mongoDbName colName config.Value.mongoConnection
         |> Mongo.setIndex "publication"
 
     interface IDocumentRepository with
-        member this.SetDocumentAsync(value: Document) = 
-            task {                 
+        member this.SetDocumentAsync(value: Document) =
+            task {
                 let! result = value |> BsonMapping.toBson |> Mongo.upsert collection
-                
+
                 if not result.IsAcknowledged then
                     new Exception("Set not acknowledged") |> raise
-                                
-                return value 
+
+                return value
             }
 
-        member this.GetDocumentAsync(value: string) = 
-            task { 
+        member this.GetDocumentAsync(value: string) =
+            task {
                 let! xs = $"{{ _id: '{value}' }}" |> Mongo.getMany<BsonDocument> collection
 
-                return 
-                    xs 
-                    |> Seq.map BsonMapping.fromBson
-                    |> Seq.tryHead
+                return xs |> Seq.map BsonMapping.fromBson |> Seq.tryHead
             }

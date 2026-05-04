@@ -16,7 +16,7 @@ module BsonMapping =
     open Discorss.MongoBson
     open MongoDB.Bson
 
-    let toBson (document: Document) =        
+    let toBson (document: Document) =
         newObject ()
         |> setDocId (value document.uri)
         |> setProperty "uri" (value document.uri)
@@ -28,10 +28,10 @@ module BsonMapping =
         |> setProperty "publication" (value document.publication.DateTime)
         |> setProperty "categories" (value document.categories)
         |> setProperty "updated" (value DateTime.UtcNow)
-    
+
     let fromBson (document: BsonDocument) =
         let asString key = getProperty key >> asString
-        
+
         { Document.uri = document |> asString "uri"
           title = document |> asString "title"
           content = document |> asString "content"
@@ -39,5 +39,4 @@ module BsonMapping =
           author = document |> asString "author"
           sha512 = document |> asString "sha512"
           publication = document |> getProperty "publication" |> asDateTimeOffset
-          categories = document |> getProperty "categories" |> asStringArray
-        }
+          categories = document |> getProperty "categories" |> asStringArray }

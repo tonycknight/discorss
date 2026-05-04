@@ -13,22 +13,23 @@ module MongoBson =
     let setProperty (key: string) (value: BsonValue) (doc: BsonDocument) =
         doc.[key] <- value
         doc
-    
+
     let getProperty (key: string) (doc: BsonDocument) = doc.[key]
 
     let asString (value: BsonValue) = value.AsString
 
-    let asDateTimeOffset (value: BsonValue) = value.AsBsonDateTime.ToUniversalTime() |> DateTimeOffset
+    let asDateTimeOffset (value: BsonValue) =
+        value.AsBsonDateTime.ToUniversalTime() |> DateTimeOffset
 
-    let asStringArray (value: BsonValue) = value.AsBsonArray |> Seq.map (fun x -> x.AsString) |> Array.ofSeq
+    let asStringArray (value: BsonValue) =
+        value.AsBsonArray |> Seq.map (fun x -> x.AsString) |> Array.ofSeq
 
     let objectId () = ObjectId.GenerateNewId()
 
     let ofJson (json: string) =
         BsonSerializer.Deserialize<BsonDocument>(json)
 
-    let toObject<'a> (doc: BsonDocument) =
-        BsonSerializer.Deserialize<'a>(doc)
+    let toObject<'a> (doc: BsonDocument) = BsonSerializer.Deserialize<'a>(doc)
 
     let setDocId (id) (doc: BsonDocument) =
         let existingId = doc.Elements |> Seq.filter (fun e -> e.Name = "_id") |> Seq.tryHead
@@ -112,11 +113,8 @@ module Mongo =
             let fieldFilter = new JsonFilterDefinition<BsonDocument>(predicate)
             use! r = collection.FindAsync(fieldFilter)
 
-            return r.ToEnumerable() 
-                    |> Seq.map MongoBson.toObject<'a> 
-                    |> Array.ofSeq
+            return r.ToEnumerable() |> Seq.map MongoBson.toObject<'a> |> Array.ofSeq
         }
 
     let estimatedCount (collection: IMongoCollection<BsonDocument>) =
         collection.EstimatedDocumentCountAsync()
-
