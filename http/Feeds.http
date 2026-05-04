@@ -8,15 +8,19 @@ GET http://localhost:8081/api/v1/feeds/
 content-type: application/json
 
 
-### Push Feeds
+### Push Feed
 PUT http://localhost:8081/api/v1/feeds/
 content-type: application/json
 
 {
-    "uri": "https://devblogs.microsoft.com/cosmosdb/feed/",
+    "uri": "https://devblogs.microsoft.com/dotnet/tag/c/feed/",
     "title": "",
     "description": "",
     "updated": "0001-01-01T00:00:00",
     "lastFetched": "0001-01-01T00:00:00"
 }
+
+### Preview a feed by its URI
+GET http://localhost:8081/api/v1/feeds/https%3A%2F%2Fdevblogs.microsoft.com%2Fdotnet%2Ftag%2Fc%2Ffeed%2F/
+content-type: application/json
 
