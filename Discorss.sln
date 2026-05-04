@@ -12,10 +12,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{68B857CC-5B6E-45DC-ABEE-F9C8279252A1}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build.yml = .github\workflows\build.yml
+		builddocker.ps1 = builddocker.ps1
 		.github\CODEOWNERS = .github\CODEOWNERS
 		docker-compose.debug.yml = docker-compose.debug.yml
 		docker-compose.yml = docker-compose.yml
 		Dockerfile-Service = Dockerfile-Service
+		rundocker.ps1 = rundocker.ps1
 		.github\workflows\sca.yml = .github\workflows\sca.yml
 	EndProjectSection
 EndProject
