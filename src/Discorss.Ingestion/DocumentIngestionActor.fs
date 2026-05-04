@@ -33,8 +33,30 @@ type DocumentIngestionActor
 
     let hasCacheDelta document =
         match cacheKey document |> cache.TryGetValue with
-        | true, x -> (x :?> string) <> document.sha512
-        | _ -> true
+        | true, x -> (x :?> string) <> document.sha512 |> Some
+        | false, _ -> None
+        
+    let checkDocumentDelta (document: Documents.Document) =
+        task {
+            try
+                let! doc = docRepo.GetDocumentAsync document.uri
+
+                return
+                    match doc with
+                    | Some doc -> doc.sha512 <> document.sha512
+                    | None -> false
+                
+            with ex ->
+                log.LogError (ex, $"Error fetching document {document.uri}")
+                return true
+        }
+
+    let shouldWriteDocument (document: Documents.Document) =
+        task {            
+            match hasCacheDelta document with
+            | None -> return! checkDocumentDelta document                
+            | Some x -> return x
+        }
 
     let writeDocument (document: Documents.Document) =
         task {
@@ -63,12 +85,14 @@ type DocumentIngestionActor
             | ActorMessage.FeedEntry fe ->
                 let d = Models.toDocument fe
 
-                if hasCacheDelta d then
+                let! shouldWrite = shouldWriteDocument d
+                if shouldWrite then                    
                     match! writeDocument d with
                     | Some d ->
                         do! d |> setCachedDocHash |> forwardDocument
-                    | _ -> ignore 0
+                    | _ -> ignore 0                    
                 else
+                    setCachedDocHash d |> ignore
                     log.LogTrace $"Skipping document {d.uri} as already ingested"
             | _ -> ignore 0
 
