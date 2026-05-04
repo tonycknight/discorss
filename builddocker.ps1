@@ -1,1 +1,1 @@
-docker build -f Dockerfile-Service -t discorss.server --build-arg BuildVersion=0.0.0 .
+docker build -f Dockerfile-Service -t discorss --build-arg BuildVersion=0.0.0 .
