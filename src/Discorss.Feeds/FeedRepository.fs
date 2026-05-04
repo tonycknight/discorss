@@ -22,6 +22,7 @@ type StubFeedRepository(feedUris) =
         |> List.map (fun u ->
             { FeedInfo.uri = u
               title = ""
+              description = ""
               updated = DateTime.MinValue
               lastFetched = DateTime.MinValue })
 

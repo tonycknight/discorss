@@ -18,7 +18,8 @@ module MongoFeedRepositoryTests =
 
             let feed =
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
-                  title = "test doc title"
+                  title = "test feed title"
+                  description = "test description"
                   updated = DateTime.UtcNow
                   lastFetched = DateTime.UtcNow }
 
@@ -26,7 +27,7 @@ module MongoFeedRepositoryTests =
 
             result.uri |> should equal feed.uri
             result.title |> should equal feed.title
-
+            result.description |> should equal feed.description
         }
 
     [<Xunit.Fact>]
@@ -39,7 +40,8 @@ module MongoFeedRepositoryTests =
 
             let feed =
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
-                  title = "test doc title"
+                  title = "test feed title"
+                  description = "test feed description"
                   updated = DateTime.UtcNow
                   lastFetched = DateTime.UtcNow }
 
@@ -57,6 +59,7 @@ module MongoFeedRepositoryTests =
 
             result.uri |> should equal feed.uri
             result.title |> should equal feed.title
+            result.description |> should equal feed.description
 
             persistedFeed.Value.updated.ToLongTimeString()
             |> should equal (feed.updated.ToLongTimeString())
@@ -75,7 +78,8 @@ module MongoFeedRepositoryTests =
 
             let feed =
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
-                  title = "test doc title"
+                  title = "test feed title"
+                  description = "test feed description"
                   updated = DateTime.UtcNow
                   lastFetched = DateTime.UtcNow }
 
@@ -97,7 +101,8 @@ module MongoFeedRepositoryTests =
 
             let feed =
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
-                  title = "test doc title"
+                  title = "test feed title"
+                  description = "test feed description"
                   updated = DateTime.UtcNow
                   lastFetched = DateTime.UtcNow }
 
@@ -107,6 +112,7 @@ module MongoFeedRepositoryTests =
 
             result.uri |> should equal feed.uri
             result.title |> should equal feed.title
+            result.description |> should equal feed.description
 
             persistedFeed.Value.updated.ToLongTimeString()
             |> should equal (feed.updated.ToLongTimeString())
@@ -127,7 +133,8 @@ module MongoFeedRepositoryTests =
 
             let feed =
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
-                  title = "test doc title"
+                  title = "test feed title"
+                  description = "test feed description"
                   updated = date
                   lastFetched = date }
 
@@ -140,6 +147,7 @@ module MongoFeedRepositoryTests =
             persistedFeed.Value.lastFetched |> should be (greaterThan date)
             persistedFeed.Value.uri |> should equal feed.uri
             persistedFeed.Value.title |> should equal feed.title
+            persistedFeed.Value.description |> should equal feed.description
 
             persistedFeed.Value.updated.ToLongTimeString()
             |> should equal (feed.updated.ToLongTimeString())

@@ -63,6 +63,7 @@ module WebAppHandlers =
                             let feed = 
                                 { FeedInfo.uri = req.uri
                                   title = fr.title
+                                  description = fr.description
                                   updated = DateTime.UtcNow
                                   lastFetched = DateTime.MinValue }
                         
