@@ -17,7 +17,7 @@ module Rss092Parser =
     let parseEntries (xml: XDocument) =
         let parse (e: XElement) =
             { FeedEntry.id = e |> Xml.elementValueDefault "link"
-              publication = DateTimeOffset.UtcNow
+              publication = DateTime.UtcNow
               uri = e |> Xml.elementValueDefault "link"
               title = e |> Xml.elementValueDefault "title"
               description = e |> Xml.elementValueDefault "description"
@@ -41,7 +41,7 @@ module Rss092Parser =
               feedType = FeedType.Rss092
               title = title
               description = description
-              updated = DateTimeOffset.UtcNow
+              updated = DateTime.UtcNow
               entries = parseEntries xml }
 
         result |> Some

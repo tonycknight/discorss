@@ -39,7 +39,7 @@ type DocumentIngestionActor
         task {
             try
                 log.LogTrace $"Storing document {document.uri}..."
-                do! docRepo.SetDocumentAsync document
+                let! document = docRepo.SetDocumentAsync document
                 log.LogTrace $"Stored document {document.uri}."
                 return Some document
 

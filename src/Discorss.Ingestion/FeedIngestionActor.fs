@@ -24,7 +24,7 @@ type FeedIngestionActor
                 match r with
                 | FeedReadResult.Feed fr ->
                     task {
-                        do! feedRepo.SetFeedLastUpdateAsync feed
+                        do! feedRepo.SetFeedLastFetchedAsync feed
                         return Some fr
                     }
                 | FeedReadResult.Error msg ->

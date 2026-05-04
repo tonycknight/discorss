@@ -7,13 +7,13 @@ type FeedInfo =
     { uri: string
       title: string
       description: string
-      updated: DateTimeOffset
-      lastFetched: DateTimeOffset }
+      updated: DateTime
+      lastFetched: DateTime }
 
 [<CLIMutable>]
 type FeedEntry =
     { id: string
-      publication: DateTimeOffset
+      publication: DateTime
       uri: string
       title: string
       description: string

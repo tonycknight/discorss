@@ -17,7 +17,7 @@ module Rss20Parser =
     let parseEntries (xml: XDocument) =
         let parse (e: XElement) =
             { FeedEntry.id = e |> Xml.elementValueDefault "link"
-              publication = DateTimeOffset.UtcNow
+              publication = DateTime.UtcNow
               uri = e |> Xml.elementValueDefault "link"
               title = e |> Xml.elementValueDefault "title" |> Rss.dehtmlify
               description = e |> Xml.elementValueDefault "description" |> Rss.dehtmlify
@@ -41,7 +41,7 @@ module Rss20Parser =
               feedType = FeedType.Rss20
               title = title |> Rss.dehtmlify
               description = description |> Rss.dehtmlify
-              updated = DateTimeOffset.UtcNow
+              updated = DateTime.UtcNow
               entries = parseEntries xml }
 
         result |> Some

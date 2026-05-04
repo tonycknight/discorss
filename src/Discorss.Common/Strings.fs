@@ -40,3 +40,9 @@ module Strings =
         let hash = x.ComputeHash(b)
 
         System.Convert.ToBase64String hash
+
+    let appendIfMissing (suffix: string) (value: string) =
+        if value.EndsWith(suffix) |> not then
+            $"{value}{suffix}"
+        else
+            value
