@@ -50,9 +50,11 @@ type IExternalHttpClient =
 type ExternalHttpClient(httpClient: HttpClient) =
     let httpSend = Http.send httpClient
 
-    // TODO: log req/resp?
     let req (url: string) =
-        new HttpRequestMessage(HttpMethod.Get, url)
+        let result = new HttpRequestMessage(HttpMethod.Get, url)
+        result.Headers.Add("User-Agent", "discorss")
+        result.Headers.Add("Accept-Encoding", "gzip")
+        result
 
     interface IExternalHttpClient with
         member this.GetAsync(url) = url |> req |> httpSend
