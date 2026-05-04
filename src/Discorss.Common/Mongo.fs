@@ -10,7 +10,7 @@ module MongoBson =
 
     let value (value: 'a) = BsonValue.Create(value)
 
-    let property (key: string) (value: BsonValue) (doc: BsonDocument) =
+    let setProperty (key: string) (value: BsonValue) (doc: BsonDocument) =
         doc.[key] <- value
         doc
         
@@ -107,7 +107,9 @@ module Mongo =
             let fieldFilter = new JsonFilterDefinition<BsonDocument>(predicate)
             use! r = collection.FindAsync(fieldFilter)
 
-            return r.ToEnumerable() |> Seq.map MongoBson.toObject<'a> |> Array.ofSeq
+            return r.ToEnumerable() 
+                    |> Seq.map MongoBson.toObject<'a> 
+                    |> Array.ofSeq
         }
 
     let estimatedCount (collection: IMongoCollection<BsonDocument>) =
