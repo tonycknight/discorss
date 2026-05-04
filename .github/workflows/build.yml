@@ -23,10 +23,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
                 
       - name: Restore dependencies
         run: |
@@ -40,10 +40,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
                 
       - name: Restore dependencies
         run: |
@@ -58,7 +58,7 @@ jobs:
         run: dotnet reportgenerator -reports:"./test/**/coverage.info" -targetdir:"./publish/codecoveragedata" -reporttypes:"Cobertura"
       
       - name: Archive Test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: tests.results
@@ -66,14 +66,14 @@ jobs:
             ./test/**/TestResults/*
             
       - name: Archive Code coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: codecoverage
           path: ./publish/codecoverage/*.*
           
       - name: Unit test results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v3
         if: always()
         with:
           name: unit test results
@@ -100,10 +100,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
                 
       - name: Restore dependencies
         run: |
@@ -117,7 +117,7 @@ jobs:
         run: dotnet ./publish/Discorss.Test.Benchmarks.dll -f "*"
 
       - name: Archive Benchmark results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: benchmarks.results
@@ -129,7 +129,7 @@ jobs:
     needs:   [ build, tests, sca, benchmarks ]
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Set Docker image name
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -146,7 +146,7 @@ jobs:
 
       - name: Login to GitHub Container Registry
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        uses: docker/login-action@v2
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
