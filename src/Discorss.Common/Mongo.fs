@@ -6,6 +6,14 @@ open MongoDB.Bson.Serialization
 open MongoDB.Driver
 
 module MongoBson =
+    let newObject () = new BsonDocument()
+
+    let value (value: 'a) = BsonValue.Create(value)
+
+    let property (key: string) (value: BsonValue) (doc: BsonDocument) =
+        doc.[key] <- value
+        doc
+        
     let objectId () = ObjectId.GenerateNewId()
 
     let ofJson (json: string) =
