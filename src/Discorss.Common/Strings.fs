@@ -4,6 +4,8 @@ open System
 open System.Security.Cryptography
 
 module Strings =
+    let isEmptyWhitespace (value: string) = String.IsNullOrWhiteSpace value
+
     let str (value: 'a) = value.ToString()
 
     let join (delim: string) (strings: seq<string>) = String.Join(delim, strings)
