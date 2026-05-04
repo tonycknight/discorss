@@ -30,21 +30,20 @@ module BsonMapping =
         |> MongoBson.setProperty "sha512" (MongoBson.value document.sha512)
         |> MongoBson.setProperty "publication" (MongoBson.value document.publication.DateTime)
         |> MongoBson.setProperty "categories" (MongoBson.value document.categories)
+        |> MongoBson.setProperty "updated" (MongoBson.value DateTime.UtcNow)
     
     let fromBson (document: BsonDocument) =
+        let asString key = MongoBson.getProperty key >> MongoBson.asString
         
-        let result = 
-            { Document.uri = document.["uri"].AsString
-              title = document.["title"].AsString
-              content = document.["content"].AsString
-              description = document.["description"].AsString
-              author = document.["author"].AsString
-              sha512 = document.["sha512"].AsString
-              publication = document.["publication"].AsBsonDateTime.ToUniversalTime() |> DateTimeOffset
-              categories = document.["categories"].AsBsonArray |> Seq.map (fun x -> x.AsString) |> Array.ofSeq
-            }
-
-        result
+        { Document.uri = document |> asString "uri"
+          title = document |> asString "title"
+          content = document |> asString "content"
+          description = document |> asString "description"
+          author = document |> asString "author"
+          sha512 = document |> asString "sha512"
+          publication = document |> MongoBson.getProperty "publication" |> MongoBson.asDateTimeOffset
+          categories = document |> MongoBson.getProperty "categories" |> MongoBson.asStringArray
+        }
 
 type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILoggerFactory) =
     

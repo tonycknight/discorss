@@ -13,14 +13,19 @@ module MongoBson =
     let setProperty (key: string) (value: BsonValue) (doc: BsonDocument) =
         doc.[key] <- value
         doc
-        
+    
+    let getProperty (key: string) (doc: BsonDocument) = doc.[key]
+
+    let asString (value: BsonValue) = value.AsString
+
+    let asDateTimeOffset (value: BsonValue) = value.AsBsonDateTime.ToUniversalTime() |> DateTimeOffset
+
+    let asStringArray (value: BsonValue) = value.AsBsonArray |> Seq.map (fun x -> x.AsString) |> Array.ofSeq
+
     let objectId () = ObjectId.GenerateNewId()
 
     let ofJson (json: string) =
         BsonSerializer.Deserialize<BsonDocument>(json)
-
-    let ofObject (value) =
-        value |> Newtonsoft.Json.JsonConvert.SerializeObject |> ofJson
 
     let toObject<'a> (doc: BsonDocument) =
         BsonSerializer.Deserialize<'a>(doc)

@@ -22,7 +22,7 @@ module MongoDocumentRepositoryTests =
                   description = "test description"
                   content = "test content"
                   categories = [| "tag1"; "tag2" |]
-                  sha512 = ""
+                  sha512 = "test sha"
                 }
 
             let! result = repo.SetDocumentAsync document
