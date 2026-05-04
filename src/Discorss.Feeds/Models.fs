@@ -53,9 +53,7 @@ module BsonMapping =
     let fromBson (document: BsonDocument) =
         let asString key = getProperty key >> asString
 
-        { FeedInfo.uri = document |> asString "uri" 
+        { FeedInfo.uri = document |> asString "uri"
           title = document |> asString "title"
           updated = document |> getProperty "updated" |> asDateTime
-          lastFetched = document |> getProperty "lastFetched" |> asDateTime
-        }
-
+          lastFetched = document |> getProperty "lastFetched" |> asDateTime }

@@ -53,9 +53,7 @@ type StubFeedRepository(feedUris) =
 
         member this.SetFeedInfoAsync(feed: FeedInfo) =
             task {
-                feedCache.[feed.uri] <-
-                    { feed with
-                        updated = DateTime.UtcNow }
+                feedCache.[feed.uri] <- { feed with updated = DateTime.UtcNow }
 
                 return feed
             }
@@ -65,42 +63,38 @@ type StubFeedRepository(feedUris) =
                 let (ok, feed2) = feedCache.TryGetValue(feed.uri)
                 let feed = if ok then feed2 else feed
 
-                let feed =
-                    { feed with
-                        updated = DateTime.UtcNow }
+                let feed = { feed with updated = DateTime.UtcNow }
 
                 feedCache.[feed.uri] <- feed
             }
 
 type MongoFeedRepository(config: IOptions<AppConfiguration>, logFactory: ILoggerFactory) =
-    
+
     [<Literal>]
     let colName = "Feeds"
 
     let log = logFactory.CreateLogger<MongoFeedRepository>()
 
-    let collection = Mongo.initCollection "uri" config.Value.mongoDbName colName config.Value.mongoConnection
+    let collection =
+        Mongo.initCollection "uri" config.Value.mongoDbName colName config.Value.mongoConnection
 
     interface IFeedRepository with
-        member this.GetFeedInfosAsync (): Task<FeedInfo array> = 
+        member this.GetFeedInfosAsync() : Task<FeedInfo array> =
             task {
-                
+
                 let! xs = "{}" |> Mongo.getMany<BsonDocument> collection
-                
-                return
-                    xs
-                    |> Seq.map BsonMapping.fromBson
-                    |> Array.ofSeq
+
+                return xs |> Seq.map BsonMapping.fromBson |> Array.ofSeq
             }
 
-        member this.GetFeedInfoAsync (key: string): Task<FeedInfo option> = 
+        member this.GetFeedInfoAsync(key: string) : Task<FeedInfo option> =
             task {
                 let! xs = $"{{ _id: '{key}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromBson |> Seq.tryHead
             }
 
-        member this.SetFeedInfoAsync (feed: FeedInfo) = 
+        member this.SetFeedInfoAsync(feed: FeedInfo) =
             task {
                 let! result = feed |> BsonMapping.toBson |> Mongo.upsert collection
 
@@ -110,15 +104,18 @@ type MongoFeedRepository(config: IOptions<AppConfiguration>, logFactory: ILogger
                 return feed
             }
 
-        member this.SetFeedLastFetchedAsync (feed: FeedInfo): Task = 
+        member this.SetFeedLastFetchedAsync(feed: FeedInfo) : Task =
             task {
                 let this = (this :> IFeedRepository)
                 let! persistedFeed = this.GetFeedInfoAsync feed.uri
-                
+
                 match persistedFeed with
                 | None -> ignore 0
                 | Some feed ->
-                    let feed = { feed with lastFetched = DateTime.UtcNow }
+                    let feed =
+                        { feed with
+                            lastFetched = DateTime.UtcNow }
+
                     let! x = this.SetFeedInfoAsync feed
                     ignore 0
             }

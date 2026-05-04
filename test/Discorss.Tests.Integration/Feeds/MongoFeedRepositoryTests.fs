@@ -6,17 +6,17 @@ open Discorss.Tests.Integration
 open FsUnit.Xunit
 
 module MongoFeedRepositoryTests =
-    
+
 
     [<Xunit.Fact>]
-    let ``SetFeedInfoAsync writes one``() =
+    let ``SetFeedInfoAsync writes one`` () =
         task {
             let opts = TestHelpers.config () |> TestHelpers.configOptions
 
             let repo =
                 new MongoFeedRepository(opts, TestHelpers.logFactory ()) :> IFeedRepository
-        
-            let feed = 
+
+            let feed =
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
                   title = "test doc title"
                   updated = DateTime.UtcNow
@@ -30,14 +30,14 @@ module MongoFeedRepositoryTests =
         }
 
     [<Xunit.Fact>]
-    let ``SetFeedInfoAsync updates one``() =
+    let ``SetFeedInfoAsync updates one`` () =
         task {
             let opts = TestHelpers.config () |> TestHelpers.configOptions
 
             let repo =
                 new MongoFeedRepository(opts, TestHelpers.logFactory ()) :> IFeedRepository
-        
-            let feed = 
+
+            let feed =
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
                   title = "test doc title"
                   updated = DateTime.UtcNow
@@ -45,9 +45,9 @@ module MongoFeedRepositoryTests =
 
             let! result = repo.SetFeedInfoAsync feed
 
-            let feed = 
-                { feed with 
-                    title = Guid.NewGuid().ToString() 
+            let feed =
+                { feed with
+                    title = Guid.NewGuid().ToString()
                     updated = DateTime.UtcNow
                     lastFetched = DateTime.UtcNow }
 
@@ -57,19 +57,23 @@ module MongoFeedRepositoryTests =
 
             result.uri |> should equal feed.uri
             result.title |> should equal feed.title
-            persistedFeed.Value.updated.ToLongTimeString () |> should equal (feed.updated.ToLongTimeString())
-            persistedFeed.Value.lastFetched.ToLongTimeString() |> should equal (feed.lastFetched.ToLongTimeString())
+
+            persistedFeed.Value.updated.ToLongTimeString()
+            |> should equal (feed.updated.ToLongTimeString())
+
+            persistedFeed.Value.lastFetched.ToLongTimeString()
+            |> should equal (feed.lastFetched.ToLongTimeString())
         }
 
     [<Xunit.Fact>]
-    let ``GetFeedInfosAsync returns feed``() =
+    let ``GetFeedInfosAsync returns feed`` () =
         task {
             let opts = TestHelpers.config () |> TestHelpers.configOptions
 
             let repo =
                 new MongoFeedRepository(opts, TestHelpers.logFactory ()) :> IFeedRepository
-        
-            let feed = 
+
+            let feed =
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
                   title = "test doc title"
                   updated = DateTime.UtcNow
@@ -77,21 +81,21 @@ module MongoFeedRepositoryTests =
 
             let! result = repo.SetFeedInfoAsync feed
 
-            let! persistedFeeds = repo.GetFeedInfosAsync ()
+            let! persistedFeeds = repo.GetFeedInfosAsync()
 
             persistedFeeds.Length |> should greaterThanOrEqualTo 1
             persistedFeeds |> Seq.exists (fun f -> f.uri = feed.uri) |> should equal true
         }
 
     [<Xunit.Fact>]
-    let ``GetFeedInfoAsync returns feed``() =
+    let ``GetFeedInfoAsync returns feed`` () =
         task {
             let opts = TestHelpers.config () |> TestHelpers.configOptions
 
             let repo =
                 new MongoFeedRepository(opts, TestHelpers.logFactory ()) :> IFeedRepository
-        
-            let feed = 
+
+            let feed =
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
                   title = "test doc title"
                   updated = DateTime.UtcNow
@@ -103,27 +107,32 @@ module MongoFeedRepositoryTests =
 
             result.uri |> should equal feed.uri
             result.title |> should equal feed.title
-            persistedFeed.Value.updated.ToLongTimeString() |> should equal (feed.updated.ToLongTimeString())
-            persistedFeed.Value.lastFetched.ToLongTimeString() |> should equal (feed.lastFetched.ToLongTimeString())
+
+            persistedFeed.Value.updated.ToLongTimeString()
+            |> should equal (feed.updated.ToLongTimeString())
+
+            persistedFeed.Value.lastFetched.ToLongTimeString()
+            |> should equal (feed.lastFetched.ToLongTimeString())
         }
 
     [<Xunit.Fact>]
-    let ``SetFeedLastFetchedAsync updates``()=
+    let ``SetFeedLastFetchedAsync updates`` () =
         task {
             let opts = TestHelpers.config () |> TestHelpers.configOptions
 
             let repo =
                 new MongoFeedRepository(opts, TestHelpers.logFactory ()) :> IFeedRepository
-        
-            let date = DateTime.UtcNow.AddDays(-1) 
-            let feed = 
+
+            let date = DateTime.UtcNow.AddDays(-1)
+
+            let feed =
                 { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
                   title = "test doc title"
                   updated = date
                   lastFetched = date }
 
             let! result = repo.SetFeedInfoAsync feed
-            
+
             do! repo.SetFeedLastFetchedAsync feed
 
             let! persistedFeed = repo.GetFeedInfoAsync feed.uri
@@ -131,5 +140,7 @@ module MongoFeedRepositoryTests =
             persistedFeed.Value.lastFetched |> should be (greaterThan date)
             persistedFeed.Value.uri |> should equal feed.uri
             persistedFeed.Value.title |> should equal feed.title
-            persistedFeed.Value.updated.ToLongTimeString() |> should equal (feed.updated.ToLongTimeString())
+
+            persistedFeed.Value.updated.ToLongTimeString()
+            |> should equal (feed.updated.ToLongTimeString())
         }
