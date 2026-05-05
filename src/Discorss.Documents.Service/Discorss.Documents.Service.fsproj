@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Models.fs" />
     <Compile Include="WebAppHandlers.fs" />
     <Compile Include="WebApi.fs" />
   </ItemGroup>

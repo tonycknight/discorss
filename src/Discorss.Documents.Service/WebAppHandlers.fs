@@ -18,7 +18,5 @@ module WebAppHandlers =
 
                 match doc with
                 | None -> return! Successful.NO_CONTENT next ctx
-                | Some doc ->
-                    // TODO: translate to ApiModel
-                    return! Successful.ok (json doc) next ctx
+                | Some doc -> return! Successful.ok (doc |> Mapping.toDocumentApiModel |> json) next ctx
             }
