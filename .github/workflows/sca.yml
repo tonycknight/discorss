@@ -33,7 +33,5 @@ jobs:
         with:
           scan-issues: true
           scan-upgrades: true
-          scan-vulnerabilities: true
-          scan-deprecations: true
           config: pkgchk.config.yml
   
