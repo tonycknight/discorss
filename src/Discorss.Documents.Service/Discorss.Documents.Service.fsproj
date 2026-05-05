@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="WebAppHandlers.fs" />
+    <Compile Include="WebApi.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Discorss.ApiModels\Discorss.ApiModels.fsproj" />
+    <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
+    <ProjectReference Include="..\Discorss.Documents\Discorss.Documents.fsproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Giraffe" Version="8.2.0" />
+  </ItemGroup>
+
+</Project>

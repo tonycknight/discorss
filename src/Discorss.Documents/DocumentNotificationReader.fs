@@ -8,19 +8,40 @@ open Microsoft.Extensions.Logging
 type IDocumentNotificationReader =
     abstract member GetNextAsync: unit -> Task<Document option>
 
-type DocumentNotificationReader(logFactory: ILoggerFactory, docRepo: IDocumentRepository, broker: Microbroker.Client.IMicrobrokerProxy) =
-    
+type DocumentNotificationReader
+    (logFactory: ILoggerFactory, docRepo: IDocumentRepository, broker: Microbroker.Client.IMicrobrokerProxy) =
+
     let log = logFactory.CreateLogger<DocumentNotificationReader>()
 
-    let getNextDocument () =
+    let rec getNext () =
         task {
+            log.LogTrace "Fetching next document notification..."
             let! msg = broker.GetNextAsync Queues.QueueNames.documentNotifications
 
             return!
                 match msg with
-                | None -> task { return None }
-                | Some msg -> docRepo.GetDocumentAsync msg.content
+                | None ->
+                    task {
+                        log.LogTrace "No notification found."
+                        return None
+                    }
+                | Some msg ->
+                    task {
+                        log.LogTrace $"Finding documnet {msg.content}..."
+                        let! doc = docRepo.GetDocumentAsync msg.content
+
+                        return!
+                            match doc with
+                            | Some doc ->
+                                task {
+                                    log.LogTrace $"Found document {doc.uri}."
+                                    return Some doc
+                                }
+                            | _ ->
+                                log.LogTrace $"Could not find documnet {msg.content}, retrying..."
+                                getNext ()
+                    }
         }
 
     interface IDocumentNotificationReader with
-        member this.GetNextAsync () = getNextDocument ()
+        member this.GetNextAsync() = getNext ()

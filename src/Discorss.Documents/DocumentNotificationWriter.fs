@@ -16,5 +16,5 @@ type DocumentNotificationWriter(logFactory: ILoggerFactory, broker: Microbroker.
         member this.SetAsync(document: Document) =
             task {
                 let m = document.uri |> Queues.Messages.toRawMessage
-                do! broker.PostAsync (Queues.QueueNames.documentNotifications, m)
+                do! broker.PostAsync(Queues.QueueNames.documentNotifications, m)
             }

@@ -37,7 +37,11 @@ module Actor =
                 | None -> None
         }
 
-    let rec pollActorMessageQueue (broker: Microbroker.Client.IMicrobrokerProxy) queueName (post: ActorMessage -> unit) =
+    let rec pollActorMessageQueue
+        (broker: Microbroker.Client.IMicrobrokerProxy)
+        queueName
+        (post: ActorMessage -> unit)
+        =
         task {
             let! msg = pullActorMessage broker queueName
 

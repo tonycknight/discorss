@@ -52,9 +52,9 @@ type IngestionActor
                 log.LogTrace $"Received feedentry {e.uri}..."
                 e |> ActorMessage.FeedEntry |> (Actor.post docActor)
             | ActorMessage.Document d ->
-                log.LogTrace $"Received document {d.uri}..."                
+                log.LogTrace $"Received document {d.uri}..."
                 do! notificationWriter.SetAsync d
-                                
+
             | _ -> ignore 0
 
             return! loop inbox
@@ -67,7 +67,7 @@ type IngestionActor
         [ Discorss.Queues.QueueNames.feedEntries; Discorss.Queues.QueueNames.documents ]
 
     interface IActor with
-        
+
         member this.GetStats() =
             task {
                 let stats = actor |> Actor.getStats (self.GetType().Name)

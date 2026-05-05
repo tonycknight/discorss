@@ -28,7 +28,8 @@ type Startup() =
                      [ GET >=> Discorss.Api.heartbeatRoute
                        Discorss.Feeds.Service.WebApp.webApp "/feeds" app.ApplicationServices
                        Discorss.Indexing.Service.WebApp.webApp "/indexing" app.ApplicationServices
-                       Discorss.Ingestion.Service.WebApp.webApp "/ingestion" app.ApplicationServices ])
+                       Discorss.Ingestion.Service.WebApp.webApp "/ingestion" app.ApplicationServices
+                       Discorss.Documents.Service.WebApi.webApp "/documents" app.ApplicationServices ])
 
     member __.ConfigureServices(services: IServiceCollection) =
 

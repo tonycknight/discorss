@@ -16,5 +16,6 @@ module Bootstrap =
             else
                 services.AddSingleton<IDocumentRepository, MongoDocumentRepository>()
 
-        services.AddSingleton<IDocumentNotificationWriter, DocumentNotificationWriter>()
-                .AddSingleton<IDocumentNotificationReader, DocumentNotificationReader>()
+        services
+            .AddSingleton<IDocumentNotificationWriter, DocumentNotificationWriter>()
+            .AddSingleton<IDocumentNotificationReader, DocumentNotificationReader>()
