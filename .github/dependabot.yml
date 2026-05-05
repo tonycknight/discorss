@@ -12,7 +12,10 @@ updates:
     groups:
       packages:
         patterns:
-          - "*"    
+          - "*"
+    ignore:
+      - dependency-name: "FSharp.Core"
+      - dependency-name: "Xunit"
   - package-ecosystem: "github-actions"
     directory: "/.github/workflows"
     schedule:

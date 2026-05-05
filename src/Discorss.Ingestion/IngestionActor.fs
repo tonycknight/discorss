@@ -12,7 +12,9 @@ type IngestionActor
         logFactory: ILoggerFactory,
         config: IOptions<AppConfiguration>,
         feedActor: FeedIngestionActor,
-        docActor: DocumentIngestionActor
+        docActor: DocumentIngestionActor,
+        notificationWriter: Documents.IDocumentNotificationWriter,
+        broker: Microbroker.Client.IMicrobrokerProxy
     ) as self =
 
     let log = logFactory.CreateLogger<IngestionActor>()
@@ -21,6 +23,19 @@ type IngestionActor
     let postIngestTimer =
         (fun args -> ActorMessage.IngestFeeds |> Actor.post self)
         |> Actor.createTimer config.Value.feedIngestionFrequency
+
+    let queueStats () =
+        task {
+            let! queueCounts = self.QueueNames |> Array.ofSeq |> broker.GetQueueCountsAsync
+
+            return
+                queueCounts
+                |> Seq.map (fun qc ->
+                    { ActorStats.name = qc.name
+                      queueCount = qc.count
+                      childStats = [] })
+                |> List.ofSeq
+        }
 
     let rec loop (inbox: MailboxProcessor<ActorMessage>) =
         task {
@@ -35,10 +50,11 @@ type IngestionActor
             | ActorMessage.IngestFeed _ -> msg |> Actor.post feedActor
             | ActorMessage.FeedEntry e ->
                 log.LogTrace $"Received feedentry {e.uri}..."
-                e |> Models.toDocument |> ActorMessage.Document |> (Actor.post docActor)
+                e |> ActorMessage.FeedEntry |> (Actor.post docActor)
             | ActorMessage.Document d ->
                 log.LogTrace $"Received document {d.uri}..."
-                ignore 0 // TODO:
+                do! notificationWriter.SetAsync d
+
             | _ -> ignore 0
 
             return! loop inbox
@@ -51,8 +67,14 @@ type IngestionActor
         [ Discorss.Queues.QueueNames.feedEntries; Discorss.Queues.QueueNames.documents ]
 
     interface IActor with
+
         member this.GetStats() =
-            actor |> Actor.getStats (self.GetType().Name)
+            task {
+                let stats = actor |> Actor.getStats (self.GetType().Name)
+                let! queueStats = queueStats ()
+
+                return { stats with childStats = queueStats }
+            }
 
         member this.Post(msg: ActorMessage) = actor.Post msg
 

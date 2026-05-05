@@ -29,11 +29,34 @@ type DocumentIngestionActor
             Caching.cacheOptions () |> Caching.expiry config.Value.documentIngestionWindow
 
         cache.Set(key, document.sha512, options) |> ignore
+        document
 
     let hasCacheDelta document =
         match cacheKey document |> cache.TryGetValue with
-        | true, x -> (x :?> string) <> document.sha512
-        | _ -> true
+        | true, x -> (x :?> string) <> document.sha512 |> Some
+        | false, _ -> None
+
+    let checkDocumentDelta (document: Documents.Document) =
+        task {
+            try
+                let! doc = docRepo.GetDocumentAsync document.uri
+
+                return
+                    match doc with
+                    | Some doc -> doc.sha512 <> document.sha512
+                    | None -> true
+
+            with ex ->
+                log.LogError(ex, $"Error fetching document {document.uri}")
+                return true
+        }
+
+    let shouldWriteDocument (document: Documents.Document) =
+        task {
+            match hasCacheDelta document with
+            | None -> return! checkDocumentDelta document
+            | Some x -> return x
+        }
 
     let writeDocument (document: Documents.Document) =
         task {
@@ -59,14 +82,17 @@ type DocumentIngestionActor
     let rec loop (inbox: MailboxProcessor<ActorMessage>) =
         task {
             match! inbox.Receive() with
-            | ActorMessage.Document d ->
-                if hasCacheDelta d then
+            | ActorMessage.FeedEntry fe ->
+                let d = Models.toDocument fe
+
+                let! shouldWrite = shouldWriteDocument d
+
+                if shouldWrite then
                     match! writeDocument d with
-                    | Some d ->
-                        do! forwardDocument d
-                        setCachedDocHash d
+                    | Some d -> do! d |> setCachedDocHash |> forwardDocument
                     | _ -> ignore 0
                 else
+                    setCachedDocHash d |> ignore
                     log.LogTrace $"Skipping document {d.uri} as already ingested"
             | _ -> ignore 0
 
@@ -80,6 +106,6 @@ type DocumentIngestionActor
         member this.Post(msg: ActorMessage) = actor.Post msg
 
         member this.GetStats() =
-            actor |> Actor.getStats (self.GetType().Name)
+            actor |> Actor.getStats (self.GetType().Name) |> Task.ofResult
 
         member this.ReplyAsync(msg: ActorMessage) = actor.PostAndAsyncReply(fun rc -> msg)

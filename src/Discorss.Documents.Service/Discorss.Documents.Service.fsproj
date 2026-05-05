@@ -7,14 +7,18 @@
 
   <ItemGroup>
     <Compile Include="Models.fs" />
-    <Compile Include="DocumentRepository.fs" />
-    <Compile Include="DocumentNotificationWriter.fs" />
-    <Compile Include="DocumentNotificationReader.fs" />
-    <Compile Include="Bootstrap.fs" />
+    <Compile Include="WebAppHandlers.fs" />
+    <Compile Include="WebApi.fs" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Discorss.ApiModels\Discorss.ApiModels.fsproj" />
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
+    <ProjectReference Include="..\Discorss.Documents\Discorss.Documents.fsproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Giraffe" Version="8.2.0" />
   </ItemGroup>
 
 </Project>

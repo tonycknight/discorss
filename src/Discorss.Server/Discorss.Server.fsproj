@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
+    <ProjectReference Include="..\Discorss.Documents.Service\Discorss.Documents.Service.fsproj" />
     <ProjectReference Include="..\Discorss.Feeds.Service\Discorss.Feeds.Service.fsproj" />
     <ProjectReference Include="..\Discorss.Indexing.Service\Discorss.Indexing.Service.fsproj" />
     <ProjectReference Include="..\Discorss.Ingestion.Service\Discorss.Ingestion.Service.fsproj" />

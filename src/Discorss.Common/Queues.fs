@@ -11,10 +11,20 @@ module QueueNames =
     [<Literal>]
     let documents = "discorss_documents"
 
+    [<Literal>]
+    let documentNotifications = "discorss_document_notifications"
+
 module Messages =
     let toQueueMessage (value: 'a) =
         { MicrobrokerMessage.messageType = value.GetType().AssemblyQualifiedName
           content = Newtonsoft.Json.JsonConvert.SerializeObject value
+          created = DateTimeOffset.UtcNow
+          active = DateTimeOffset.UtcNow
+          expiry = DateTimeOffset.MaxValue }
+
+    let toRawMessage (value: string) =
+        { MicrobrokerMessage.messageType = value.GetType().AssemblyQualifiedName
+          content = value
           created = DateTimeOffset.UtcNow
           active = DateTimeOffset.UtcNow
           expiry = DateTimeOffset.MaxValue }

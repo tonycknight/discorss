@@ -1,6 +1,7 @@
 ﻿namespace Discorss.Ingestion
 
 open System.Diagnostics.CodeAnalysis
+open Discorss
 open Discorss.Feeds
 open Discorss.Queues
 open Microbroker.Client
@@ -95,6 +96,6 @@ type FeedIngestionActor
         member this.Post(msg: ActorMessage) = actor.Post msg
 
         member this.GetStats() =
-            actor |> Actor.getStats (self.GetType().Name)
+            actor |> Actor.getStats (self.GetType().Name) |> Task.ofResult
 
         member this.ReplyAsync(msg: ActorMessage) = actor.PostAndAsyncReply(fun rc -> msg)

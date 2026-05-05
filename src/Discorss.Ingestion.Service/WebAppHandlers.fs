@@ -14,13 +14,14 @@ module WebAppHandlers =
 
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                let actors =
+                let tasks =
                     [| sp.GetRequiredService<Ingestion.QueueMonitorActor>() :> IActor
                        sp.GetRequiredService<Ingestion.IngestionActor>() :> IActor
                        sp.GetRequiredService<Ingestion.FeedIngestionActor>() :> IActor
                        sp.GetRequiredService<Ingestion.DocumentIngestionActor>() :> IActor |]
+                    |> Array.map _.GetStats()
 
-                let results = actors |> Array.map _.GetStats() |> Array.sortBy (fun x -> x.name)
+                let! results = Task.WhenAll tasks
 
-                return! Successful.OK results next ctx
+                return! Successful.OK (results |> Array.sortBy _.name) next ctx
             }
