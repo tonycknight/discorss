@@ -6,7 +6,10 @@ param (
     [string]$Microbroker = "http://host.docker.internal:8080",
 
     [Parameter(Mandatory=$false)]
-    [string]$DbName = "discorss"
+    [string]$DbName = "discorss",
+
+    [Parameter(Mandatory=$false)]
+    [string]$FeedIngestionFrequency = "00:00:15"
 )
 
-docker run -it --rm -p 8081:8081 discorss --Discorss:microbrokerServiceUrl=$Microbroker --Discorss:mongoConnection=$ConnectionString --Discorss:mongoDbName=$DbName 
+docker run -it --rm -p 8081:8081 discorss --Discorss:microbrokerServiceUrl=$Microbroker --Discorss:mongoConnection=$ConnectionString --Discorss:mongoDbName=$DbName --Discorss:feedIngestionFrequency=$FeedIngestionFrequency
