@@ -1,5 +1,6 @@
 ﻿namespace Discorss.Server
 
+open System
 open Discorss
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
@@ -10,15 +11,11 @@ open Giraffe
 
 type Startup() =
 
-    let backgroundServices (services: IServiceCollection) =
-        services.AddHostedService<ServiceStartup>()
-
     let serviceCollection =
         Discorss.Feeds.Bootstrap.services
         >> Discorss.Indexing.Service.WebApp.services
         >> Discorss.Ingestion.Bootstrap.services
         >> Discorss.Documents.Bootstrap.services
-        >> backgroundServices
 
     let routes (app: IApplicationBuilder) =
         subRouteCi
@@ -42,17 +39,33 @@ type Startup() =
 
 module Program =
 
+    open Discorss.Ingestion
+
+    let startup (sp: IServiceProvider) =
+
+        let actors =
+            [| sp.GetRequiredService<IngestionActor>() :> IActor
+               sp.GetRequiredService<QueueMonitorActor>() :> IActor |]
+
+        actors |> Array.iter (fun a -> ActorMessage.Start |> a.Post)
+
+
+
     [<EntryPoint>]
     let main args =
-        Host
-            .CreateDefaultBuilder()
-            .ConfigureWebHostDefaults(fun whb ->
-                whb
-                    .UseStartup<Startup>()
-                    .UseUrls($"http://*:{Api.servicePort}")
-                    .ConfigureAppConfiguration(ApiStartup.configureAppConfig args)
-                |> ignore)
-            .Build()
-            .Run()
+        let host =
+            Host
+                .CreateDefaultBuilder()
+                .ConfigureWebHostDefaults(fun whb ->
+                    whb
+                        .UseStartup<Startup>()
+                        .UseUrls($"http://*:{Api.servicePort}")
+                        .ConfigureAppConfiguration(ApiStartup.configureAppConfig args)
+                    |> ignore)
+                .Build()
+
+        host.Services |> startup
+
+        host.Run()
 
         0
