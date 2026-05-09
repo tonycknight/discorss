@@ -22,7 +22,7 @@
   <ItemGroup>
     <PackageReference Include="Giraffe" Version="8.2.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
-    <PackageReference Include="Microbroker.Client" Version="0.2.1" />
+    <PackageReference Include="Microbroker.Client" Version="0.2.2" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.7" />
     <PackageReference Include="MongoDB.Driver" Version="3.8.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
