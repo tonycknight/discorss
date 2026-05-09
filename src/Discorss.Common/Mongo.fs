@@ -10,9 +10,20 @@ module MongoBson =
 
     let value (value: 'a) = BsonValue.Create(value)
 
-    let valueDate (value: DateTime) = 
-        let conv (x: DateTime) = new DateTime(x.Year, x.Month, x.Day, x.Hour, x.Minute, x.Second, x.Millisecond, x.Microsecond, DateTimeKind.Utc)
-        
+    let valueDate (value: DateTime) =
+        let conv (x: DateTime) =
+            new DateTime(
+                x.Year,
+                x.Month,
+                x.Day,
+                x.Hour,
+                x.Minute,
+                x.Second,
+                x.Millisecond,
+                x.Microsecond,
+                DateTimeKind.Utc
+            )
+
         BsonValue.Create(conv value)
 
     let setProperty (key: string) (value: BsonValue) (doc: BsonDocument) =
