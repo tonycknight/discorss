@@ -1,7 +1,6 @@
 namespace Discorss.Ingestion
 
 open Discorss
-open Discorss.Documents
 open Discorss.Feeds
 open Discorss.Ingestion
 open FsCheck.Xunit
