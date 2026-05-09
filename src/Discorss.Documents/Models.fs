@@ -25,7 +25,7 @@ module BsonMapping =
         |> setProperty "description" (value document.description)
         |> setProperty "author" (value document.author)
         |> setProperty "sha512" (value document.sha512)
-        |> setProperty "publication" (value document.publication)
+        |> setProperty "publication" (valueDate document.publication)
         |> setProperty "categories" (value document.categories)
         |> setProperty "updated" (value DateTime.UtcNow)
 

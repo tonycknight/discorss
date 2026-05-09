@@ -1,9 +1,7 @@
 ﻿namespace Discorss.Feeds.Test.Unit
 
-open System
 open Discorss
 open FsCheck
-open FsCheck.Xunit
 open FsUnit.Xunit
 
 module CombinatorsTests =
@@ -13,7 +11,7 @@ module CombinatorsTests =
     [<Xunit.InlineData(false, true, false)>]
     [<Xunit.InlineData(true, false, false)>]
     [<Xunit.InlineData(false, false, false)>]
-    let ``&&>> `` (left, right, expected) =
+    let ``&&>> is applied`` (left, right, expected) =
         let a = fun (x) -> left
         let b = fun (x) -> right
 
@@ -28,7 +26,7 @@ module CombinatorsTests =
     [<Xunit.InlineData(false, true, true)>]
     [<Xunit.InlineData(true, false, true)>]
     [<Xunit.InlineData(false, false, false)>]
-    let ``||>> `` (left, right, expected) =
+    let ``||>> is applied`` (left, right, expected) =
         let a = fun (x) -> left
         let b = fun (x) -> right
 

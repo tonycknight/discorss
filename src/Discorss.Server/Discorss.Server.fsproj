@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="ServiceStartup.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
