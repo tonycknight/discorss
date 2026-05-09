@@ -14,7 +14,7 @@ module StringsTests =
         let result = xs |> Strings.join " "
         let expected = System.String.Join(' ', xs)
 
-        result = expected        
+        result = expected
 
     [<Property(Verbose = true)>]
     let ``lower yields lower case`` (NonEmptyString value) =
