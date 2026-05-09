@@ -70,7 +70,7 @@ jobs:
         if: always()
         with:
           name: codecoverage
-          path: ./publish/codecoverage/*.*
+          path: ./publish/codecoveragedata/*.*
           
       - name: Unit test results
         uses: dorny/test-reporter@v3
