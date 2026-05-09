@@ -4,7 +4,6 @@ open System
 open Discorss
 open FsCheck
 open FsCheck.Xunit
-open FsUnit.Xunit
 
 module StringsTests =
 
@@ -15,21 +14,21 @@ module StringsTests =
         let result = xs |> Strings.join " "
         let expected = System.String.Join(' ', xs)
 
-        result |> should equal expected
+        result = expected        
 
     [<Property(Verbose = true)>]
     let ``lower yields lower case`` (NonEmptyString value) =
 
         let result = value |> Strings.lower
 
-        value.ToLower() |> should equal result
+        value.ToLower() = result
 
     [<Property(Verbose = true)>]
     let ``upper yields upper case`` (NonEmptyString value) =
 
         let result = value |> Strings.upper
 
-        value.ToUpper() |> should equal result
+        value.ToUpper() = result
 
     [<Property(Verbose = true)>]
     let ``sha256 is idempotent`` (NonEmptyString value) =
