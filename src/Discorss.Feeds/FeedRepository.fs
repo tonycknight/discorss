@@ -74,10 +74,20 @@ type MongoFeedRepository(config: IOptions<AppConfiguration>, logFactory: ILogger
     [<Literal>]
     let colName = "Feeds"
 
-    let log = logFactory.CreateLogger<MongoFeedRepository>()
-
     let collection =
         Mongo.initCollection "uri" config.Value.mongoDbName colName config.Value.mongoConnection
+
+    interface IStatsSource with
+        member this.GetStatsAsync() = 
+            task { 
+                let! count = Mongo.estimatedCount collection                
+
+                return
+                    { ActorStats.name = this.GetType().Name 
+                      queueCount = count
+                      childStats = [] }
+            }
+
 
     interface IFeedRepository with
         member this.GetFeedInfosAsync() : Task<FeedInfo array> =
