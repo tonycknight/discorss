@@ -129,6 +129,8 @@ module Http =
         ub.Path <- path
         ub.Uri
 
+    let encode (uri: string) = System.Web.HttpUtility.UrlEncode uri
+
     let client =
         let client = new HttpClient()
         (fun () -> client)

@@ -26,8 +26,28 @@ type AddFeedCommandSettings() =
             base.Validate()
 
 module FeedsConsole =
+    let feedPreview (feed: ApiModels.Feed) =
+        let channel (feed: ApiModels.Feed) =
+            seq {
+                $"{feed.feed.title |> Strings.escapeMarkup |> Console.cyan} {feed.feed.uri |> Console.yellow}"
+                $"{feed.feed.description |> Strings.escapeMarkup |> Console.white}"
+            }
 
-    let feedTable (feeds: ApiModels.FeedInfo seq) =
+        let entry (entry: ApiModels.FeedEntry) =
+            $"{entry.title |> Strings.escapeMarkup |> Console.cyan}"
+
+        let rows (feed: ApiModels.Feed) =
+            seq {
+                yield! channel feed
+                yield! feed.entries |> Seq.map entry
+            }
+            |> Seq.map (Console.markup >> Console.renderable)
+
+        let table = Console.table () |> Console.tableColumn ""
+
+        feed |> rows |> Seq.fold (fun t r -> Console.tableRow t [| r |]) table
+
+    let feedsTable (feeds: ApiModels.FeedInfo seq) =
         let feedRows (feed: ApiModels.FeedInfo) =
             seq {
                 $"{feed.title |> Console.cyan} {feed.uri |> Console.yellow}"
@@ -54,7 +74,24 @@ type ListFeedsCommand(nuget: Tk.Nuget.INugetClient) =
 
             let! feeds = DiscorssApi.getFeeds settings.ApiHost
 
-            FeedsConsole.feedTable feeds |> AnsiConsole.Console.Write
+            feeds |> FeedsConsole.feedsTable |> AnsiConsole.Console.Write
+
+            return 0
+        }
+
+    interface ICommandLimiter<CommandSettings>
+
+type PreviewFeedCommand(nuget: Tk.Nuget.INugetClient) =
+    inherit AsyncCommand<AddFeedCommandSettings>()
+
+    override this.ExecuteAsync(context, settings, cancellationToken) =
+        task {
+            if not settings.NoBanner then
+                Commands.renderBanner nuget
+
+            let! feed = DiscorssApi.previewFeeds settings.ApiHost settings.FeedUri
+
+            feed |> FeedsConsole.feedPreview |> AnsiConsole.Console.Write
 
             return 0
         }

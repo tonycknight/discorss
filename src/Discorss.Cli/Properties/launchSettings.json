@@ -2,7 +2,7 @@
   "profiles": {
     "Discorss.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "feeds list"
+      "commandLineArgs": "feeds preview https://devblogs.microsoft.com/dotnet/tag/f/feed/"
     }
   }
 }

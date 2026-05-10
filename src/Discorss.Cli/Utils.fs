@@ -32,6 +32,8 @@ module Strings =
 
     let join (delim: string) (strings: seq<string>) = String.Join(delim, strings)
 
+    let indent (pad: int) (value: string) = $"{new String(' ', pad)}{value}"
+
     let escapeMarkup (value: string) =
         value.Replace("[", "[[").Replace("]", "]]")
 
