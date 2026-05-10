@@ -56,7 +56,7 @@ jobs:
       - name: Consolidate code coverage
         if: always()
         run: |
-          dotnet reportgenerator -reports:"./tests/**/coverage.info" -targetdir:"./publish/codecoverage" -reporttypes:"Html"  
+          dotnet reportgenerator -reports:"./test/**/coverage.info" -targetdir:"./publish/codecoverage" -reporttypes:"Html"  
           dotnet reportgenerator -reports:"./test/**/coverage.info" -targetdir:"./publish/codecoveragedata" -reporttypes:"Cobertura"
       
       - name: Archive Test results
