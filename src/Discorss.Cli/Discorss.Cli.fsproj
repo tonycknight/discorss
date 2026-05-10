@@ -25,6 +25,7 @@
     <Compile Include="Http.fs" />
     <Compile Include="DiscorssApi.fs" />
     <Compile Include="Commands.fs" />
+    <Compile Include="About.fs" />
     <Compile Include="Feeds.fs" />
     <Compile Include="Documents.fs" />
     <Compile Include="Program.fs" />
