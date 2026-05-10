@@ -12,5 +12,5 @@ module WebApp =
             (choose
                 [ GET
                   >=> choose
-                          [ route "stats/" >=> publicResponseCaching 10 None >=> WebAppHandlers.getStats sp
+                          [ route "stats/" >=> publicResponseCaching 5 None >=> WebAppHandlers.getStats sp
                             route "heartbeat/" >=> noResponseCaching >=> json [ "OK" ] ] ])
