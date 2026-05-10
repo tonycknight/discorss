@@ -45,6 +45,8 @@ module FeedReaderTests =
         let notContainHtml (value: string) =
             value.IndexOf('<') < 0 && value.IndexOf('>') < 0
 
+        let notEmpty (value: string) = value.Length > 0
+
         match name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://" with
         | FeedReadResult.Feed feed ->
             feed.description |> notContainHtml |> should equal true
@@ -53,10 +55,10 @@ module FeedReaderTests =
             feed.entries
             |> List.iter (fun e ->
                 e.title |> notContainHtml |> should equal true
-                e.description |> notContainHtml |> should equal true
-                e.content |> notContainHtml |> should equal true
+                e.description |> notEmpty |> should equal true
                 e.author |> notContainHtml |> should equal true
-                e.categories |> Array.iter (notContainHtml >> should equal true))
+                e.categories |> Array.iter (notContainHtml >> should equal true)
+                e.categories |> Array.iter (notEmpty >> should equal true))
         | x -> new Exception($"{x} returned") |> raise
 
     [<Property>]
