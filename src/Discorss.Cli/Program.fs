@@ -26,10 +26,11 @@ module Program =
             c.AddBranch<CommandSettings>(
                 "feeds",
                 fun c ->
-                    c.AddCommand<AddFeedCommand>("add").WithDescription("Add a new feed") |> ignore
-                    c.AddCommand<ListFeedsCommand>("list").WithDescription("List feeds") |> ignore
+                    c.SetDescription("Work with feeds.")
+                    c.AddCommand<AddFeedCommand>("add").WithDescription("Add a new feed.") |> ignore
+                    c.AddCommand<ListFeedsCommand>("list").WithDescription("List feeds.") |> ignore
 
-                    c.AddCommand<PreviewFeedCommand>("preview").WithDescription("Preview a feed")
+                    c.AddCommand<PreviewFeedCommand>("preview").WithDescription("Preview a feed.")
                     |> ignore
             )
             |> ignore
@@ -37,10 +38,19 @@ module Program =
             c.AddBranch<CommandSettings>(
                 "documents",
                 fun c ->
-                    c.AddCommand<GetNextDocumentCommand>("next").WithDescription("Get the next document")
+                    c.SetDescription("Work with documents.")
+
+                    c
+                        .AddCommand<GetNextDocumentCommand>("next")
+                        .WithDescription("Get the next document in your queue.")
                     |> ignore
             )
-            |> ignore)
+            |> ignore
+
+            c.AddCommand<AboutCommand>("about").WithDescription("Get information about the server.")
+            |> ignore
+
+        )
 
         try
             app.Run(args)

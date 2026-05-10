@@ -41,10 +41,11 @@ type QueueMonitorActor
     let actor =
         MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
 
-    interface IActor with
-        member this.GetStats() =
+    interface IStatsSource with
+        member this.GetStatsAsync() =
             actor |> Actor.getStats (self.GetType().Name) |> Task.ofResult
 
+    interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg
 
         member this.ReplyAsync(msg: ActorMessage) = actor.PostAndAsyncReply(fun rc -> msg)

@@ -1,11 +1,10 @@
 ﻿namespace Discorss.Ingestion
 
-open System.Threading.Tasks
+open Discorss
 
 type IActor =
     abstract member Post: ActorMessage -> unit
     abstract member ReplyAsync: ActorMessage -> Async<ActorMessage>
-    abstract member GetStats: unit -> Task<ActorStats>
 
 module Actor =
     open System
@@ -13,8 +12,8 @@ module Actor =
     let post<'a> actor message = (actor :> IActor).Post message
 
     let getStats name (mailbox: MailboxProcessor<ActorMessage>) =
-        { ActorStats.name = name
-          queueCount = mailbox.CurrentQueueLength
+        { Stats.name = name
+          itemCount = mailbox.CurrentQueueLength
           childStats = [] }
 
     let createTimer (duration: TimeSpan) (func: obj -> unit) =

@@ -22,10 +22,9 @@ type Startup() =
             "/api/v1"
             (Api.logClient
              >=> choose
-                     [ GET >=> Discorss.Api.heartbeatRoute
+                     [ Discorss.Server.WebApp.webApp "/" app.ApplicationServices
                        Discorss.Feeds.Service.WebApp.webApp "/feeds" app.ApplicationServices
                        Discorss.Indexing.Service.WebApp.webApp "/indexing" app.ApplicationServices
-                       Discorss.Ingestion.Service.WebApp.webApp "/ingestion" app.ApplicationServices
                        Discorss.Documents.Service.WebApi.webApp "/documents" app.ApplicationServices ])
 
     member __.ConfigureServices(services: IServiceCollection) =

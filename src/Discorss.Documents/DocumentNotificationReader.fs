@@ -1,6 +1,5 @@
 namespace Discorss.Documents
 
-open System
 open System.Threading.Tasks
 open Discorss
 open Microsoft.Extensions.Logging
@@ -42,6 +41,18 @@ type DocumentNotificationReader
                                 getNext ()
                     }
         }
+
+    interface IStatsSource with
+        member this.GetStatsAsync() =
+            task {
+                let! mbCount = broker.GetQueueCountAsync Queues.QueueNames.documentNotifications
+
+                return
+                    { Stats.name = this.GetType().Name
+                      itemCount = mbCount |> Option.map _.count |> Option.defaultValue 0L
+                      childStats = [] }
+            }
+
 
     interface IDocumentNotificationReader with
         member this.GetNextAsync() = getNext ()

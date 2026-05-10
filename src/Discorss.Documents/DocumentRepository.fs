@@ -32,7 +32,19 @@ type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILo
         |> Mongo.setIndex "publication"
         |> Mongo.setIndex "categories"
 
+    interface IStatsSource with
+        member this.GetStatsAsync() =
+            task {
+                let! count = Mongo.estimatedCount collection
+
+                return
+                    { Stats.name = this.GetType().Name
+                      itemCount = count
+                      childStats = [] }
+            }
+
     interface IDocumentRepository with
+
         member this.SetDocumentAsync(value: Document) =
             task {
                 let! result = value |> BsonMapping.toBson |> Mongo.upsert collection

@@ -1,3 +1,0 @@
-### Get stats
-GET http://localhost:8081/api/v1/ingestion/stats/
-content-type: application/json

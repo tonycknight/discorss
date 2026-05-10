@@ -1,6 +1,5 @@
 ﻿namespace Discorss.Ingestion
 
-open System
 open System.Diagnostics.CodeAnalysis
 open Discorss
 open Microsoft.Extensions.Logging
@@ -31,8 +30,8 @@ type IngestionActor
             return
                 queueCounts
                 |> Seq.map (fun qc ->
-                    { ActorStats.name = qc.name
-                      queueCount = qc.count
+                    { Stats.name = qc.name
+                      itemCount = qc.count
                       childStats = [] })
                 |> List.ofSeq
         }
@@ -66,15 +65,16 @@ type IngestionActor
     member this.QueueNames =
         [ Discorss.Queues.QueueNames.feedEntries; Discorss.Queues.QueueNames.documents ]
 
-    interface IActor with
-
-        member this.GetStats() =
+    interface IStatsSource with
+        member this.GetStatsAsync() =
             task {
                 let stats = actor |> Actor.getStats (self.GetType().Name)
                 let! queueStats = queueStats ()
 
                 return { stats with childStats = queueStats }
             }
+
+    interface IActor with
 
         member this.Post(msg: ActorMessage) = actor.Post msg
 
