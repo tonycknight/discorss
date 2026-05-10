@@ -10,8 +10,7 @@ module Html =
         with ex ->
             None
 
-    let decode (value: string) =
-        System.Web.HttpUtility.HtmlDecode value
+    let decode (value: string) = System.Web.HttpUtility.HtmlDecode value
 
     let stripHtml (value: string) =
         let value = value |> Option.ofNull |> Option.defaultValue ""
