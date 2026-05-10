@@ -13,6 +13,7 @@ open NSubstitute
 type Fact = Xunit.FactAttribute
 type Theory = Xunit.TheoryAttribute
 type InlineData = Xunit.InlineDataAttribute
+type Property = FsCheck.Xunit.PropertyAttribute
 
 module FeedReaderTests =
 
@@ -26,40 +27,50 @@ module FeedReaderTests =
     [<Theory>]
     [<InlineData("MsRss20Feed.xml")>]
     [<InlineData("Rss20Feed.xml")>]
-    let ``parse Rss 20`` (name) =
-        let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
-
-        feed |> should be (ofCase <@ FeedReadResult.Feed @>)
-
-    [<Theory>]
     [<InlineData("Rss091Feed.xml")>]
-    let ``parse Rss 091`` (name) =
-        let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
-
-        feed |> should be (ofCase <@ FeedReadResult.Feed @>)
-
-    [<Theory>]
     [<InlineData("Rss092Feed.xml")>]
-    let ``parse Rss 092`` (name) =
+    [<InlineData("RdfFeed.xml")>]
+    let ``parse feed returns feed`` (name) =
         let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
 
         feed |> should be (ofCase <@ FeedReadResult.Feed @>)
 
     [<Theory>]
+    [<InlineData("MsRss20Feed.xml")>]
+    [<InlineData("Rss20Feed.xml")>]
+    [<InlineData("Rss091Feed.xml")>]
+    [<InlineData("Rss092Feed.xml")>]
     [<InlineData("RdfFeed.xml")>]
-    let ``parse Rdf`` (name) =
-        let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
+    let ``parse feed with stripped HTML`` (name) =
+        let notContainHtml (value: string) =
+            value.IndexOf('<') < 0 && value.IndexOf('>') < 0
 
-        feed |> should be (ofCase <@ FeedReadResult.Feed @>)
-
-
+        match name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://" with
+        | FeedReadResult.Feed feed ->            
+            feed.description |> notContainHtml |> should equal true
+            feed.title |> notContainHtml |> should equal true
+            feed.entries
+                |> List.iter 
+                    (fun e -> 
+                        e.title |> notContainHtml |> should equal true
+                        e.description |> notContainHtml |> should equal true
+                        e.content |> notContainHtml |> should equal true
+                        e.author |> notContainHtml |> should equal true 
+                        e.categories |> Array.iter (notContainHtml >> should equal true ) )
+        | x -> new Exception($"{x} returned") |> raise
+        
+    [<Property>]
+    let ``parse random strings returns error`` (body: NonEmptyString) =        
+        match body.Get |> FeedReader.parse "http://" with
+        | FeedReadResult.Error e -> true
+        | _ -> false
 
     [<Theory>]
     [<InlineData("")>]
     [<InlineData("aa")>]
     [<InlineData("<xml>")>]
     [<InlineData("<xml/>")>]
-    let ``read receives OK with malformed body`` (body) =
+    let ``read returns OK with malformed body`` (body) =
 
         let client =
             HttpRequestResponse.HttpOkRequestResponse(HttpStatusCode.OK, body)
@@ -76,7 +87,7 @@ module FeedReaderTests =
     [<InlineData("aa")>]
     [<InlineData("<xml>")>]
     [<InlineData("<xml/>")>]
-    let ``read receives error with malformed body`` (body) =
+    let ``read returns error with malformed body`` (body) =
 
         let fact =
             HttpRequestResponse.HttpErrorRequestResponse(HttpStatusCode.InternalServerError, body)
@@ -89,7 +100,7 @@ module FeedReaderTests =
         result |> should be (ofCase <@ FeedReadResult.Error @>)
 
     [<Fact>]
-    let ``read receives exception with malformed body`` () =
+    let ``read returns exception with malformed body`` () =
 
         let fact =
             HttpRequestResponse.HttpExceptionRequestResponse(new Exception())
