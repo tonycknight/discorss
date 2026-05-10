@@ -9,6 +9,8 @@
     <Compile Include="Utils.fs" />
     <Compile Include="Console.fs" />
     <Compile Include="App.fs" />
+    <Compile Include="Http.fs" />
+    <Compile Include="DiscorssApi.fs" />
     <Compile Include="Commands.fs" />
     <Compile Include="Feeds.fs" />
     <Compile Include="Program.fs" />

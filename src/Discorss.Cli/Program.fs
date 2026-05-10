@@ -3,7 +3,7 @@
 open Spectre.Console.Cli
 
 module Program =
-    
+
     let console = Spectre.Console.AnsiConsole.MarkupLine
 
     [<EntryPoint>]
@@ -22,18 +22,21 @@ module Program =
                 .ValidateExamples()
                 .TrimTrailingPeriods(false)
             |> ignore
-                        
-            c.AddBranch<CommandSettings>("feeds", 
-                        fun c ->   c.AddCommand<AddFeedCommand>("add").WithDescription("Add a new feed") |> ignore
-                                   c.AddCommand<ListFeedsCommand>("list").WithDescription("List feeds") |> ignore
-                                   ) |> ignore
 
-            (*            
+            c.AddBranch<CommandSettings>(
+                "feeds",
+                fun c ->
+                    c.AddCommand<AddFeedCommand>("add").WithDescription("Add a new feed") |> ignore
+                    c.AddCommand<ListFeedsCommand>("list").WithDescription("List feeds") |> ignore
+            )
+            |> ignore
+
+        (*            
             c.AddBranch("documents",
                         fun c1 -> ignore c1
                         ) |> ignore
             *)
-            )
+        )
 
         try
             app.Run(args)
