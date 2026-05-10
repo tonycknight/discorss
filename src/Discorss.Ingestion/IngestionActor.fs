@@ -1,6 +1,5 @@
 ﻿namespace Discorss.Ingestion
 
-open System
 open System.Diagnostics.CodeAnalysis
 open Discorss
 open Microsoft.Extensions.Logging

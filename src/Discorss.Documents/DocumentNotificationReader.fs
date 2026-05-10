@@ -1,6 +1,5 @@
 namespace Discorss.Documents
 
-open System
 open System.Threading.Tasks
 open Discorss
 open Microsoft.Extensions.Logging
