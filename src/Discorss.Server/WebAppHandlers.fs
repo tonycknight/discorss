@@ -19,11 +19,19 @@ module WebAppHandlers =
                        sp.GetRequiredService<Ingestion.IngestionActor>() :> IActor
                        sp.GetRequiredService<Ingestion.FeedIngestionActor>() :> IActor
                        sp.GetRequiredService<Ingestion.DocumentIngestionActor>() :> IActor |]
-                    |> Array.map _.GetStats()
+                    |> Array.map _.GetStats() // TODO: move actors to use IStatsSource
+
+                let repoTasks =
+                    [| sp.GetRequiredService<Documents.IDocumentRepository>() :?> IStatsSource |]
+                    |> Array.filter (fun x -> Object.ReferenceEquals(x, null) |> not)
+                    |> Array.map _.GetStatsAsync()
 
                 let! actorStats = Task.WhenAll actorTasks
+                let! repoStats = Task.WhenAll repoTasks
 
-                let results = actorStats |> Array.map Models.toStats |> Array.sortBy _.name
+                let stats = actorStats |> Array.append repoStats
+
+                let results = stats |> Array.map Models.toStats |> Array.sortBy _.name
 
                 return! Successful.OK results next ctx
             }

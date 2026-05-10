@@ -1,6 +1,7 @@
 ﻿namespace Discorss.Ingestion
 
 open System.Threading.Tasks
+open Discorss
 
 type IActor =
     abstract member Post: ActorMessage -> unit

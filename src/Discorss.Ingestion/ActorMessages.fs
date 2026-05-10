@@ -1,9 +1,6 @@
 ﻿namespace Discorss.Ingestion
 
-type ActorStats =
-    { name: string
-      queueCount: int64
-      childStats: ActorStats list }
+open Discorss
 
 type ActorMessage =
     | Stop
