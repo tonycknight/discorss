@@ -2,10 +2,10 @@ namespace Discorss
 
 open System.Threading.Tasks
 
-type ActorStats =
+type Stats =
     { name: string
-      queueCount: int64
-      childStats: ActorStats list }
+      itemCount: int64
+      childStats: Stats list }
 
 type IStatsSource =
-    abstract member GetStatsAsync: unit -> Task<ActorStats>
+    abstract member GetStatsAsync: unit -> Task<Stats>

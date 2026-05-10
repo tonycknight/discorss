@@ -12,5 +12,5 @@ type ActorMessage =
     | Document of docs: Discorss.Documents.Document
     | DocumentNotification of uri: string
     | IndexDocument of doc: Discorss.Documents.Document
-    | ActorStats of stats: ActorStats
+    | ActorStats of stats: Stats
     | PollQueue of queueName: string

@@ -31,8 +31,8 @@ type IngestionActor
             return
                 queueCounts
                 |> Seq.map (fun qc ->
-                    { ActorStats.name = qc.name
-                      queueCount = qc.count
+                    { Stats.name = qc.name
+                      itemCount = qc.count
                       childStats = [] })
                 |> List.ofSeq
         }

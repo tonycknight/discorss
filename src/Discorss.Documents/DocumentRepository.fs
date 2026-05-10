@@ -38,8 +38,8 @@ type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILo
                 let! count = Mongo.estimatedCount collection
 
                 return
-                    { ActorStats.name = this.GetType().Name
-                      queueCount = count
+                    { Stats.name = this.GetType().Name
+                      itemCount = count
                       childStats = [] }
             }
 

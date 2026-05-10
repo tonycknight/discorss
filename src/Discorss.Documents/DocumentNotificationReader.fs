@@ -49,8 +49,8 @@ type DocumentNotificationReader
                 let! mbCount = broker.GetQueueCountAsync Queues.QueueNames.documentNotifications
 
                 return
-                    { ActorStats.name = this.GetType().Name
-                      queueCount = mbCount |> Option.map _.count |> Option.defaultValue 0L
+                    { Stats.name = this.GetType().Name
+                      itemCount = mbCount |> Option.map _.count |> Option.defaultValue 0L
                       childStats = [] }
             }
 

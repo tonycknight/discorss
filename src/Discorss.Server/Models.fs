@@ -3,7 +3,7 @@ namespace Discorss.Server
 open Discorss.ApiModels
 
 module Models =
-    let rec toStats (value: Discorss.ActorStats) =
+    let rec toStats (value: Discorss.Stats) =
         { Stats.name = value.name
-          itemCount = value.queueCount
+          itemCount = value.itemCount
           childStats = value.childStats |> List.map toStats }

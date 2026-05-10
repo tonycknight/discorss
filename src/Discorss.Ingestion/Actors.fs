@@ -13,8 +13,8 @@ module Actor =
     let post<'a> actor message = (actor :> IActor).Post message
 
     let getStats name (mailbox: MailboxProcessor<ActorMessage>) =
-        { ActorStats.name = name
-          queueCount = mailbox.CurrentQueueLength
+        { Stats.name = name
+          itemCount = mailbox.CurrentQueueLength
           childStats = [] }
 
     let createTimer (duration: TimeSpan) (func: obj -> unit) =

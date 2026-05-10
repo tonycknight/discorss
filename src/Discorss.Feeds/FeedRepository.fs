@@ -83,8 +83,8 @@ type MongoFeedRepository(config: IOptions<AppConfiguration>, logFactory: ILogger
                 let! count = Mongo.estimatedCount collection
 
                 return
-                    { ActorStats.name = this.GetType().Name
-                      queueCount = count
+                    { Stats.name = this.GetType().Name
+                      itemCount = count
                       childStats = [] }
             }
 
