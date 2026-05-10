@@ -14,11 +14,12 @@ module HtmlTests =
     [<Xunit.InlineData("<body><table><th>test</th></table>yadda</body>", "testyadda")>]
     [<Xunit.InlineData("<body><script>do nothing</script>yadda</body>", "yadda")>]
     [<Xunit.InlineData("<<", "<<")>]
+    [<Xunit.InlineData("<aaa", "")>]
+    [<Xunit.InlineData("aaa>", "aaa>")>]
     [<Xunit.InlineData("<<>", "<<>")>]
     let ``stripHtml returns inner text`` html expected =
         html
         |> Discorss.Html.stripHtml
-        |> Option.map id
         |> Option.defaultValue ""
         |> should equal expected
 
