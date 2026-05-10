@@ -10,18 +10,20 @@ open Giraffe
 
 module WebAppHandlers =
 
-    let getActorStats (sp: IServiceProvider) =
+    let getStats (sp: IServiceProvider) =
 
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                let tasks =
+                let actorTasks =
                     [| sp.GetRequiredService<Ingestion.QueueMonitorActor>() :> IActor
                        sp.GetRequiredService<Ingestion.IngestionActor>() :> IActor
                        sp.GetRequiredService<Ingestion.FeedIngestionActor>() :> IActor
                        sp.GetRequiredService<Ingestion.DocumentIngestionActor>() :> IActor |]
                     |> Array.map _.GetStats()
 
-                let! results = Task.WhenAll tasks
+                let! actorStats = Task.WhenAll actorTasks
 
-                return! Successful.OK (results |> Array.sortBy _.name) next ctx
+                let results = actorStats |> Array.map Models.toStats |> Array.sortBy _.name
+
+                return! Successful.OK results next ctx
             }
