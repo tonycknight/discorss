@@ -16,6 +16,10 @@ module ReturnCodes =
 
 module Strings =
 
+    let isEmptyWhitespace (value: string) = String.IsNullOrWhiteSpace value
+
+    let isUri (value: string) = Uri.TryCreate(value, UriKind.Absolute) |> fst
+        
     let join (delim: string) (strings: seq<string>) = String.Join(delim, strings)
 
     let escapeMarkup (value: string) = value.Replace("[", "[[").Replace("]", "]]")
