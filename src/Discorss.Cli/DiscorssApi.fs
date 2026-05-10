@@ -69,3 +69,22 @@ module DiscorssApi =
                 |> onResponse (fun (_, body, _, _) ->
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.FeedInfo> body)
         }
+
+    let nextDocument host =
+        task {
+            let uri = Http.route host "api/v1/documents/"
+
+            let req = new HttpRequestMessage(HttpMethod.Get, uri)
+
+            let! resp = send req
+
+            return
+                resp
+                |> onResponse (fun (status, body, _, _) ->
+                    match status with
+                    | HttpStatusCode.OK ->
+                        body
+                        |> Newtonsoft.Json.JsonConvert.DeserializeObject<ApiModels.Document>
+                        |> Some
+                    | _ -> None)
+        }

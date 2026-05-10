@@ -13,6 +13,7 @@
     <Compile Include="DiscorssApi.fs" />
     <Compile Include="Commands.fs" />
     <Compile Include="Feeds.fs" />
+    <Compile Include="Documents.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

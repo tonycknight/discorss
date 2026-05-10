@@ -2,7 +2,7 @@
   "profiles": {
     "Discorss.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "feeds add https://devblogs.microsoft.com/dotnet/tag/f/feed/"
+      "commandLineArgs": "documents next"
     }
   }
 }

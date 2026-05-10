@@ -32,6 +32,14 @@ module Program =
                     c.AddCommand<PreviewFeedCommand>("preview").WithDescription("Preview a feed")
                     |> ignore
             )
+            |> ignore
+
+            c.AddBranch<CommandSettings>(
+                "documents",
+                fun c ->
+                    c.AddCommand<GetNextDocumentCommand>("next").WithDescription("Get the next document")
+                    |> ignore
+            )
             |> ignore)
 
         try
