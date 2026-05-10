@@ -9,8 +9,15 @@ module Rss20Parser =
     let parseChannel (xml: XDocument) =
         match xml |> Xml.docElement "channel" with
         | Some channel ->
-            let title = channel |> Xml.elementValueDefault "title" |> Html.stripHtml |> Strings.trim
-            let description = channel |> Xml.elementValueDefault "description" |> Html.stripHtml |> Strings.trim
+            let title =
+                channel |> Xml.elementValueDefault "title" |> Html.stripHtml |> Strings.trim
+
+            let description =
+                channel
+                |> Xml.elementValueDefault "description"
+                |> Html.stripHtml
+                |> Strings.trim
+
             (title, description)
         | _ -> ("", "")
 

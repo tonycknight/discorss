@@ -46,21 +46,21 @@ module FeedReaderTests =
             value.IndexOf('<') < 0 && value.IndexOf('>') < 0
 
         match name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://" with
-        | FeedReadResult.Feed feed ->            
+        | FeedReadResult.Feed feed ->
             feed.description |> notContainHtml |> should equal true
             feed.title |> notContainHtml |> should equal true
+
             feed.entries
-                |> List.iter 
-                    (fun e -> 
-                        e.title |> notContainHtml |> should equal true
-                        e.description |> notContainHtml |> should equal true
-                        e.content |> notContainHtml |> should equal true
-                        e.author |> notContainHtml |> should equal true 
-                        e.categories |> Array.iter (notContainHtml >> should equal true ) )
+            |> List.iter (fun e ->
+                e.title |> notContainHtml |> should equal true
+                e.description |> notContainHtml |> should equal true
+                e.content |> notContainHtml |> should equal true
+                e.author |> notContainHtml |> should equal true
+                e.categories |> Array.iter (notContainHtml >> should equal true))
         | x -> new Exception($"{x} returned") |> raise
-        
+
     [<Property>]
-    let ``parse random strings returns error`` (body: NonEmptyString) =        
+    let ``parse random strings returns error`` (body: NonEmptyString) =
         match body.Get |> FeedReader.parse "http://" with
         | FeedReadResult.Error e -> true
         | _ -> false
