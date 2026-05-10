@@ -20,12 +20,11 @@ module HtmlTests =
     let ``stripHtml returns inner text`` html expected =
         html
         |> Discorss.Html.stripHtml
-        |> Option.defaultValue ""
         |> should equal expected
 
     [<Xunit.Theory>]
-    [<Xunit.InlineData(null)>]
-    let ``stripHtml returns None on error`` html =
+    [<Xunit.InlineData(null, "")>]
+    let ``stripHtml returns None on error`` html expected =
         let r = html |> Discorss.Html.stripHtml
 
-        r |> should equal None
+        r |> should equal expected
