@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Discorss.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "documents next"
+    }
+  }
+}

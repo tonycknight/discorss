@@ -13,4 +13,4 @@ module WebApi =
             (Api.logClient
              >=> choose
                      [ GET
-                       >=> choose [ route "/" >=> (noResponseCaching >=> WebAppHandlers.getNextDocument sp) ] ])
+                       >=> choose [ route "/queue/" >=> (noResponseCaching >=> WebAppHandlers.getNextDocument sp) ] ])
