@@ -72,7 +72,7 @@ module DiscorssApi =
 
     let nextDocument host =
         task {
-            let uri = Http.route host "api/v1/documents/"
+            let uri = Http.route host "api/v1/documents/queue/"
 
             let req = new HttpRequestMessage(HttpMethod.Get, uri)
 
