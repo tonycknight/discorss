@@ -67,7 +67,7 @@ type IngestionActor
         [ Discorss.Queues.QueueNames.feedEntries; Discorss.Queues.QueueNames.documents ]
 
     interface IStatsSource with
-        member this.GetStatsAsync() = 
+        member this.GetStatsAsync() =
             task {
                 let stats = actor |> Actor.getStats (self.GetType().Name)
                 let! queueStats = queueStats ()

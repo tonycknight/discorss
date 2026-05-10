@@ -93,7 +93,7 @@ type FeedIngestionActor
         MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
 
     interface IStatsSource with
-        member this.GetStatsAsync() = 
+        member this.GetStatsAsync() =
             actor |> Actor.getStats (self.GetType().Name) |> Task.ofResult
 
     interface IActor with

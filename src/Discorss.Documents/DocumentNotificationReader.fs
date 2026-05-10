@@ -44,12 +44,12 @@ type DocumentNotificationReader
         }
 
     interface IStatsSource with
-        member this.GetStatsAsync() = 
-            task { 
+        member this.GetStatsAsync() =
+            task {
                 let! mbCount = broker.GetQueueCountAsync Queues.QueueNames.documentNotifications
-                
+
                 return
-                    { ActorStats.name = this.GetType().Name 
+                    { ActorStats.name = this.GetType().Name
                       queueCount = mbCount |> Option.map _.count |> Option.defaultValue 0L
                       childStats = [] }
             }

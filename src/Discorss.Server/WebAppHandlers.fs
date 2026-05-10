@@ -25,7 +25,7 @@ module WebAppHandlers =
                     |> Array.map _.GetStatsAsync()
 
                 let! stats = Task.WhenAll statsTasks
-                                
+
                 let results = stats |> Array.map Models.toStats |> Array.sortBy _.name
 
                 return! Successful.OK results next ctx

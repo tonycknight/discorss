@@ -11,7 +11,7 @@ open MongoDB.Bson
 type IDocumentRepository =
     abstract member SetDocumentAsync: Document -> Task<Document>
     abstract member GetDocumentAsync: string -> Task<Document option>
-    
+
 [<ExcludeFromCodeCoverage>]
 type StubDocumentRepository() =
 
@@ -33,18 +33,18 @@ type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILo
         |> Mongo.setIndex "categories"
 
     interface IStatsSource with
-        member this.GetStatsAsync() = 
-            task { 
-                let! count = Mongo.estimatedCount collection                
+        member this.GetStatsAsync() =
+            task {
+                let! count = Mongo.estimatedCount collection
 
                 return
-                    { ActorStats.name = this.GetType().Name 
+                    { ActorStats.name = this.GetType().Name
                       queueCount = count
                       childStats = [] }
             }
 
     interface IDocumentRepository with
-        
+
         member this.SetDocumentAsync(value: Document) =
             task {
                 let! result = value |> BsonMapping.toBson |> Mongo.upsert collection
