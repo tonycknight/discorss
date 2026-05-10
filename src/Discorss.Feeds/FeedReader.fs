@@ -12,21 +12,32 @@ module FeedReader =
         with :? System.Xml.XmlException as ex ->
             FeedReadResult.Error ex.Message
 
+    let private clean (feed: Feed) =
+        let clean (entry: FeedEntry) =
+            { entry with 
+                title = Html.stripHtml entry.title
+                author = Html.stripHtml entry.author
+                description = Html.stripHtml entry.description
+                content = Html.stripHtml entry.content
+                categories = entry.categories |> Array.map Html.stripHtml }
+
+        { feed with entries = feed.entries |> List.map clean }
+
     let private parser (xml: XDocument) =
         match xml with
-        | Rss20Parser.IsRss20 x -> Rss20Parser.parse |> Some
-        | Rss092Parser.IsRss092 x -> Rss092Parser.parse |> Some
-        | Rss091Parser.IsRss091 x -> Rss091Parser.parse |> Some
-        | RdfParser.IsRdf x -> RdfParser.parse |> Some
-        | _ -> None
+        | Rss20Parser.IsRss20 x -> Rss20Parser.parse |> Choice1Of2
+        | Rss092Parser.IsRss092 x -> Rss092Parser.parse |> Choice1Of2
+        | Rss091Parser.IsRss091 x -> Rss091Parser.parse |> Choice1Of2
+        | RdfParser.IsRdf x -> RdfParser.parse |> Choice1Of2
+        | _ -> Choice2Of2 "Unrecognised feed type"
 
     let private parseXmlToFeed url (xml: XDocument) =
         match parser xml with
-        | Some p ->
-            (p url xml)
-            |> Option.map FeedReadResult.Feed
+        | Choice1Of2 parse ->
+            (parse url xml)
+            |> Option.map (clean >> FeedReadResult.Feed)
             |> Option.defaultValue (FeedReadResult.Error "Error in parsing")
-        | None -> FeedReadResult.Error "No parser found"
+        | Choice2Of2 e -> FeedReadResult.Error e
 
     let parse url body =
         body
