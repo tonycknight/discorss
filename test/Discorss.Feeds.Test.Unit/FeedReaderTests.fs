@@ -6,10 +6,13 @@ open System.Threading.Tasks
 open Discorss
 open Discorss.Feeds
 open FsCheck
-open FsUnit
 open FsUnit.CustomMatchers
 open FsUnit.Xunit
 open NSubstitute
+
+type Fact = Xunit.FactAttribute
+type Theory = Xunit.TheoryAttribute
+type InlineData = Xunit.InlineDataAttribute
 
 module FeedReaderTests =
 
@@ -20,40 +23,42 @@ module FeedReaderTests =
 
         client
 
-    [<Xunit.Theory>]
-    [<Xunit.InlineData("MsRss20Feed.xml")>]
-    [<Xunit.InlineData("Rss20Feed.xml")>]
+    [<Theory>]
+    [<InlineData("MsRss20Feed.xml")>]
+    [<InlineData("Rss20Feed.xml")>]
     let ``parse Rss 20`` (name) =
         let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
 
         feed |> should be (ofCase <@ FeedReadResult.Feed @>)
 
-    [<Xunit.Theory>]
-    [<Xunit.InlineData("Rss091Feed.xml")>]
+    [<Theory>]
+    [<InlineData("Rss091Feed.xml")>]
     let ``parse Rss 091`` (name) =
         let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
 
         feed |> should be (ofCase <@ FeedReadResult.Feed @>)
 
-    [<Xunit.Theory>]
-    [<Xunit.InlineData("Rss092Feed.xml")>]
+    [<Theory>]
+    [<InlineData("Rss092Feed.xml")>]
     let ``parse Rss 092`` (name) =
         let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
 
         feed |> should be (ofCase <@ FeedReadResult.Feed @>)
 
-    [<Xunit.Theory>]
-    [<Xunit.InlineData("RdfFeed.xml")>]
+    [<Theory>]
+    [<InlineData("RdfFeed.xml")>]
     let ``parse Rdf`` (name) =
         let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
 
         feed |> should be (ofCase <@ FeedReadResult.Feed @>)
 
-    [<Xunit.Theory>]
-    [<Xunit.InlineData("")>]
-    [<Xunit.InlineData("aa")>]
-    [<Xunit.InlineData("<xml>")>]
-    [<Xunit.InlineData("<xml/>")>]
+
+
+    [<Theory>]
+    [<InlineData("")>]
+    [<InlineData("aa")>]
+    [<InlineData("<xml>")>]
+    [<InlineData("<xml/>")>]
     let ``read receives OK with malformed body`` (body) =
 
         let client =
@@ -66,11 +71,11 @@ module FeedReaderTests =
 
         result |> should be (ofCase <@ FeedReadResult.Error @>)
 
-    [<Xunit.Theory>]
-    [<Xunit.InlineData("")>]
-    [<Xunit.InlineData("aa")>]
-    [<Xunit.InlineData("<xml>")>]
-    [<Xunit.InlineData("<xml/>")>]
+    [<Theory>]
+    [<InlineData("")>]
+    [<InlineData("aa")>]
+    [<InlineData("<xml>")>]
+    [<InlineData("<xml/>")>]
     let ``read receives error with malformed body`` (body) =
 
         let fact =
@@ -83,7 +88,7 @@ module FeedReaderTests =
 
         result |> should be (ofCase <@ FeedReadResult.Error @>)
 
-    [<Xunit.Fact>]
+    [<Fact>]
     let ``read receives exception with malformed body`` () =
 
         let fact =
