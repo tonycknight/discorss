@@ -1,11 +1,8 @@
 namespace Discorss
 
-open System
-open System.ComponentModel
 open Discorss.ApiModels
 open Spectre.Console
 open Spectre.Console.Cli
-
 
 type DocumentsCommandSettings() =
     inherit BaseCommandSettings()
@@ -49,7 +46,7 @@ type GetNextDocumentCommand(nuget: Tk.Nuget.INugetClient) =
             | None -> AnsiConsole.Console.Write("Not found.")
             | Some doc -> doc |> DocumentsConsole.document |> AnsiConsole.Console.Write
 
-            return 0
+            return ReturnCodes.ok
         }
 
     interface ICommandLimiter<CommandSettings>

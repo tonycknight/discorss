@@ -4,7 +4,6 @@ open System
 open System.Net
 open System.Net.Http
 open System.Threading
-open System.Threading.Tasks
 open Newtonsoft.Json.Linq
 
 type HttpResponseHeaders = (string * string) list

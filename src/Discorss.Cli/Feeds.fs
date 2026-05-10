@@ -78,7 +78,7 @@ type ListFeedsCommand(nuget: Tk.Nuget.INugetClient) =
 
             feeds |> FeedsConsole.feedsTable |> AnsiConsole.Console.Write
 
-            return 0
+            return ReturnCodes.ok
         }
 
     interface ICommandLimiter<CommandSettings>
@@ -95,7 +95,7 @@ type PreviewFeedCommand(nuget: Tk.Nuget.INugetClient) =
 
             feed |> FeedsConsole.feedPreview |> AnsiConsole.Console.Write
 
-            return 0
+            return ReturnCodes.ok
         }
 
     interface ICommandLimiter<CommandSettings>
@@ -120,7 +120,7 @@ type AddFeedCommand(nuget: Tk.Nuget.INugetClient) =
 
             [ feed ] |> FeedsConsole.feedsTable |> AnsiConsole.Console.Write
 
-            return 0
+            return ReturnCodes.ok
         }
 
     interface ICommandLimiter<CommandSettings>

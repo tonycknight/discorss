@@ -1,12 +1,8 @@
 ﻿namespace Discorss
 
-open System
 open Spectre.Console
 
 module Console =
-    [<Literal>]
-    let private nugetPrefix = "https://www.nuget.org/packages"
-
     let console = Spectre.Console.AnsiConsole.MarkupLine
 
     let markup x = new Markup(x)

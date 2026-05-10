@@ -13,7 +13,7 @@ module Combinators =
 module ReturnCodes =
 
     [<Literal>]
-    let validationOk = 0
+    let ok = 0
 
     [<Literal>]
     let validationFailed = 1
