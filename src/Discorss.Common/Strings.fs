@@ -8,6 +8,8 @@ module Strings =
 
     let str (value: 'a) = value.ToString()
 
+    let trim (value: string) = value.Trim()
+
     let join (delim: string) (strings: seq<string>) = String.Join(delim, strings)
 
     let lower (text: string) = text.ToLower()

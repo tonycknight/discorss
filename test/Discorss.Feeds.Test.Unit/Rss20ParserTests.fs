@@ -34,28 +34,29 @@ module Rss20ParserTests =
         let doc = sampleDoc ()
         let url = "http://test.org"
 
-        let feed = Rss20Parser.parse url doc |> Option.get
+        match Rss20Parser.parse url doc with
+        | Choice2Of2 e -> Exception(e) |> raise
+        | Choice1Of2 feed ->
+            feed.uri |> should equal url
+            feed.title |> should equal ".NET Blog"
 
-        feed.uri |> should equal url
-        feed.title |> should equal ".NET Blog"
+            feed.description
+            |> should equal "Free. Cross-platform. Open source. A developer platform for building all your apps."
 
-        feed.description
-        |> should equal "Free. Cross-platform. Open source. A developer platform for building all your apps."
+            feed.entries |> should haveLength 10
 
-        feed.entries |> should haveLength 10
+            feed.entries
+            |> Seq.forall (fun e -> e.title |> String.IsNullOrWhiteSpace |> not)
+            |> should equal true
 
-        feed.entries
-        |> Seq.forall (fun e -> e.title |> String.IsNullOrWhiteSpace |> not)
-        |> should equal true
+            feed.entries
+            |> Seq.forall (fun e -> e.description |> String.IsNullOrWhiteSpace |> not)
+            |> should equal true
 
-        feed.entries
-        |> Seq.forall (fun e -> e.description |> String.IsNullOrWhiteSpace |> not)
-        |> should equal true
+            feed.entries
+            |> Seq.forall (fun e -> e.author |> String.IsNullOrWhiteSpace |> not)
+            |> should equal true
 
-        feed.entries
-        |> Seq.forall (fun e -> e.author |> String.IsNullOrWhiteSpace |> not)
-        |> should equal true
-
-        feed.entries
-        |> Seq.forall (fun e -> e.uri |> String.IsNullOrWhiteSpace |> not)
-        |> should equal true
+            feed.entries
+            |> Seq.forall (fun e -> e.uri |> String.IsNullOrWhiteSpace |> not)
+            |> should equal true

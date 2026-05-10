@@ -9,8 +9,15 @@ module Rss091Parser =
     let parseChannel (xml: XDocument) =
         match xml |> Xml.docElement "channel" with
         | Some channel ->
-            let title = channel |> Xml.elementValueDefault "title"
-            let description = channel |> Xml.elementValueDefault "description"
+            let title =
+                channel |> Xml.elementValueDefault "title" |> Html.stripHtml |> Strings.trim
+
+            let description =
+                channel
+                |> Xml.elementValueDefault "description"
+                |> Html.stripHtml
+                |> Strings.trim
+
             (title, description)
         | _ -> ("", "")
 
@@ -33,18 +40,16 @@ module Rss091Parser =
         | _ -> false
 
     let parse url (xml: XDocument) =
-
-        let title, description = parseChannel xml
-
-        let result =
+        match parseChannel xml with
+        | ("", "") -> Choice2Of2 "Empty channel in feed"
+        | (title, description) ->
             { Feed.uri = url
               feedType = FeedType.Rss091
               title = title
               description = description
               updated = DateTime.UtcNow
               entries = parseEntries xml }
-
-        result |> Some
+            |> Choice1Of2
 
     let (|IsRss091|_|) (xml: XDocument) =
         match xml |> isMatch with

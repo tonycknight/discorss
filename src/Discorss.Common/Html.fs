@@ -1,16 +1,16 @@
 ﻿namespace Discorss
 
 module Html =
-    open HtmlAgilityPack
 
-    let private loadHtml (html: string) =
-        let doc = new HtmlDocument()
-        doc.LoadHtml(html)
-        doc
-
-    let stripHtml (html: string) =
+    let innerHtml (html: string) =
         try
-            let doc = loadHtml html
+            let doc = new HtmlAgilityPack.HtmlDocument()
+            doc.LoadHtml(html)
             doc.DocumentNode.InnerText |> Some
         with ex ->
             None
+
+    let stripHtml (value: string) =
+        let value = value |> Option.ofNull |> Option.defaultValue ""
+
+        value |> innerHtml |> Option.defaultValue value |> Strings.trim

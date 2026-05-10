@@ -1,6 +1,7 @@
 namespace Discorss.Documents
 
 open System
+open System.Diagnostics.CodeAnalysis
 open System.Threading.Tasks
 open Discorss
 open Microsoft.Extensions.Logging
@@ -11,6 +12,7 @@ type IDocumentRepository =
     abstract member SetDocumentAsync: Document -> Task<Document>
     abstract member GetDocumentAsync: string -> Task<Document option>
 
+[<ExcludeFromCodeCoverage>]
 type StubDocumentRepository() =
 
     interface IDocumentRepository with

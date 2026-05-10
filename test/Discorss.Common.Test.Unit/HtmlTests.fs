@@ -14,17 +14,15 @@ module HtmlTests =
     [<Xunit.InlineData("<body><table><th>test</th></table>yadda</body>", "testyadda")>]
     [<Xunit.InlineData("<body><script>do nothing</script>yadda</body>", "yadda")>]
     [<Xunit.InlineData("<<", "<<")>]
+    [<Xunit.InlineData("<aaa", "")>]
+    [<Xunit.InlineData("aaa>", "aaa>")>]
     [<Xunit.InlineData("<<>", "<<>")>]
     let ``stripHtml returns inner text`` html expected =
-        html
-        |> Discorss.Html.stripHtml
-        |> Option.map id
-        |> Option.defaultValue ""
-        |> should equal expected
+        html |> Discorss.Html.stripHtml |> should equal expected
 
     [<Xunit.Theory>]
-    [<Xunit.InlineData(null)>]
-    let ``stripHtml returns None on error`` html =
+    [<Xunit.InlineData(null, "")>]
+    let ``stripHtml returns None on error`` html expected =
         let r = html |> Discorss.Html.stripHtml
 
-        r |> should equal None
+        r |> should equal expected

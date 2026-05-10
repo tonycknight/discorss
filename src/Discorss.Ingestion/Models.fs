@@ -8,10 +8,11 @@ module Models =
     let sha512 (value: FeedEntry) =
         let xs =
             seq {
-                value.author
-                value.title
-                value.description
-                value.content
+                yield value.author
+                yield value.title
+                yield value.description
+                yield value.content
+                yield! value.categories
             }
             |> Strings.join ""
 

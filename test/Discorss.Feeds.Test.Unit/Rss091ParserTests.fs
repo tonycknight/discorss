@@ -34,21 +34,22 @@ module Rss091ParserTests =
         let doc = sampleDoc ()
         let url = "http://test.org"
 
-        let feed = Rss091Parser.parse url doc |> Option.get
+        match Rss091Parser.parse url doc with
+        | Choice2Of2 e -> Exception(e) |> raise
+        | Choice1Of2 feed ->
+            feed.uri |> should equal url
+            feed.title |> should equal "WriteTheWeb"
+            feed.description |> should equal "News for web users that write back"
+            feed.entries |> should haveLength 6
 
-        feed.uri |> should equal url
-        feed.title |> should equal "WriteTheWeb"
-        feed.description |> should equal "News for web users that write back"
-        feed.entries |> should haveLength 6
+            feed.entries
+            |> Seq.forall (fun e -> e.title |> String.IsNullOrWhiteSpace |> not)
+            |> should equal true
 
-        feed.entries
-        |> Seq.forall (fun e -> e.title |> String.IsNullOrWhiteSpace |> not)
-        |> should equal true
+            feed.entries
+            |> Seq.forall (fun e -> e.description |> String.IsNullOrWhiteSpace |> not)
+            |> should equal true
 
-        feed.entries
-        |> Seq.forall (fun e -> e.description |> String.IsNullOrWhiteSpace |> not)
-        |> should equal true
-
-        feed.entries
-        |> Seq.forall (fun e -> e.uri |> String.IsNullOrWhiteSpace |> not)
-        |> should equal true
+            feed.entries
+            |> Seq.forall (fun e -> e.uri |> String.IsNullOrWhiteSpace |> not)
+            |> should equal true

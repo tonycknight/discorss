@@ -34,22 +34,23 @@ module Rss092ParserTests =
         let doc = sampleDoc ()
         let url = "http://test.org"
 
-        let feed = Rss092Parser.parse url doc |> Option.get
+        match Rss092Parser.parse url doc with
+        | Choice2Of2 e -> Exception(e) |> raise
+        | Choice1Of2 feed ->
+            feed.uri |> should equal url
+            feed.title |> should equal "Dave Winer: Grateful Dead"
 
-        feed.uri |> should equal url
-        feed.title |> should equal "Dave Winer: Grateful Dead"
+            feed.description
+            |> should
+                equal
+                "A high-fidelity Grateful Dead song every day. This is where we're experimenting with enclosures on RSS news items that download when you're not using your computer. If it works (it will) it will be the end of the Click-And-Wait multimedia experience on the Internet."
 
-        feed.description
-        |> should
-            equal
-            "A high-fidelity Grateful Dead song every day. This is where we're experimenting with enclosures on RSS news items that download when you're not using your computer. If it works (it will) it will be the end of the Click-And-Wait multimedia experience on the Internet. "
+            feed.entries |> should haveLength 17
 
-        feed.entries |> should haveLength 17
+            feed.entries
+            |> Seq.forall (fun e -> e.author |> String.IsNullOrWhiteSpace |> not)
+            |> should equal true
 
-        feed.entries
-        |> Seq.forall (fun e -> e.author |> String.IsNullOrWhiteSpace |> not)
-        |> should equal true
-
-        feed.entries
-        |> Seq.forall (fun e -> e.description |> String.IsNullOrWhiteSpace |> not)
-        |> should equal true
+            feed.entries
+            |> Seq.forall (fun e -> e.description |> String.IsNullOrWhiteSpace |> not)
+            |> should equal true
