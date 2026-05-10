@@ -1,0 +1,7 @@
+### Get heartbeat
+GET http://localhost:8081/api/v1/heartbeat/
+content-type: application/json
+
+### Get stats
+GET http://localhost:8081/api/v1/stats/
+content-type: application/json

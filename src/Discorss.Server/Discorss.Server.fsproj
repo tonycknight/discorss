@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="WebAppHandlers.fs" />
+    <Compile Include="WebApp.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -20,6 +22,6 @@
     <ProjectReference Include="..\Discorss.Documents.Service\Discorss.Documents.Service.fsproj" />
     <ProjectReference Include="..\Discorss.Feeds.Service\Discorss.Feeds.Service.fsproj" />
     <ProjectReference Include="..\Discorss.Indexing.Service\Discorss.Indexing.Service.fsproj" />
-    <ProjectReference Include="..\Discorss.Ingestion.Service\Discorss.Ingestion.Service.fsproj" />
+    <ProjectReference Include="..\Discorss.Ingestion\Discorss.Ingestion.fsproj" />
   </ItemGroup>
 </Project>

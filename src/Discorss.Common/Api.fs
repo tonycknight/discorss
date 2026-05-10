@@ -21,9 +21,6 @@ module Api =
     let isValidContentType (ctx: HttpContext) =
         validContentTypes |> Seq.contains ctx.Request.ContentType
 
-    let heartbeatRoute: HttpHandler =
-        route "/heartbeat" >=> noResponseCaching >=> json [ "OK" ]
-
     let errorHandler: ErrorHandler =
         fun (ex: exn) (logger: ILogger) ->
             [ ex.GetType().FullName; ex.Message; ex.StackTrace ]

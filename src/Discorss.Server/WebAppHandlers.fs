@@ -1,4 +1,4 @@
-﻿namespace Discorss.Ingestion.Service
+﻿namespace Discorss.Server
 
 open System
 open System.Threading.Tasks
