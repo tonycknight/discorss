@@ -25,6 +25,37 @@ module DiscorssApi =
         | HttpExceptionRequestResponse ex -> raise ex
         | HttpOkRequestResponse(status, body, contentType, headers) -> ok (status, body, contentType, headers)
 
+    let getHeartbeat host =
+        task {
+            let uri = Http.route host "api/v1/heartbeat/"
+
+            let req = new HttpRequestMessage(HttpMethod.Get, uri)
+
+            let! resp = send req
+
+            return
+                match resp with
+                | HttpOkRequestResponse _ -> true
+                | _ -> false
+        }
+
+
+
+    let getStats host =
+        task {
+            let uri = Http.route host "api/v1/stats/"
+
+            let req = new HttpRequestMessage(HttpMethod.Get, uri)
+
+            let! resp = send req
+
+            return
+                resp
+                |> onResponse (fun (_, body, _, _) ->
+                    Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.Stats[]> body)
+        }
+
+
     let getFeeds host =
         task {
             let uri = Http.route host "api/v1/feeds/"

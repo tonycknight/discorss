@@ -29,7 +29,9 @@ module Program =
                     c.SetDescription("Work with feeds.")
                     c.AddCommand<AddFeedCommand>("add").WithDescription("Add a new feed.") |> ignore
                     c.AddCommand<ListFeedsCommand>("list").WithDescription("List feeds.") |> ignore
-                    c.AddCommand<PreviewFeedCommand>("preview").WithDescription("Preview a feed.") |> ignore
+
+                    c.AddCommand<PreviewFeedCommand>("preview").WithDescription("Preview a feed.")
+                    |> ignore
             )
             |> ignore
 
@@ -37,13 +39,18 @@ module Program =
                 "documents",
                 fun c ->
                     c.SetDescription("Work with documents.")
-                    c.AddCommand<GetNextDocumentCommand>("next").WithDescription("Get the next document in your queue.") |> ignore
+
+                    c
+                        .AddCommand<GetNextDocumentCommand>("next")
+                        .WithDescription("Get the next document in your queue.")
+                    |> ignore
             )
             |> ignore
-            
-            c.AddCommand<AboutCommand>("about").WithDescription("Get information about the server.") |> ignore
-            
-            )
+
+            c.AddCommand<AboutCommand>("about").WithDescription("Get information about the server.")
+            |> ignore
+
+        )
 
         try
             app.Run(args)

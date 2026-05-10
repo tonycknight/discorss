@@ -2,6 +2,7 @@
 
 open System
 open System.Diagnostics.CodeAnalysis
+open System.Threading.Tasks
 
 [<AutoOpen>]
 module Combinators =
@@ -74,3 +75,14 @@ module Environment =
     [<ExcludeFromCodeCoverage>]
     let isRunningGithub =
         System.Environment.GetEnvironmentVariable("GITHUB_ACTIONS") <> null
+
+module Exception =
+
+    let catchDefault (defaultValue: 'b) (func: unit -> Task<'b>) =
+        task {
+            try
+                let! r = func ()
+                return r
+            with ex ->
+                return defaultValue
+        }

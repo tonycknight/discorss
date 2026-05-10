@@ -20,6 +20,7 @@ module Console =
     let yellow = style "yellow"
     let orange = style "#f57a51"
     let blue = style "#6495ed"
+    let red = style "red"
     let error = style "red"
     let lightgrey = style "#A0A0A0"
 
