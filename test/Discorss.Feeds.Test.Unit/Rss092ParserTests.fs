@@ -43,7 +43,7 @@ module Rss092ParserTests =
             feed.description
             |> should
                 equal
-                "A high-fidelity Grateful Dead song every day. This is where we're experimenting with enclosures on RSS news items that download when you're not using your computer. If it works (it will) it will be the end of the Click-And-Wait multimedia experience on the Internet. "
+                "A high-fidelity Grateful Dead song every day. This is where we're experimenting with enclosures on RSS news items that download when you're not using your computer. If it works (it will) it will be the end of the Click-And-Wait multimedia experience on the Internet."
 
             feed.entries |> should haveLength 17
 
