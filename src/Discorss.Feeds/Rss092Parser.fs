@@ -9,8 +9,8 @@ module Rss092Parser =
     let parseChannel (xml: XDocument) =
         match xml |> Xml.docElement "channel" with
         | Some channel ->
-            let title = channel |> Xml.elementValueDefault "title"
-            let description = channel |> Xml.elementValueDefault "description"
+            let title = channel |> Xml.elementValueDefault "title" |> Html.stripHtml
+            let description = channel |> Xml.elementValueDefault "description" |> Html.stripHtml
             (title, description)
         | _ -> ("", "")
 

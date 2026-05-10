@@ -19,10 +19,10 @@ module Rss20Parser =
             { FeedEntry.id = e |> Xml.elementValueDefault "link"
               publication = DateTime.UtcNow
               uri = e |> Xml.elementValueDefault "link"
-              title = e |> Xml.elementValueDefault "title" |> Html.stripHtml
-              description = e |> Xml.elementValueDefault "description" |> Html.stripHtml
+              title = e |> Xml.elementValueDefault "title"
+              description = e |> Xml.elementValueDefault "description"
               author = e |> Xml.elementValueDefault "creator"
-              content = e |> Xml.elementValueDefault "encoded" |> Html.stripHtml
+              content = e |> Xml.elementValueDefault "encoded"
               categories = e |> Xml.elementValues "category" |> Array.ofSeq }
 
         xml |> Xml.docElements "item" |> Seq.map parse |> List.ofSeq
@@ -39,8 +39,8 @@ module Rss20Parser =
         let result =
             { Feed.uri = url
               feedType = FeedType.Rss20
-              title = title |> Html.stripHtml
-              description = description |> Html.stripHtml
+              title = title
+              description = description
               updated = DateTime.UtcNow
               entries = parseEntries xml }
 
