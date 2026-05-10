@@ -6,8 +6,7 @@ open Discorss
 type IActor =
     abstract member Post: ActorMessage -> unit
     abstract member ReplyAsync: ActorMessage -> Async<ActorMessage>
-    abstract member GetStats: unit -> Task<ActorStats>
-
+    
 module Actor =
     open System
 

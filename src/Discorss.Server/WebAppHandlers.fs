@@ -3,7 +3,6 @@
 open System
 open System.Threading.Tasks
 open Discorss
-open Discorss.Ingestion
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
@@ -14,23 +13,17 @@ module WebAppHandlers =
 
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
-                let actorTasks =
-                    [| sp.GetRequiredService<Ingestion.QueueMonitorActor>() :> IActor
-                       sp.GetRequiredService<Ingestion.IngestionActor>() :> IActor
-                       sp.GetRequiredService<Ingestion.FeedIngestionActor>() :> IActor
-                       sp.GetRequiredService<Ingestion.DocumentIngestionActor>() :> IActor |]
-                    |> Array.map _.GetStats() // TODO: move actors to use IStatsSource
-
-                let repoTasks =
-                    [| sp.GetRequiredService<Documents.IDocumentRepository>() :?> IStatsSource |]
+                let statsTasks =
+                    [| sp.GetRequiredService<Documents.IDocumentRepository>() :?> IStatsSource
+                       sp.GetRequiredService<Ingestion.QueueMonitorActor>() :> IStatsSource
+                       sp.GetRequiredService<Ingestion.IngestionActor>() :> IStatsSource
+                       sp.GetRequiredService<Ingestion.FeedIngestionActor>() :> IStatsSource
+                       sp.GetRequiredService<Ingestion.DocumentIngestionActor>() :> IStatsSource |]
                     |> Array.filter (fun x -> Object.ReferenceEquals(x, null) |> not)
                     |> Array.map _.GetStatsAsync()
 
-                let! actorStats = Task.WhenAll actorTasks
-                let! repoStats = Task.WhenAll repoTasks
-
-                let stats = actorStats |> Array.append repoStats
-
+                let! stats = Task.WhenAll statsTasks
+                                
                 let results = stats |> Array.map Models.toStats |> Array.sortBy _.name
 
                 return! Successful.OK results next ctx

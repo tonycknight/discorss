@@ -66,15 +66,16 @@ type IngestionActor
     member this.QueueNames =
         [ Discorss.Queues.QueueNames.feedEntries; Discorss.Queues.QueueNames.documents ]
 
-    interface IActor with
-
-        member this.GetStats() =
+    interface IStatsSource with
+        member this.GetStatsAsync() = 
             task {
                 let stats = actor |> Actor.getStats (self.GetType().Name)
                 let! queueStats = queueStats ()
 
                 return { stats with childStats = queueStats }
             }
+
+    interface IActor with
 
         member this.Post(msg: ActorMessage) = actor.Post msg
 

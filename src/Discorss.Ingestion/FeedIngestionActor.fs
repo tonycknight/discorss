@@ -92,10 +92,11 @@ type FeedIngestionActor
     let actor =
         MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
 
+    interface IStatsSource with
+        member this.GetStatsAsync() = 
+            actor |> Actor.getStats (self.GetType().Name) |> Task.ofResult
+
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg
-
-        member this.GetStats() =
-            actor |> Actor.getStats (self.GetType().Name) |> Task.ofResult
 
         member this.ReplyAsync(msg: ActorMessage) = actor.PostAndAsyncReply(fun rc -> msg)
