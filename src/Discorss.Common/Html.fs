@@ -9,14 +9,8 @@ module Html =
             doc.DocumentNode.InnerText |> Some
         with ex ->
             None
-    
-    let stripHtml (value: string) =
-        let value =
-            value 
-            |> Option.ofNull
-            |> Option.defaultValue ""
 
-        value
-        |> innerHtml
-        |> Option.defaultValue value
-        |> Strings.trim
+    let stripHtml (value: string) =
+        let value = value |> Option.ofNull |> Option.defaultValue ""
+
+        value |> innerHtml |> Option.defaultValue value |> Strings.trim

@@ -8,8 +8,8 @@ module RdfParser =
     let parseChannel (xml: XDocument) =
         match xml |> Xml.docElement "channel" with
         | Some channel ->
-            let title = channel |> Xml.elementValueDefault "title" |> Html.stripHtml
-            let description = channel |> Xml.elementValueDefault "description" |> Html.stripHtml
+            let title = channel |> Xml.elementValueDefault "title"
+            let description = channel |> Xml.elementValueDefault "description"
             (title, description)
         | _ -> ("", "")
 
@@ -34,17 +34,15 @@ module RdfParser =
     let parse url (xml: XDocument) =
 
         match parseChannel xml with
-        | ("", "") -> None
+        | ("", "") -> Choice2Of2 "Empty feed title and description"
         | (title, description) ->
-            let result =
-                { Feed.uri = url
-                  feedType = FeedType.Rss20
-                  title = title
-                  description = description
-                  updated = DateTime.UtcNow
-                  entries = parseEntries xml }
-
-            result |> Some
+            { Feed.uri = url
+              feedType = FeedType.Rss20
+              title = title
+              description = description
+              updated = DateTime.UtcNow
+              entries = parseEntries xml }
+            |> Choice1Of2
 
     let (|IsRdf|_|) (xml: XDocument) =
         match xml |> isMatch with

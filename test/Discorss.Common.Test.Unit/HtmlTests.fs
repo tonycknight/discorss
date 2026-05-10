@@ -18,9 +18,7 @@ module HtmlTests =
     [<Xunit.InlineData("aaa>", "aaa>")>]
     [<Xunit.InlineData("<<>", "<<>")>]
     let ``stripHtml returns inner text`` html expected =
-        html
-        |> Discorss.Html.stripHtml
-        |> should equal expected
+        html |> Discorss.Html.stripHtml |> should equal expected
 
     [<Xunit.Theory>]
     [<Xunit.InlineData(null, "")>]

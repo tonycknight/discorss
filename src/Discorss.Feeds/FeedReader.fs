@@ -13,15 +13,18 @@ module FeedReader =
             FeedReadResult.Error ex.Message
 
     let private clean (feed: Feed) =
-        let clean (entry: FeedEntry) =
-            { entry with 
+        let cleanEntry (entry: FeedEntry) =
+            { entry with
                 title = Html.stripHtml entry.title
                 author = Html.stripHtml entry.author
                 description = Html.stripHtml entry.description
                 content = Html.stripHtml entry.content
                 categories = entry.categories |> Array.map Html.stripHtml }
 
-        { feed with entries = feed.entries |> List.map clean }
+        { feed with
+            title = feed.title |> Html.stripHtml
+            description = feed.description |> Html.stripHtml
+            entries = feed.entries |> List.map cleanEntry }
 
     let private parser (xml: XDocument) =
         match xml with
@@ -31,17 +34,16 @@ module FeedReader =
         | RdfParser.IsRdf x -> RdfParser.parse |> Choice1Of2
         | _ -> Choice2Of2 "Unrecognised feed type"
 
-    let private parseXmlToFeed url (xml: XDocument) =
+    let private parseXmlToFeed (url: string) (xml: XDocument) =
         match parser xml with
-        | Choice1Of2 parse ->
-            (parse url xml)
-            |> Option.map (clean >> FeedReadResult.Feed)
-            |> Option.defaultValue (FeedReadResult.Error "Error in parsing")
         | Choice2Of2 e -> FeedReadResult.Error e
+        | Choice1Of2 parse ->
+            match parse url xml with
+            | Choice1Of2 feed -> feed |> clean |> FeedReadResult.Feed
+            | Choice2Of2 e -> FeedReadResult.Error e
 
     let parse url body =
-        body
-        |> parseBodyToXml
+        parseBodyToXml body
         |> (function
         | FeedReadResult.Xml xml -> parseXmlToFeed url xml
         | x -> x)

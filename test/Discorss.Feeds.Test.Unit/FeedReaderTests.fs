@@ -42,6 +42,12 @@ module FeedReaderTests =
 
         feed |> should be (ofCase <@ FeedReadResult.Feed @>)
 
+    [<Xunit.Theory>]
+    [<Xunit.InlineData("RdfFeed.xml")>]
+    let ``parse Rdf`` (name) =
+        let feed = name |> TestHelpers.sampleFeedAsString |> FeedReader.parse "http://"
+
+        feed |> should be (ofCase <@ FeedReadResult.Feed @>)
 
     [<Xunit.Theory>]
     [<Xunit.InlineData("")>]
