@@ -53,20 +53,19 @@ module DiscorssApi =
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.Feed> body)
         }
 
-    let addFeeds host feedUri =
+    let addFeeds host (feed: ApiModels.FeedInfo) =
         task {
 
-            let uri = Http.route host $"api/v1/feeds/{Http.encode feedUri}/"
+            let uri = Http.route host "api/v1/feeds/"
 
-            let body =
-                { FeedInfo.uri = feedUri
-                  title = ""
-                  description = ""
-                  updated = DateTime.UtcNow
-                  lastFetched = DateTime.UtcNow }
-                |> Newtonsoft.Json.JsonConvert.SerializeObject
+            let body = feed |> Newtonsoft.Json.JsonConvert.SerializeObject
 
             let req = new HttpRequestMessage(HttpMethod.Put, uri) |> Http.applyJsonContent body
 
-            return! send req
+            let! resp = send req
+
+            return
+                resp
+                |> onResponse (fun (_, body, _, _) ->
+                    Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.FeedInfo> body)
         }

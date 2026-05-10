@@ -1,6 +1,8 @@
 namespace Discorss
 
+open System
 open System.ComponentModel
+open Discorss.ApiModels
 open Spectre.Console
 open Spectre.Console.Cli
 
@@ -106,6 +108,17 @@ type AddFeedCommand(nuget: Tk.Nuget.INugetClient) =
         task {
             if not settings.NoBanner then
                 Commands.renderBanner nuget
+
+            let feed =
+                { FeedInfo.uri = settings.FeedUri
+                  title = ""
+                  description = ""
+                  updated = DateTime.UtcNow
+                  lastFetched = DateTime.UtcNow }
+
+            let! feed = DiscorssApi.addFeeds settings.ApiHost feed
+
+            [ feed ] |> FeedsConsole.feedsTable |> AnsiConsole.Console.Write
 
             return 0
         }
