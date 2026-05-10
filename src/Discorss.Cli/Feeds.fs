@@ -18,12 +18,9 @@ type AddFeedCommandSettings() =
     member val FeedUri = "" with get, set
         
     override this.Validate (): ValidationResult = 
-        if Strings.isEmptyWhitespace this.FeedUri then
-            ValidationResult.Error "The Feed URI is missing."
-        else if Strings.isUri this.FeedUri |> not then
-            ValidationResult.Error "Invalid Feed URI."        
-        else            
-            base.Validate()
+        if Strings.isEmptyWhitespace this.FeedUri then ValidationResult.Error "The Feed URI is missing."
+        else if Strings.isUri this.FeedUri |> not then ValidationResult.Error "The Feed URI is invalid."
+        else base.Validate()
 
 type ListFeedsCommand() =
     inherit AsyncCommand<ListFeedsCommandSettings>()
