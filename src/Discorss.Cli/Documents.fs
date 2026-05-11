@@ -10,6 +10,24 @@ type DocumentsCommandSettings() =
 module DocumentsConsole =
     let private render value = value |> Console.markup |> Console.renderable
 
+    let documentsLayout () =
+        let titlePanel = Layout("title").Size(1)
+        let uriPanel = Layout("uri").Size(1)
+        let pubPanel = Layout("pub").Size(1)
+        let contentPanel = Layout("content").MinimumSize(1)    
+        let layoutRows = [| titlePanel; uriPanel; pubPanel; contentPanel |]    
+        Layout().SplitRows(layoutRows)
+        
+    let screenLayout () =
+        let instructions = 
+            Panel("Press Q to quit, any key to continue" |> Console.yellow |> render)
+                .Border(BoxBorder.Rounded)        
+                .BorderColor(Color.Lime)
+        let instructions = Layout(instructions).Size(4)
+        
+        Layout().SplitRows( [| documentsLayout (); instructions |])
+        
+
     let document (document: ApiModels.Document) =
         let cats = document.categories |> Strings.join ", "
 
@@ -33,14 +51,6 @@ module DocumentsConsole =
         |> Console.markup
         |> Console.renderable
 
-    let documentsLayout () =
-        let titlePanel = Layout("title").Size(1)
-        let uriPanel = Layout("uri").Size(1)
-        let pubPanel = Layout("pub").Size(1)
-        let contentPanel = Layout("content").MinimumSize(1)    
-        let layoutRows = [| titlePanel; uriPanel; pubPanel; contentPanel |]    
-        Layout().SplitRows(layoutRows)
-        
     let updateDocumentsLayout (layout: Layout) (document: Document option) =
         
         let title (doc: Document option) =
@@ -99,12 +109,11 @@ type GetNextDocumentCommand(nuget: Tk.Nuget.INugetClient) =
 type CycleDocumentsCommand() =    
     inherit AsyncCommand<DocumentsCommandSettings>()
     
-    let mainLayout = DocumentsConsole.documentsLayout ()
+    let mainLayout = DocumentsConsole.screenLayout ()
                 
     override this.ExecuteAsync(context, settings, cancellationToken) =
         task {
-            let render value = value |> Console.markup |> Console.renderable
-            
+                        
             do! AnsiConsole.Live(mainLayout)
                     .AutoClear(true)
                     .StartAsync(fun ctx -> 
@@ -115,8 +124,7 @@ type CycleDocumentsCommand() =
                                 let! r = DiscorssApi.nextDocument settings.ApiHost
                                 
                                 r |> DocumentsConsole.updateDocumentsLayout mainLayout |> ignore
-
-                                // TODO: key instructions at the bottom?
+                                                                
                                 ctx.UpdateTarget(mainLayout)
 
                                 let key = System.Console.ReadKey(true)
