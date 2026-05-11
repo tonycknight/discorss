@@ -20,7 +20,7 @@ module DocumentsConsole =
         
     let screenLayout () =
         let instructions = 
-            Panel("Press Q to quit, any key to continue" |> Console.yellow |> render)
+            Panel("Press Q to quit, O to open page, any key to continue to next" |> Console.yellow |> render)
                 .Border(BoxBorder.Rounded)        
                 .BorderColor(Color.Lime)
         let instructions = Layout(instructions).Size(4)
@@ -127,8 +127,17 @@ type CycleDocumentsCommand() =
                                                                 
                                 ctx.UpdateTarget(mainLayout)
 
-                                let key = System.Console.ReadKey(true)
-                                quit <- (key.Key = System.ConsoleKey.Q)
+                                let mutable nextDoc = false
+                                while not nextDoc do
+                                    match System.Console.ReadKey(true).Key with
+                                    | System.ConsoleKey.Q -> 
+                                        quit <- true
+                                        nextDoc <- true
+                                    | System.ConsoleKey.O -> 
+                                        r |> Option.map (_.uri >> Process.openUri) |> ignore                                                                        
+                                    | _ -> nextDoc <- true
+                                           
+
                             
                         })
 
