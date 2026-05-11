@@ -50,3 +50,65 @@ type GetNextDocumentCommand(nuget: Tk.Nuget.INugetClient) =
         }
 
     interface ICommandLimiter<CommandSettings>
+
+type CycleDocumentsCommand() =    
+    inherit AsyncCommand<DocumentsCommandSettings>()
+
+    let titlePanel = Layout("title").Size(1)
+    let uriPanel = Layout("uri").Size(1)
+    let pubPanel = Layout("pub").Size(1)
+    let contentPanel = Layout("content").MinimumSize(1)    
+    let layoutRows = [| titlePanel; uriPanel; pubPanel; contentPanel |]    
+    let mainLayout = Layout().SplitRows(layoutRows)
+                
+    override this.ExecuteAsync(context, settings, cancellationToken) =
+        task {
+            let render value = value |> Console.markup |> Console.renderable
+            
+            do! AnsiConsole.Live(mainLayout)
+                    .AutoClear(true)
+                    .StartAsync(fun ctx -> 
+                        task {
+                            let mutable quit = false
+                            while not quit do
+                                // TODO: spinner
+                                let! r = DiscorssApi.nextDocument settings.ApiHost
+
+                                match r with
+                                | None -> 
+                                    titlePanel.Update("No document found." |> Console.red |> render) |> ignore
+                                    uriPanel.Update("" |> render) |> ignore
+                                    pubPanel.Update("" |> render) |> ignore
+                                    contentPanel.Update("" |> render) |> ignore                                    
+                                | Some doc ->
+                                    titlePanel.Update(doc.title |> Strings.escapeMarkup |> Console.cyan |> render) |> ignore
+                                    uriPanel.Update(doc.uri |> Strings.escapeMarkup |> Console.yellow |> render) |> ignore
+                                    
+                                    let pub = 
+                                        seq { 
+                                            doc.publication.ToString()
+                                            doc.author |> Strings.escapeMarkup
+                                        } |> Seq.filter (fun x -> x <> "") |> Strings.join " - "
+                                        |> Console.grey |> Console.italic |> render
+                                    pubPanel.Update(pub) |> ignore                                    
+                                                                        
+                                    let content = 
+                                        seq {
+                                            (if doc.description.Length > 0 then doc.description else "") |> Strings.escapeMarkup |> Console.lightcyan
+                                            (if doc.content.Length > 0 then doc.content else "") |> Strings.escapeMarkup
+                                        } |> Seq.filter (fun x -> x.Length > 0) |> Strings.join System.Environment.NewLine
+
+                                    contentPanel.Update(content |> render) |> ignore
+
+                                // TODO: key instructions at the bottom?
+                                ctx.UpdateTarget(mainLayout)
+
+                                let key = System.Console.ReadKey(true)
+                                quit <- (key.Key = System.ConsoleKey.Q)
+                            
+                        })
+
+            return ReturnCodes.ok
+        }
+
+    interface ICommandLimiter<CommandSettings>
