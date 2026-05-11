@@ -8,6 +8,8 @@ type DocumentsCommandSettings() =
     inherit BaseCommandSettings()
 
 module DocumentsConsole =
+    let private render value = value |> Console.markup |> Console.renderable
+
     let document (document: ApiModels.Document) =
         let cats = document.categories |> Strings.join ", "
 
@@ -31,6 +33,49 @@ module DocumentsConsole =
         |> Console.markup
         |> Console.renderable
 
+    let documentsLayout () =
+        let titlePanel = Layout("title").Size(1)
+        let uriPanel = Layout("uri").Size(1)
+        let pubPanel = Layout("pub").Size(1)
+        let contentPanel = Layout("content").MinimumSize(1)    
+        let layoutRows = [| titlePanel; uriPanel; pubPanel; contentPanel |]    
+        Layout().SplitRows(layoutRows)
+        
+    let updateDocumentsLayout (layout: Layout) (document: Document option) =
+        
+        let title (doc: Document option) =
+            doc |> Option.map (fun d -> d.title |> Strings.escapeMarkup |> Console.cyan) |> Option.defaultValue (Console.red "No document found.") |> render
+                    
+        let pub (doc: Document option) =
+            match doc with
+            | None -> ""
+            | Some doc -> 
+                seq { 
+                    doc.publication.ToString()
+                    doc.author |> Strings.escapeMarkup
+                } |> Seq.filter (fun x -> x <> "") |> Strings.join " - "
+                |> Console.grey |> Console.italic
+            |> render
+            
+        let uri (doc: Document option) =
+            doc |> Option.map (fun d -> d.uri |> Strings.escapeMarkup |> Console.yellow) |> Option.defaultValue "" |> render
+
+        let content (doc: Document option) =
+            match doc with
+            | None -> ""
+            | Some doc -> 
+                seq {
+                    (if doc.description.Length > 0 then doc.description else "") |> Strings.escapeMarkup |> Console.lightcyan
+                    (if doc.content.Length > 0 then doc.content else "") |> Strings.escapeMarkup
+                } |> Seq.filter (fun x -> x.Length > 0) |> Strings.join System.Environment.NewLine
+            |> render
+        
+        layout.["title"].Update(title document) |> ignore
+        layout.["uri"].Update(uri document) |> ignore
+        layout.["pub"].Update(pub document) |> ignore
+        layout.["content"].Update(content document) |> ignore                    
+        layout
+
 
 type GetNextDocumentCommand(nuget: Tk.Nuget.INugetClient) =
     inherit AsyncCommand<DocumentsCommandSettings>()
@@ -53,13 +98,8 @@ type GetNextDocumentCommand(nuget: Tk.Nuget.INugetClient) =
 
 type CycleDocumentsCommand() =    
     inherit AsyncCommand<DocumentsCommandSettings>()
-
-    let titlePanel = Layout("title").Size(1)
-    let uriPanel = Layout("uri").Size(1)
-    let pubPanel = Layout("pub").Size(1)
-    let contentPanel = Layout("content").MinimumSize(1)    
-    let layoutRows = [| titlePanel; uriPanel; pubPanel; contentPanel |]    
-    let mainLayout = Layout().SplitRows(layoutRows)
+    
+    let mainLayout = DocumentsConsole.documentsLayout ()
                 
     override this.ExecuteAsync(context, settings, cancellationToken) =
         task {
@@ -73,32 +113,8 @@ type CycleDocumentsCommand() =
                             while not quit do
                                 // TODO: spinner
                                 let! r = DiscorssApi.nextDocument settings.ApiHost
-
-                                match r with
-                                | None -> 
-                                    titlePanel.Update("No document found." |> Console.red |> render) |> ignore
-                                    uriPanel.Update("" |> render) |> ignore
-                                    pubPanel.Update("" |> render) |> ignore
-                                    contentPanel.Update("" |> render) |> ignore                                    
-                                | Some doc ->
-                                    titlePanel.Update(doc.title |> Strings.escapeMarkup |> Console.cyan |> render) |> ignore
-                                    uriPanel.Update(doc.uri |> Strings.escapeMarkup |> Console.yellow |> render) |> ignore
-                                    
-                                    let pub = 
-                                        seq { 
-                                            doc.publication.ToString()
-                                            doc.author |> Strings.escapeMarkup
-                                        } |> Seq.filter (fun x -> x <> "") |> Strings.join " - "
-                                        |> Console.grey |> Console.italic |> render
-                                    pubPanel.Update(pub) |> ignore                                    
-                                                                        
-                                    let content = 
-                                        seq {
-                                            (if doc.description.Length > 0 then doc.description else "") |> Strings.escapeMarkup |> Console.lightcyan
-                                            (if doc.content.Length > 0 then doc.content else "") |> Strings.escapeMarkup
-                                        } |> Seq.filter (fun x -> x.Length > 0) |> Strings.join System.Environment.NewLine
-
-                                    contentPanel.Update(content |> render) |> ignore
+                                
+                                r |> DocumentsConsole.updateDocumentsLayout mainLayout |> ignore
 
                                 // TODO: key instructions at the bottom?
                                 ctx.UpdateTarget(mainLayout)
