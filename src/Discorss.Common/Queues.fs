@@ -12,6 +12,9 @@ module QueueNames =
     let documents = "discorss_documents"
 
     [<Literal>]
+    let documentIndexing = "discorss_document_indexing"
+
+    [<Literal>]
     let documentNotifications = "discorss_document_notifications"
 
 module Messages =

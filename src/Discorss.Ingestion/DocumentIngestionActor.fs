@@ -79,8 +79,10 @@ type DocumentIngestionActor
     let forwardDocument (document: Documents.Document) =
         task {
             let message = ActorMessage.Document document |> Queues.Messages.toQueueMessage
-
             do! broker.PostAsync(Queues.QueueNames.documents, message)
+
+            let message = document |> ActorMessage.IndexDocument |> Queues.Messages.toQueueMessage
+            do! broker.PostAsync(Queues.QueueNames.documentIndexing, message)
         }
 
     let rec loop (inbox: MailboxProcessor<ActorMessage>) =
