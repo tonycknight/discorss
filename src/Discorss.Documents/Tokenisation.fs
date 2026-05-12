@@ -1,4 +1,4 @@
-﻿namespace Discorss.Indexing
+﻿namespace Discorss.Documents
 
 open System
 open System.Text

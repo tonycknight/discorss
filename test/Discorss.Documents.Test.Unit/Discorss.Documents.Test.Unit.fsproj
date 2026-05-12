@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="LexiconsTests.fs" />
     <Compile Include="BsonMapping.fs" />
+    <Compile Include="TokenisationTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

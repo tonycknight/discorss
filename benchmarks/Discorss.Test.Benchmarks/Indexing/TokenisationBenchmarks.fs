@@ -3,7 +3,7 @@
 open System
 open BenchmarkDotNet.Attributes
 open Discorss
-open Discorss.Indexing
+open Discorss.Documents
 
 [<MemoryDiagnoserAttribute>]
 [<AllStatisticsColumnAttribute>]

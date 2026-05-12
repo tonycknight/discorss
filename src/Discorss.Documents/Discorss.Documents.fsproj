@@ -11,6 +11,7 @@
     <Compile Include="DocumentNotificationWriter.fs" />
     <Compile Include="DocumentNotificationReader.fs" />
     <Compile Include="Lexicons.fs" />
+    <Compile Include="Tokenisation.fs" />
     <Compile Include="Bootstrap.fs" />
   </ItemGroup>
 
