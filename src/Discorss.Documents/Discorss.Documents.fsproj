@@ -13,6 +13,7 @@
     <Compile Include="Lexicons.fs" />
     <Compile Include="Tokenisation.fs" />
     <Compile Include="DocumentAnalyser.fs" />
+    <Compile Include="StatisticsRepositories.fs" />
     <Compile Include="Bootstrap.fs" />
   </ItemGroup>
 

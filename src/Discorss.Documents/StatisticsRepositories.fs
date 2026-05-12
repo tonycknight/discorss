@@ -1,8 +1,7 @@
-﻿namespace Discorss.Indexing
+﻿namespace Discorss.Documents
 
 open System
 open System.Threading.Tasks
-open Discorss.Documents
 
 type IWordStatisticsRepository =
     abstract member AddAsync: DocumentStatistics -> Task
@@ -26,7 +25,7 @@ type IDocumentStatisticsRepository =
 
 type MemoryDocumentStatisticsRepository() =
 
-    interface IWordStatisticsRepository with
+    interface IDocumentStatisticsRepository with
         member this.AddAsync(stats: DocumentStatistics) =
             task {
                 // TODO:
