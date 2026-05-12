@@ -5,4 +5,4 @@ open Microsoft.Extensions.DependencyInjection
 module Bootstrap =
     let services (services: IServiceCollection) =
         services
-            .AddSingleton<Discorss.Indexing.IDocumentStatsWriter, Discorss.Indexing.StubDocumentStatsWriter>()
+            //.AddSingleton<Discorss.Indexing.IDocumentStatsWriter, Discorss.Indexing.StubDocumentStatsWriter>()

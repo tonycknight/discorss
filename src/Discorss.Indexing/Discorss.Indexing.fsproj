@@ -8,7 +8,6 @@
     <Compile Include="Actors.fs" />
     <Compile Include="DocumentStatsActor.fs" />
     <Compile Include="WordStatsActor.fs" />
-    <Compile Include="Documents.fs" />
     <Compile Include="Bootstrap.fs" />
   </ItemGroup>
   <ItemGroup>

@@ -73,7 +73,7 @@ module WebAppHandlers =
 
                     let stats = doc |> sp.GetRequiredService<IDocumentAnalyser>().Statistics
 
-                    do! sp.GetRequiredService<Indexing.IDocumentStatsWriter>().Set(stats)
+                    do! sp.GetRequiredService<Documents.IDocumentStatisticsRepository>().AddAsync(stats)
 
                     return! Successful.NO_CONTENT next ctx
             }
