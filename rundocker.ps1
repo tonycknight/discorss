@@ -9,7 +9,10 @@ param (
     [string]$DbName = "discorss",
 
     [Parameter(Mandatory=$false)]
-    [string]$FeedIngestionFrequency = "00:00:15"
+    [string]$FeedIngestionFrequency = "00:00:15",
+
+    [Parameter(Mandatory=$false)]
+    [string]$LogLevel = "Trace"
 )
 
-docker run -it --rm -p 8081:8081 discorss --Discorss:microbrokerServiceUrl=$Microbroker --Discorss:mongoConnection=$ConnectionString --Discorss:mongoDbName=$DbName --Discorss:feedIngestionFrequency=$FeedIngestionFrequency
+docker run -it --rm -p 8081:8081 discorss --Discorss:microbrokerServiceUrl=$Microbroker --Discorss:mongoConnection=$ConnectionString --Discorss:mongoDbName=$DbName --Discorss:feedIngestionFrequency=$FeedIngestionFrequency  --Logging:LogLevel:Discorss=$LogLevel --Logging:Console:LogLevel:Discorss=$LogLevel
