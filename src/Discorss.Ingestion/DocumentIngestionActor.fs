@@ -58,6 +58,10 @@ type DocumentIngestionActor
             | Some x -> return x
         }
 
+    let logDocumnetReceipt (document: Documents.Document) =
+        log.LogInformation $"Starting ingestion for document {document.uri}..."
+        document
+
     let writeDocument (document: Documents.Document) =
         task {
             try
@@ -88,7 +92,7 @@ type DocumentIngestionActor
                 let! shouldWrite = shouldWriteDocument d
 
                 if shouldWrite then
-                    match! writeDocument d with
+                    match! d |> logDocumnetReceipt |> writeDocument with
                     | Some d -> do! d |> setCachedDocHash |> forwardDocument
                     | _ -> ignore 0
                 else
