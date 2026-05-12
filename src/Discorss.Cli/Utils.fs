@@ -95,9 +95,9 @@ module Process =
             let ps = new ProcessStartInfo(uri)
             ps.LoadUserProfile <- true
             ps.UseShellExecute <- true
-        
+
             use x = Process.Start ps
-            
+
             true
-        with
-        | ex -> false
+        with ex ->
+            false

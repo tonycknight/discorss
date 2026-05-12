@@ -45,9 +45,8 @@ module Program =
                         .WithDescription("Get the next document in your queue.")
                     |> ignore
 
-                    c.AddCommand<CycleDocumentsCommand>("cycle")
-                     .WithDescription("Cycle the documents in your queue.")
-                     |> ignore
+                    c.AddCommand<CycleDocumentsCommand>("cycle").WithDescription("Cycle the documents in your queue.")
+                    |> ignore
             )
             |> ignore
 
