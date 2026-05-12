@@ -102,7 +102,7 @@ type DocumentIngestionActor
                     log.LogTrace $"Skipping document {d.uri} as already ingested"
             | _ -> ignore 0
 
-            return! loop inbox
+            return! loop inbox // TODO: stack overflow
         }
 
     let actor =
