@@ -14,8 +14,9 @@ module DocumentsConsole =
         let titlePanel = Layout("title").Size(1)
         let uriPanel = Layout("uri").Size(1)
         let pubPanel = Layout("pub").Size(1)
+        let categoriesPanel = Layout("categories").Size(1)
         let contentPanel = Layout("content").MinimumSize(1)    
-        let layoutRows = [| titlePanel; uriPanel; pubPanel; contentPanel |]    
+        let layoutRows = [| titlePanel; uriPanel; pubPanel; categoriesPanel; contentPanel |]    
         Layout().SplitRows(layoutRows)
         
     let screenLayout () =
@@ -64,11 +65,13 @@ module DocumentsConsole =
             match doc with
             | None -> ""
             | Some doc -> 
-                seq { 
-                    doc.publication.ToString()
-                    doc.author |> Strings.escapeMarkup
-                } |> Seq.filter (fun x -> x <> "") |> Strings.join " - "
-                |> Console.grey |> Console.italic
+                let cats = 
+                    seq { 
+                        doc.publication.ToString() |> Console.lightgrey
+                        doc.author |> Strings.escapeMarkup |> Console.lightgrey
+                    } |> Seq.filter (fun x -> x <> "") |> Strings.join " by "
+                    |> Console.grey |> Console.italic
+                (Console.grey "Published: ") + cats
             |> render
             
         let uri (doc: Document option) =
@@ -84,9 +87,20 @@ module DocumentsConsole =
                 } |> Seq.filter (fun x -> x.Length > 0) |> Strings.join System.Environment.NewLine
             |> render
         
+        let categories (doc: Document option) =
+            let categories = 
+                doc 
+                |> Option.map _.categories 
+                |> Option.defaultValue [||]
+                |> Seq.map (fun s -> s |> Console.lightgrey |> Console.italic) |> Strings.join ", "
+            if categories.Length = 0 then ""
+            else (Console.grey "Categories: ") + categories
+            |> render
+
         layout.["title"].Update(title document) |> ignore
         layout.["uri"].Update(uri document) |> ignore
         layout.["pub"].Update(pub document) |> ignore
+        layout.["categories"].Update(categories document) |> ignore
         layout.["content"].Update(content document) |> ignore                    
         
     let updateStatus (layout: Layout) (message: string) =
