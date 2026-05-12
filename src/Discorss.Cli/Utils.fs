@@ -86,3 +86,18 @@ module Exception =
             with ex ->
                 return defaultValue
         }
+
+module Process =
+    open System.Diagnostics
+
+    let openUri (uri: string) =
+        try
+            let ps = new ProcessStartInfo(uri)
+            ps.LoadUserProfile <- true
+            ps.UseShellExecute <- true
+
+            use x = Process.Start ps
+
+            true
+        with ex ->
+            false

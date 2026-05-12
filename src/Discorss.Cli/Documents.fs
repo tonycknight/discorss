@@ -8,6 +8,37 @@ type DocumentsCommandSettings() =
     inherit BaseCommandSettings()
 
 module DocumentsConsole =
+    let private render value =
+        value |> Console.markup |> Console.renderable
+
+    let documentsLayout () =
+        let titlePanel = Layout("title").Size(1)
+        let uriPanel = Layout("uri").Size(1)
+        let pubPanel = Layout("pub").Size(1)
+        let categoriesPanel = Layout("categories").Size(1)
+        let contentPanel = Layout("content").MinimumSize(1)
+        let layoutRows = [| titlePanel; uriPanel; pubPanel; categoriesPanel; contentPanel |]
+        Layout().SplitRows(layoutRows)
+
+    let screenLayout () =
+        let status =
+            let panel = Panel("").Border(BoxBorder.Square).BorderColor(Color.Red)
+            Layout("status").Update(panel).Size(2)
+
+        let instructions =
+            Panel(
+                "Press Q to quit, O to open page, any key to continue."
+                |> Console.yellow
+                |> render
+            )
+                .Border(BoxBorder.Rounded)
+                .BorderColor(Color.Lime)
+
+        let instructions = Layout(instructions).Size(4)
+
+        Layout().SplitRows([| documentsLayout (); status; instructions |])
+
+
     let document (document: ApiModels.Document) =
         let cats = document.categories |> Strings.join ", "
 
@@ -31,6 +62,74 @@ module DocumentsConsole =
         |> Console.markup
         |> Console.renderable
 
+    let updateDocumentsLayout (layout: Layout) (document: Document option) =
+
+        let title (doc: Document option) =
+            doc
+            |> Option.map (fun d -> d.title |> Strings.escapeMarkup |> Console.cyan)
+            |> Option.defaultValue ""
+            |> render
+
+        let pub (doc: Document option) =
+            match doc with
+            | None -> ""
+            | Some doc ->
+                let cats =
+                    seq {
+                        doc.publication.ToString() |> Console.lightgrey
+                        doc.author |> Strings.escapeMarkup |> Console.lightgrey
+                    }
+                    |> Seq.filter (fun x -> x <> "")
+                    |> Strings.join " by "
+                    |> Console.grey
+                    |> Console.italic
+
+                (Console.grey "Published: ") + cats
+            |> render
+
+        let uri (doc: Document option) =
+            doc
+            |> Option.map (fun d -> d.uri |> Strings.escapeMarkup |> Console.yellow)
+            |> Option.defaultValue ""
+            |> render
+
+        let content (doc: Document option) =
+            match doc with
+            | None -> ""
+            | Some doc ->
+                seq {
+                    (if doc.description.Length > 0 then doc.description else "")
+                    |> Strings.escapeMarkup
+                    |> Console.lightcyan
+
+                    (if doc.content.Length > 0 then doc.content else "") |> Strings.escapeMarkup
+                }
+                |> Seq.filter (fun x -> x.Length > 0)
+                |> Strings.join System.Environment.NewLine
+            |> render
+
+        let categories (doc: Document option) =
+            let categories =
+                doc
+                |> Option.map _.categories
+                |> Option.defaultValue [||]
+                |> Seq.map (fun s -> s |> Console.lightgrey |> Console.italic)
+                |> Strings.join ", "
+
+            if categories.Length = 0 then
+                ""
+            else
+                (Console.grey "Categories: ") + categories
+            |> render
+
+        layout.["title"].Update(title document) |> ignore
+        layout.["uri"].Update(uri document) |> ignore
+        layout.["pub"].Update(pub document) |> ignore
+        layout.["categories"].Update(categories document) |> ignore
+        layout.["content"].Update(content document) |> ignore
+
+    let updateStatus (layout: Layout) (message: string) =
+        layout.["status"].Update(message |> render) |> ignore
 
 type GetNextDocumentCommand(nuget: Tk.Nuget.INugetClient) =
     inherit AsyncCommand<DocumentsCommandSettings>()
@@ -45,6 +144,67 @@ type GetNextDocumentCommand(nuget: Tk.Nuget.INugetClient) =
             match r with
             | None -> AnsiConsole.Console.Write("Not found.")
             | Some doc -> doc |> DocumentsConsole.document |> AnsiConsole.Console.Write
+
+            return ReturnCodes.ok
+        }
+
+    interface ICommandLimiter<CommandSettings>
+
+type CycleDocumentsCommand() =
+    inherit AsyncCommand<DocumentsCommandSettings>()
+
+    let mainLayout = DocumentsConsole.screenLayout ()
+
+    override this.ExecuteAsync(context, settings, cancellationToken) =
+        task {
+
+            do!
+                AnsiConsole
+                    .Live(mainLayout)
+                    .AutoClear(true)
+                    .StartAsync(fun ctx ->
+                        task {
+                            let mutable quit = false
+                            None |> DocumentsConsole.updateDocumentsLayout mainLayout
+
+                            while not quit do
+
+                                try
+                                    "Fetching..."
+                                    |> Console.cyan
+                                    |> Console.italic
+                                    |> DocumentsConsole.updateStatus mainLayout
+
+                                    ctx.UpdateTarget(mainLayout)
+
+                                    let! r = DiscorssApi.nextDocument settings.ApiHost
+
+                                    r |> DocumentsConsole.updateDocumentsLayout mainLayout
+
+                                    r
+                                    |> Option.map (fun _ -> "")
+                                    |> Option.defaultValue (
+                                        ("No article found." |> Console.red)
+                                        + (" Hit Enter to try again." |> Console.cyan)
+                                    )
+                                    |> DocumentsConsole.updateStatus mainLayout
+
+                                    ctx.UpdateTarget(mainLayout)
+
+                                    let mutable nextDoc = false
+
+                                    while not nextDoc do
+                                        match System.Console.ReadKey(true).Key with
+                                        | System.ConsoleKey.Q ->
+                                            quit <- true
+                                            nextDoc <- true
+                                        | System.ConsoleKey.O -> r |> Option.map (_.uri >> Process.openUri) |> ignore
+                                        | _ -> nextDoc <- true
+                                with ex ->
+                                    ignore 0
+
+
+                        })
 
             return ReturnCodes.ok
         }
