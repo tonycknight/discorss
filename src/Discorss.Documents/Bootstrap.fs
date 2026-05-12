@@ -20,4 +20,6 @@ module Bootstrap =
             .AddSingleton<IDocumentNotificationWriter, DocumentNotificationWriter>()
             .AddSingleton<IDocumentNotificationReader, DocumentNotificationReader>()
             .AddSingleton<ILexicon, Lexicon>()
+            .AddSingleton<IDocumentAnalyser, DocumentAnalyser>()
+            
             

@@ -15,7 +15,7 @@ module WebAppHandlers =
                 match! ApiValidation.getRequest<Discorss.ApiModels.ArticleRequest> ctx with
                 | Choice1Of2 error -> return! RequestErrors.BAD_REQUEST error next ctx
                 | Choice2Of2 req ->
-                    let da = sp.GetRequiredService<Indexing.IDocumentAnalyser>()
+                    let da = sp.GetRequiredService<IDocumentAnalyser>()
 
                     let words =
                         { Document.uri = req.uri
@@ -38,7 +38,7 @@ module WebAppHandlers =
                 match! ApiValidation.getRequest<Discorss.ApiModels.ArticleRequest> ctx with
                 | Choice1Of2 error -> return! RequestErrors.BAD_REQUEST error next ctx
                 | Choice2Of2 req ->
-                    let da = sp.GetRequiredService<Indexing.IDocumentAnalyser>()
+                    let da = sp.GetRequiredService<IDocumentAnalyser>()
 
                     let doc =
                         { Document.uri = req.uri
@@ -71,7 +71,7 @@ module WebAppHandlers =
                           author = req.author
                           sha512 = "" }
 
-                    let stats = doc |> sp.GetRequiredService<Indexing.IDocumentAnalyser>().Statistics
+                    let stats = doc |> sp.GetRequiredService<IDocumentAnalyser>().Statistics
 
                     do! sp.GetRequiredService<Indexing.IDocumentStatsWriter>().Set(stats)
 

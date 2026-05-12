@@ -5,7 +5,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DocumentAnalyser.fs" />
     <Compile Include="StatisticsRepositories.fs" />
     <Compile Include="Actors.fs" />
     <Compile Include="DocumentStatsActor.fs" />

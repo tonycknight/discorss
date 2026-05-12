@@ -5,9 +5,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DocumentAnalyserTests.fs" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\src\Discorss.Common\Discorss.Common.fsproj" />
     <ProjectReference Include="..\..\src\Discorss.Indexing\Discorss.Indexing.fsproj" />
   </ItemGroup>

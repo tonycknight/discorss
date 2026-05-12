@@ -9,6 +9,7 @@
     <Compile Include="LexiconsTests.fs" />
     <Compile Include="BsonMapping.fs" />
     <Compile Include="TokenisationTests.fs" />
+    <Compile Include="DocumentAnalyserTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
