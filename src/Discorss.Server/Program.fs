@@ -13,7 +13,7 @@ type Startup() =
 
     let serviceCollection =
         Discorss.Feeds.Bootstrap.services
-        >> Discorss.Indexing.Service.WebApp.services
+        >> Discorss.Indexing.Bootstrap.services
         >> Discorss.Ingestion.Bootstrap.services
         >> Discorss.Documents.Bootstrap.services
 

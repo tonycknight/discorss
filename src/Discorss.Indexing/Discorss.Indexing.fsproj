@@ -14,6 +14,7 @@
     <Compile Include="DocumentStatsActor.fs" />
     <Compile Include="WordStatsActor.fs" />
     <Compile Include="Documents.fs" />
+    <Compile Include="Bootstrap.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
