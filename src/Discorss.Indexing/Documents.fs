@@ -2,7 +2,7 @@
 
 open System.Diagnostics.CodeAnalysis
 open System.Threading.Tasks
-open Discorss
+open Discorss.Documents
 
 type IDocumentStatsWriter =
     abstract member Set: stats: DocumentStatistics -> Task

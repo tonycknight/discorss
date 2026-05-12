@@ -12,6 +12,15 @@ type Document =
       categories: string[]
       sha512: string }
 
+
+type DocumentStatistics =
+    { uri: string
+      wordCount: int
+      wordFrequencies: Map<string, int> }
+
+type WordStatistics = { word: string; wordCounts: int }
+
+
 module BsonMapping =
     open Discorss.MongoBson
     open MongoDB.Bson

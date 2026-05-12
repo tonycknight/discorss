@@ -2,7 +2,7 @@
 
 open System
 open System.Threading.Tasks
-open Discorss
+open Discorss.Documents
 
 type IWordStatisticsRepository =
     abstract member AddAsync: DocumentStatistics -> Task

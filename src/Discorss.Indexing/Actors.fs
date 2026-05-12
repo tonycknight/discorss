@@ -1,5 +1,7 @@
 ﻿namespace Discorss.Indexing
 
+open Discorss.Documents
+
 type StatsActorMessage =
     | Stop
     | Start

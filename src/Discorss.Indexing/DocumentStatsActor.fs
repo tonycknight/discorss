@@ -1,5 +1,7 @@
 ﻿namespace Discorss.Indexing
 
+open Discorss.Documents
+
 type private DocStatsCache = Map<string, DocumentStatistics>
 
 type DocumentStatsActor(parent: IActor) =
