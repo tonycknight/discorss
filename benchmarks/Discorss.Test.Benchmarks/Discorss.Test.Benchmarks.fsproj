@@ -30,8 +30,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Discorss.Common\Discorss.Common.fsproj" />
+    <ProjectReference Include="..\..\src\Discorss.Documents\Discorss.Documents.fsproj" />
     <ProjectReference Include="..\..\src\Discorss.Feeds\Discorss.Feeds.fsproj" />
-    <ProjectReference Include="..\..\src\Discorss.Indexing\Discorss.Indexing.fsproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />        
