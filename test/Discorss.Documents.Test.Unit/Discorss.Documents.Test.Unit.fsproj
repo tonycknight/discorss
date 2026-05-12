@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="LexiconsTests.fs" />
     <Compile Include="BsonMapping.fs" />
   </ItemGroup>
 

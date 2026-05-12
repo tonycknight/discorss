@@ -19,3 +19,5 @@ module Bootstrap =
         services
             .AddSingleton<IDocumentNotificationWriter, DocumentNotificationWriter>()
             .AddSingleton<IDocumentNotificationReader, DocumentNotificationReader>()
+            .AddSingleton<ILexicon, Lexicon>()
+            
