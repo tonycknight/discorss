@@ -11,8 +11,8 @@ type DocumentIndexingActor
     (
         logFactory: ILoggerFactory,
         config: IOptions<AppConfiguration>,
-        docRepo: Documents.IDocumentRepository,
         docAnalyser: Documents.IDocumentAnalyser,
+        statsRepo: Documents.IDocumentStatisticsRepository,
         broker: IMicrobrokerProxy
     ) as self =
 
@@ -23,11 +23,11 @@ type DocumentIndexingActor
             log.LogTrace $"Indexing document {doc.uri}..."
             
             try
-                let words = doc |> docAnalyser.GetWords |> List.ofSeq
                 let stats = doc |> docAnalyser.GetStatistics
-                                
-                // TODO: 
-                ignore 0
+                
+                do! statsRepo.SetAsync stats
+                log.LogTrace($"Statistics written for document {doc.uri}.")
+
             with ex ->
                 log.LogError(ex, $"Error calculating statistics for document {doc.uri}")
                 doc |> ActorMessage.IndexDocument |> Actor.post self

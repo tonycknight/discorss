@@ -15,6 +15,7 @@ module WebAppHandlers =
             task {
                 let statsTasks =
                     [| sp.GetRequiredService<Documents.IDocumentRepository>() :?> IStatsSource
+                       sp.GetRequiredService<Documents.IDocumentStatisticsRepository>() :?> IStatsSource
                        sp.GetRequiredService<Feeds.IFeedRepository>() :?> IStatsSource
                        sp.GetRequiredService<Documents.IDocumentNotificationReader>() :?> IStatsSource
                        sp.GetRequiredService<Ingestion.QueueMonitorActor>() :> IStatsSource
@@ -22,7 +23,7 @@ module WebAppHandlers =
                        sp.GetRequiredService<Ingestion.FeedIngestionActor>() :> IStatsSource
                        sp.GetRequiredService<Ingestion.DocumentIngestionActor>() :> IStatsSource
                        sp.GetRequiredService<Ingestion.DocumentIndexingActor>() :> IStatsSource |]
-                    |> Array.filter (fun x -> Object.ReferenceEquals(x, null) |> not)
+                    |> Array.filter (Option.isNull >> not)
                     |> Array.map _.GetStatsAsync()
 
                 let! stats = Task.WhenAll statsTasks
