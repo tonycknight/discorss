@@ -6,7 +6,7 @@ open System.Threading.Tasks
 type IWordStatisticsRepository =
     abstract member AddAsync: DocumentStatistics -> Task
 
-type MemoryWordStatisticsRepository() =
+type StubWordStatisticsRepository() =
 
     let cache =
         new System.Collections.Concurrent.ConcurrentDictionary<string, WordStatistics>(
@@ -23,7 +23,7 @@ type MemoryWordStatisticsRepository() =
 type IDocumentStatisticsRepository =
     abstract member AddAsync: DocumentStatistics -> Task
 
-type MemoryDocumentStatisticsRepository() =
+type StubDocumentStatisticsRepository() =
 
     interface IDocumentStatisticsRepository with
         member this.AddAsync(stats: DocumentStatistics) =

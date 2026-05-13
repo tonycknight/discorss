@@ -21,7 +21,10 @@ module Bootstrap =
             .AddSingleton<IDocumentNotificationReader, DocumentNotificationReader>()
             .AddSingleton<ILexicon, Lexicon>()
             .AddSingleton<IDocumentAnalyser, DocumentAnalyser>()
-            .AddSingleton<IWordStatisticsRepository, MemoryWordStatisticsRepository>()
-            .AddSingleton<IDocumentStatisticsRepository, MemoryDocumentStatisticsRepository>()
+            .AddSingleton<IWordStatisticsRepository, StubWordStatisticsRepository>()
+            .AddSingleton<IDocumentStatisticsRepository, StubDocumentStatisticsRepository>()
+            // TODO: apply config
+            .AddSingleton<IWordStatisticsRepository, StubWordStatisticsRepository>()
+            .AddSingleton<IDocumentStatisticsRepository, StubDocumentStatisticsRepository>()
             
             
