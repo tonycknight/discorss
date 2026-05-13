@@ -81,7 +81,9 @@ type DocumentIngestionActor
             let message = ActorMessage.Document document |> Queues.Messages.toQueueMessage
             do! broker.PostAsync(Queues.QueueNames.documents, message)
 
-            let message = document |> ActorMessage.IndexDocument |> Queues.Messages.toQueueMessage
+            let message =
+                document |> ActorMessage.IndexDocument |> Queues.Messages.toQueueMessage
+
             do! broker.PostAsync(Queues.QueueNames.documentIndexing, message)
         }
 
@@ -110,8 +112,7 @@ type DocumentIngestionActor
             return! loop inbox
         }
 
-    let actor =
-        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
+    let actor = MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
 
     interface IStatsSource with
         member this.GetStatsAsync() =

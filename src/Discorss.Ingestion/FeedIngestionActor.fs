@@ -94,8 +94,7 @@ type FeedIngestionActor
             return! loop inbox
         }
 
-    let actor =
-        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
+    let actor = MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
 
     interface IStatsSource with
         member this.GetStatsAsync() =

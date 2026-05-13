@@ -21,10 +21,10 @@ type DocumentIndexingActor
     let indexDocument (doc: Documents.Document) =
         task {
             log.LogTrace $"Indexing document {doc.uri}..."
-            
+
             try
                 let stats = doc |> docAnalyser.GetStatistics
-                
+
                 let! _ = statsRepo.SetAsync stats
                 log.LogInformation($"Statistics written for document {doc.uri}.")
 
@@ -36,8 +36,7 @@ type DocumentIndexingActor
     let processMessage (inbox: MailboxProcessor<ActorMessage>) =
         task {
             match! inbox.Receive() with
-            | ActorMessage.IndexDocument doc ->
-                do! indexDocument doc                
+            | ActorMessage.IndexDocument doc -> do! indexDocument doc
             | _ -> ignore 0
         }
 
@@ -47,9 +46,8 @@ type DocumentIndexingActor
 
             return! loop inbox
         }
-            
-    let actor =
-        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
+
+    let actor = MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
 
     interface IStatsSource with
         member this.GetStatsAsync() =

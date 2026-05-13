@@ -13,15 +13,11 @@ type IDocumentStatisticsRepository =
 type StubDocumentStatisticsRepository() =
 
     interface IDocumentStatisticsRepository with
-        member this.SetAsync(stats: DocumentStatistics) =
-            task {
-                return stats
-            }
-        member this.GetAsync(uri: string) =
-            task { return None }
+        member this.SetAsync(stats: DocumentStatistics) = task { return stats }
+        member this.GetAsync(uri: string) = task { return None }
 
 type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
-    
+
     [<Literal>]
     let colName = "DocumentStatistics"
 
@@ -44,7 +40,7 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
         member this.SetAsync(value: DocumentStatistics) =
             task {
                 let! result = value |> BsonMapping.toDocumentStatisticsBson |> Mongo.upsert collection
-                
+
                 if not result.IsAcknowledged then
                     new Exception("Set not acknowledged") |> raise
 
@@ -52,7 +48,7 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
             }
 
         member this.GetAsync(uri: string) =
-            task { 
+            task {
                 let! xs = $"{{ _id: '{uri}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromDocumentStatisticsBson |> Seq.tryHead

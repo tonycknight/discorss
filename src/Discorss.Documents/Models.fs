@@ -53,23 +53,24 @@ module BsonMapping =
 
 
     let toDocumentStatisticsBson (stats: DocumentStatistics) =
-        newObject()
+        newObject ()
         |> setDocId (value stats.uri)
         |> setProperty "uri" (value stats.uri)
         |> setProperty "wordCount" (value stats.wordCount)
-        |> setProperty "wordFrequencies" (stats.wordFrequencies |> Dictionary.ofMap |> value )
+        |> setProperty "wordFrequencies" (stats.wordFrequencies |> Dictionary.ofMap |> value)
 
     let fromDocumentStatisticsBson (document: BsonDocument) =
         let asString key = getProperty key >> asString
         let asInt key = getProperty key >> asInt32
         let asDocument key = getProperty key >> asDocument
 
-        let freqs = 
-            document |> asDocument "wordFrequencies"
-            |> _.ToDictionary() 
-            |> Seq.map (fun kvp -> (kvp.Key, kvp.Value :?> int32) ) 
+        let freqs =
+            document
+            |> asDocument "wordFrequencies"
+            |> _.ToDictionary()
+            |> Seq.map (fun kvp -> (kvp.Key, kvp.Value :?> int32))
             |> Map.ofSeq
 
-        { DocumentStatistics.uri = document |> asString "uri" 
+        { DocumentStatistics.uri = document |> asString "uri"
           wordCount = document |> asInt "wordCount"
           wordFrequencies = freqs }

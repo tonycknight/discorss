@@ -15,4 +15,3 @@ type ActorMessage =
     | IndexDocument of doc: Discorss.Documents.Document
     | ActorStats of stats: Stats
     | PollQueue of queueName: string
-    

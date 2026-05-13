@@ -62,7 +62,10 @@ module ApiStartup =
             .AddLogging()
             .AddHttpLogging(fun lo ->
                 lo.CombineLogs <- true
-                lo.LoggingFields <- HttpLoggingFields.RequestPropertiesAndHeaders ||| HttpLoggingFields.ResponseStatusCode)
+
+                lo.LoggingFields <-
+                    HttpLoggingFields.RequestPropertiesAndHeaders
+                    ||| HttpLoggingFields.ResponseStatusCode)
 
     let addApiConfig (services: IServiceCollection) =
         services.AddOptions<AppConfiguration>().BindConfiguration(AppConfiguration.sectionName).ValidateOnStart()

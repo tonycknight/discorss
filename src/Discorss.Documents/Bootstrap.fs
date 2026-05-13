@@ -12,11 +12,13 @@ module Bootstrap =
 
         let services =
             if config.Value.mongoConnection |> Strings.isEmptyWhitespace then
-                services.AddSingleton<IDocumentRepository, StubDocumentRepository>()
-                        .AddSingleton<IDocumentStatisticsRepository, StubDocumentStatisticsRepository>()
+                services
+                    .AddSingleton<IDocumentRepository, StubDocumentRepository>()
+                    .AddSingleton<IDocumentStatisticsRepository, StubDocumentStatisticsRepository>()
             else
-                services.AddSingleton<IDocumentRepository, MongoDocumentRepository>()
-                        .AddSingleton<IDocumentStatisticsRepository, MongoDocumentStatisticsRepository>()
+                services
+                    .AddSingleton<IDocumentRepository, MongoDocumentRepository>()
+                    .AddSingleton<IDocumentStatisticsRepository, MongoDocumentStatisticsRepository>()
 
         services
             .AddSingleton<IDocumentNotificationWriter, DocumentNotificationWriter>()

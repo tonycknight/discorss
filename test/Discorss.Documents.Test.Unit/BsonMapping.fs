@@ -23,9 +23,12 @@ module BsonMappingTests =
 
         true
 
-    [<Property(Arbitrary = [| typeof<AlphaNumericString> |] )>]
+    [<Property(Arbitrary = [| typeof<AlphaNumericString> |])>]
     let ``toDocumentStatisticsBson / fromDocumentStatisticsBson is symmetric`` (doc: DocumentStatistics) =
-        let result = doc |> BsonMapping.toDocumentStatisticsBson |> BsonMapping.fromDocumentStatisticsBson
+        let result =
+            doc
+            |> BsonMapping.toDocumentStatisticsBson
+            |> BsonMapping.fromDocumentStatisticsBson
 
         result.uri |> should equal doc.uri
         result.wordCount |> should equal doc.wordCount

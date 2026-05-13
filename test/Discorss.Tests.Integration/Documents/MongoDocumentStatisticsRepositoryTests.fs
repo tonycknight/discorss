@@ -5,14 +5,18 @@ open Discorss.Tests.Integration
 open FsCheck.Xunit
 
 module MongoDocumentStatisticsRepositoryTests =
-    
-    [<Property(Arbitrary = [| typeof<AlphaNumericString> |] )>]
+
+    [<Property(Arbitrary = [| typeof<AlphaNumericString> |])>]
     let ``SetAsync / GetAsync are symmetric`` (value: DocumentStatistics) =
         task {
             let opts = TestHelpers.config () |> TestHelpers.configOptions
-            let value = { value with uri = value.uri + (System.Guid.NewGuid().ToString()) }
 
-            let repo = new MongoDocumentStatisticsRepository(opts) :> IDocumentStatisticsRepository
+            let value =
+                { value with
+                    uri = value.uri + (System.Guid.NewGuid().ToString()) }
+
+            let repo =
+                new MongoDocumentStatisticsRepository(opts) :> IDocumentStatisticsRepository
 
             let! result = repo.SetAsync value
 
