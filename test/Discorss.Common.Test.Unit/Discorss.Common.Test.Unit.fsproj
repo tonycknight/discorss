@@ -9,6 +9,7 @@
     <Compile Include="CombinatorsTests.fs" />
     <Compile Include="StringsTests.fs" />
     <Compile Include="SeqTests.fs" />
+    <Compile Include="DictionaryTests.fs" />
     <Compile Include="HtmlTests.fs" />
   </ItemGroup>
 

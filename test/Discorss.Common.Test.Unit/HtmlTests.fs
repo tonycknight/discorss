@@ -1,7 +1,5 @@
-﻿namespace Discorss.Html.Test.Unit
+﻿namespace Discorss.Common.Test.Unit
 
-open System
-open Discorss
 open FsCheck
 open FsUnit.Xunit
 
