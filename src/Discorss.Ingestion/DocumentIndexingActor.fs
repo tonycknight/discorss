@@ -23,8 +23,9 @@ type DocumentIndexingActor
             log.LogTrace $"Indexing document {doc.uri}..."
             
             try
-                let words = doc |> docAnalyser.Words |> List.ofSeq
-                let stats = doc |> docAnalyser.Statistics
+                let words = doc |> docAnalyser.GetWords |> List.ofSeq
+                let stats = doc |> docAnalyser.GetStatistics
+                                
                 // TODO: 
                 ignore 0
             with ex ->

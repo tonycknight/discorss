@@ -4,8 +4,8 @@ open System
 open Discorss
 
 type IDocumentAnalyser =
-    abstract member Statistics: Document -> DocumentStatistics
-    abstract member Words: Document -> seq<string>
+    abstract member GetStatistics: Document -> DocumentStatistics
+    abstract member GetWords: Document -> seq<string>
 
 type DocumentAnalyser(lexicon: ILexicon) =
 
@@ -20,9 +20,9 @@ type DocumentAnalyser(lexicon: ILexicon) =
         |> Seq.filter ((String.IsNullOrEmpty >> not) &&>> (lexicon.IsStopWord >> not))
 
     interface IDocumentAnalyser with
-        member this.Words(doc: Document) = words doc
+        member this.GetWords(doc: Document) = words doc
 
-        member this.Statistics(doc: Document) =
+        member this.GetStatistics(doc: Document) =
             let wordCounts = doc |> words |> Seq.counts
             let wordCount = wordCounts |> Seq.sumBy (fun kvp -> kvp.Value)
 

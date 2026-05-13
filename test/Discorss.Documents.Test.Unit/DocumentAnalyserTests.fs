@@ -8,7 +8,7 @@ open FsUnit.Xunit
 module DocumentAnalyserTests =
 
     [<Xunit.Fact>]
-    let ``Words for empty document returns empty`` () =
+    let ``GetWords for empty document returns empty`` () =
         let lexicon = new Lexicon() :> ILexicon
         let analyser = new DocumentAnalyser(lexicon): IDocumentAnalyser
 
@@ -22,12 +22,12 @@ module DocumentAnalyserTests =
               content = ""
               sha512 = "" }
 
-        let words = analyser.Words(doc) |> Array.ofSeq
+        let words = analyser.GetWords(doc) |> Array.ofSeq
 
         words |> should be Empty
 
     [<Xunit.Fact>]
-    let ``Words for document returns words`` () =
+    let ``GetWords for document returns words`` () =
         let lexicon = new Lexicon() :> ILexicon
         let analyser = new DocumentAnalyser(lexicon): IDocumentAnalyser
 
@@ -43,13 +43,13 @@ module DocumentAnalyserTests =
               content = expected.[3]
               sha512 = "" }
 
-        let words = analyser.Words(doc) |> Array.ofSeq
+        let words = analyser.GetWords(doc) |> Array.ofSeq
 
         words |> should equal expected
 
 
     [<Xunit.Fact>]
-    let ``Statistics for empty document returns empty`` () =
+    let ``GetStatistics for empty document returns empty`` () =
         let lexicon = new Lexicon() :> ILexicon
         let analyser = new DocumentAnalyser(lexicon): IDocumentAnalyser
 
@@ -63,13 +63,13 @@ module DocumentAnalyserTests =
               content = ""
               sha512 = "" }
 
-        let stats = analyser.Statistics(doc)
+        let stats = analyser.GetStatistics(doc)
 
         stats.wordCount |> should equal 0
         stats.wordFrequencies |> should be Empty
 
     [<Xunit.Fact>]
-    let ``Statistics for document returns counts`` () =
+    let ``GetStatistics for document returns counts`` () =
         let lexicon = new Lexicon() :> ILexicon
         let analyser = new DocumentAnalyser(lexicon): IDocumentAnalyser
 
@@ -85,7 +85,7 @@ module DocumentAnalyserTests =
               content = words.[0]
               sha512 = "" }
 
-        let stats = analyser.Statistics(doc)
+        let stats = analyser.GetStatistics(doc)
 
         stats.wordCount |> should equal 4
         stats.wordFrequencies.Count |> should equal 1
