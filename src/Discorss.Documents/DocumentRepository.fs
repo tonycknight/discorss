@@ -47,7 +47,7 @@ type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILo
 
         member this.SetDocumentAsync(value: Document) =
             task {
-                let! result = value |> BsonMapping.toBson |> Mongo.upsert collection
+                let! result = value |> BsonMapping.toDocumentBson |> Mongo.upsert collection
 
                 if not result.IsAcknowledged then
                     new Exception("Set not acknowledged") |> raise
@@ -59,5 +59,5 @@ type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILo
             task {
                 let! xs = $"{{ _id: '{key}' }}" |> Mongo.getMany<BsonDocument> collection
 
-                return xs |> Seq.map BsonMapping.fromBson |> Seq.tryHead
+                return xs |> Seq.map BsonMapping.fromDocumentBson |> Seq.tryHead
             }

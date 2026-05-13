@@ -25,7 +25,7 @@ module BsonMapping =
     open Discorss.MongoBson
     open MongoDB.Bson
 
-    let toBson (document: Document) =
+    let toDocumentBson (document: Document) =
         newObject ()
         |> setDocId (value document.uri)
         |> setProperty "uri" (value document.uri)
@@ -38,7 +38,7 @@ module BsonMapping =
         |> setProperty "categories" (value document.categories)
         |> setProperty "updated" (value DateTime.UtcNow)
 
-    let fromBson (document: BsonDocument) =
+    let fromDocumentBson (document: BsonDocument) =
         let asString key = getProperty key >> asString
 
         { Document.uri = document |> asString "uri"

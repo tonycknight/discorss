@@ -8,9 +8,9 @@ open FsUnit.Xunit
 module BsonMappingTests =
 
     [<Property>]
-    let ``toBson / fromBson is symmetric`` (doc: Document) =
+    let ``toDocumentBson / fromDocumentBson is symmetric`` (doc: Document) =
 
-        let result = doc |> BsonMapping.toBson |> BsonMapping.fromBson
+        let result = doc |> BsonMapping.toDocumentBson |> BsonMapping.fromDocumentBson
 
         result.uri |> should equal doc.uri
         result.description |> should equal doc.description
