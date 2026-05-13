@@ -1,48 +1,29 @@
 ﻿namespace Discorss.Documents
 
 open System
-open System.Diagnostics.CodeAnalysis
 open System.Threading.Tasks
 open Discorss
-open Microsoft.Extensions.Logging
 open Microsoft.Extensions.Options
 open MongoDB.Bson
 
-type IWordStatisticsRepository =
-    abstract member AddAsync: DocumentStatistics -> Task
-
-type StubWordStatisticsRepository() =
-
-    let cache =
-        new System.Collections.Concurrent.ConcurrentDictionary<string, WordStatistics>(
-            StringComparer.InvariantCultureIgnoreCase
-        )
-
-    interface IWordStatisticsRepository with
-        member this.AddAsync(stats: DocumentStatistics) =
-            task {
-                // TODO:
-                return 0
-            }
-
 type IDocumentStatisticsRepository =
-    abstract member SetAsync: DocumentStatistics -> Task
+    abstract member SetAsync: DocumentStatistics -> Task<DocumentStatistics>
+    abstract member GetAsync: string -> Task<DocumentStatistics option>
 
 type StubDocumentStatisticsRepository() =
 
     interface IDocumentStatisticsRepository with
         member this.SetAsync(stats: DocumentStatistics) =
             task {
-                // TODO:
-                return 0
+                return stats
             }
+        member this.GetAsync(uri: string) =
+            task { return None }
 
-type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>, logFactory: ILoggerFactory) =
+type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
     
     [<Literal>]
     let colName = "DocumentStatistics"
-
-    let log = logFactory.CreateLogger<MongoDocumentStatisticsRepository>()
 
     let collection =
         Mongo.initCollection "uri" config.Value.mongoDbName colName config.Value.mongoConnection
@@ -60,8 +41,19 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>, logFa
             }
 
     interface IDocumentStatisticsRepository with
-        member this.SetAsync(stats: DocumentStatistics) =
+        member this.SetAsync(value: DocumentStatistics) =
             task {
-                // TODO:
-                return 0
+                let! result = value |> BsonMapping.toDocumentStatisticsBson |> Mongo.upsert collection
+                
+                if not result.IsAcknowledged then
+                    new Exception("Set not acknowledged") |> raise
+
+                return value
+            }
+
+        member this.GetAsync(uri: string) =
+            task { 
+                let! xs = $"{{ _id: '{uri}' }}" |> Mongo.getMany<BsonDocument> collection
+
+                return xs |> Seq.map BsonMapping.fromDocumentStatisticsBson |> Seq.tryHead
             }

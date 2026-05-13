@@ -25,7 +25,7 @@ type DocumentIndexingActor
             try
                 let stats = doc |> docAnalyser.GetStatistics
                 
-                do! statsRepo.SetAsync stats
+                let! _ = statsRepo.SetAsync stats
                 log.LogTrace($"Statistics written for document {doc.uri}.")
 
             with ex ->
