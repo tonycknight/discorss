@@ -15,6 +15,6 @@ module Dictionary =
     let ofMap (value: Map<'a, 'b>) =
         Dictionary<'a, 'b>(value)
 
-    let fromMap (value: IDictionary<'a, 'b>) =
+    let toMap (value: IDictionary<'a, 'b>) =
         value |> Seq.fold (fun map kvp -> map |> Map.add kvp.Key kvp.Value) Map.empty
         

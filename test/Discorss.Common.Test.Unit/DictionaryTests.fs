@@ -9,7 +9,7 @@ open FsUnit.Xunit
 module DictionaryTests =
 
     [<Property>]
-    let ``ofMap / fromMap is symmetric`` (value: Map<string, string>) =
-        let result = value |> Dictionary.ofMap |> Dictionary.fromMap
+    let ``ofMap / toMap is symmetric`` (value: Map<string, string>) =
+        let result = value |> Dictionary.ofMap |> Dictionary.toMap
         result |> should equalSeq value
         true

@@ -22,6 +22,7 @@ type WordStatistics = { word: string; wordCounts: int }
 
 
 module BsonMapping =
+    open Discorss
     open Discorss.MongoBson
     open MongoDB.Bson
 
@@ -49,3 +50,26 @@ module BsonMapping =
           sha512 = document |> asString "sha512"
           publication = document |> getProperty "publication" |> asDateTime
           categories = document |> getProperty "categories" |> asStringArray }
+
+
+    let toDocumentStatisticsBson (stats: DocumentStatistics) =
+        newObject()
+        |> setDocId (value stats.uri)
+        |> setProperty "uri" (value stats.uri)
+        |> setProperty "wordCount" (value stats.wordCount)
+        |> setProperty "wordFrequencies" (stats.wordFrequencies |> Dictionary.ofMap |> value )
+
+    let fromDocumentStatisticsBson (document: BsonDocument) =
+        let asString key = getProperty key >> asString
+        let asInt key = getProperty key >> asInt32
+        let asDocument key = getProperty key >> asDocument
+
+        let freqs = 
+            document |> asDocument "wordFrequencies"
+            |> _.ToDictionary() 
+            |> Seq.map (fun kvp -> (kvp.Key, kvp.Value :?> int32) ) 
+            |> Map.ofSeq
+
+        { DocumentStatistics.uri = document |> asString "uri" 
+          wordCount = document |> asInt "wordCount"
+          wordFrequencies = freqs }

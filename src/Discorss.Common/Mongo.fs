@@ -34,8 +34,12 @@ module MongoBson =
 
     let asString (value: BsonValue) = value.AsString
 
-    let asDateTime (value: BsonValue) = value.AsBsonDateTime.ToUniversalTime()
+    let asInt32 (value: BsonValue) = value.AsInt32
 
+    let asDocument (value: BsonValue) = value.AsBsonDocument
+
+    let asDateTime (value: BsonValue) = value.AsBsonDateTime.ToUniversalTime()
+            
     let asStringArray (value: BsonValue) =
         value.AsBsonArray |> Seq.map (fun x -> x.AsString) |> Array.ofSeq
 

@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Arbitraries.fs" />
     <Compile Include="LexiconsTests.fs" />
     <Compile Include="BsonMapping.fs" />
     <Compile Include="TokenisationTests.fs" />
