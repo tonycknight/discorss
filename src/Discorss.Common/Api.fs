@@ -34,7 +34,7 @@ module Api =
     let logClient: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             let logger = ctx.GetService<ILoggerFactory>().CreateLogger()
-            logger.LogInformation($"Request remote IP: {ctx.Connection.RemoteIpAddress}:{ctx.Connection.RemotePort}")
+            logger.LogTrace($"Request remote IP: {ctx.Connection.RemoteIpAddress}:{ctx.Connection.RemotePort}")
             next ctx
 
     let getRequest<'a> (ctx: HttpContext) =
