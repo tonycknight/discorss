@@ -1,6 +1,5 @@
 namespace Discorss.Ingestion
 
-open System
 open System.Diagnostics.CodeAnalysis
 open Discorss
 open Microbroker.Client
@@ -8,32 +7,37 @@ open Microsoft.Extensions.Logging
 open Microsoft.Extensions.Options
 
 [<ExcludeFromCodeCoverage>]
-type QueueMonitorActor
+type DocumentIndexingActor
     (
         logFactory: ILoggerFactory,
         config: IOptions<AppConfiguration>,
-        broker: IMicrobrokerProxy,
-        ingestionActor: IngestionActor
+        docAnalyser: Documents.IDocumentAnalyser,
+        statsRepo: Documents.IDocumentStatisticsRepository,
+        broker: IMicrobrokerProxy
     ) as self =
 
-    let log = logFactory.CreateLogger<QueueMonitorActor>()
+    let log = logFactory.CreateLogger<DocumentIndexingActor>()
 
-    let timers =
-        ingestionActor.QueueNames
-        |> List.map (fun queueName -> fun args -> queueName |> ActorMessage.PollQueue |> Actor.post self)
-        |> List.map (Actor.createTimer config.Value.queuePollFrequency)
+    let indexDocument (doc: Documents.Document) =
+        task {
+            log.LogTrace $"Indexing document {doc.uri}..."
+
+            try
+                let stats = doc |> docAnalyser.GetStatistics
+
+                let! _ = statsRepo.SetAsync stats
+                log.LogInformation($"Statistics written for document {doc.uri}.")
+
+            with ex ->
+                log.LogError(ex, $"Error calculating statistics for document {doc.uri}")
+                doc |> ActorMessage.IndexDocument |> Actor.post self
+        }
 
     let processMessage (inbox: MailboxProcessor<ActorMessage>) =
         task {
-            let! msg = inbox.Receive()
-
-            match msg with
-            | ActorMessage.PollQueue queueName ->
-                log.LogTrace $"Polling queue {queueName}..."
-                do! Actor.pollActorMessageQueue broker queueName (Actor.post ingestionActor)
-            | ActorMessage.Start -> do timers |> List.iter (fun t -> t.Enabled <- true)
-            | ActorMessage.Stop -> do timers |> List.iter (fun t -> t.Enabled <- false)
-            | _ -> ignore msg
+            match! inbox.Receive() with
+            | ActorMessage.IndexDocument doc -> do! indexDocument doc
+            | _ -> ignore 0
         }
 
     let rec loop inbox =
@@ -47,6 +51,7 @@ type QueueMonitorActor
 
     interface IStatsSource with
         member this.GetStatsAsync() =
+            // TODO: query queue?
             actor |> Actor.getStats (self.GetType().Name) |> Task.ofResult
 
     interface IActor with

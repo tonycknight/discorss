@@ -1,4 +1,4 @@
-﻿namespace Discorss.Feeds.Test.Unit
+﻿namespace Discorss.Common.Test.Unit
 
 open Discorss
 open FsCheck

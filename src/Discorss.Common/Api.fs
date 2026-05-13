@@ -34,7 +34,7 @@ module Api =
     let logClient: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             let logger = ctx.GetService<ILoggerFactory>().CreateLogger()
-            logger.LogInformation($"Request remote IP: {ctx.Connection.RemoteIpAddress}:{ctx.Connection.RemotePort}")
+            logger.LogTrace($"Request remote IP: {ctx.Connection.RemoteIpAddress}:{ctx.Connection.RemotePort}")
             next ctx
 
     let getRequest<'a> (ctx: HttpContext) =
@@ -55,11 +55,17 @@ module Api =
 
 module ApiStartup =
 
+    open Microsoft.AspNetCore.HttpLogging
+
     let addApiLogging (services: IServiceCollection) =
         services
             .AddLogging()
             .AddHttpLogging(fun lo ->
-                lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestPropertiesAndHeaders)
+                lo.CombineLogs <- true
+
+                lo.LoggingFields <-
+                    HttpLoggingFields.RequestPropertiesAndHeaders
+                    ||| HttpLoggingFields.ResponseStatusCode)
 
     let addApiConfig (services: IServiceCollection) =
         services.AddOptions<AppConfiguration>().BindConfiguration(AppConfiguration.sectionName).ValidateOnStart()

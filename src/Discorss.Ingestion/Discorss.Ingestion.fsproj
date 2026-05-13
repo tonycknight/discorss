@@ -11,6 +11,7 @@
     <Compile Include="Models.fs" />
     <Compile Include="FeedIngestionActor.fs" />
     <Compile Include="DocumentIngestionActor.fs" />
+    <Compile Include="DocumentIndexingActor.fs" />
     <Compile Include="IngestionActor.fs" />
     <Compile Include="QueueMonitorActor.fs" />
     <Compile Include="Bootstrap.fs" />
@@ -19,8 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Discorss.Common\Discorss.Common.fsproj" />
     <ProjectReference Include="..\Discorss.Documents\Discorss.Documents.fsproj" />
-    <ProjectReference Include="..\Discorss.Feeds\Discorss.Feeds.fsproj" />
-    <ProjectReference Include="..\Discorss.Indexing\Discorss.Indexing.fsproj" />   
+    <ProjectReference Include="..\Discorss.Feeds\Discorss.Feeds.fsproj" />   
   </ItemGroup>
 
 </Project>

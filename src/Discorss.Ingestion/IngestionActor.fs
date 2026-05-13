@@ -12,6 +12,7 @@ type IngestionActor
         config: IOptions<AppConfiguration>,
         feedActor: FeedIngestionActor,
         docActor: DocumentIngestionActor,
+        indexingActor: DocumentIndexingActor,
         notificationWriter: Documents.IDocumentNotificationWriter,
         broker: Microbroker.Client.IMicrobrokerProxy
     ) as self =
@@ -36,7 +37,7 @@ type IngestionActor
                 |> List.ofSeq
         }
 
-    let rec loop (inbox: MailboxProcessor<ActorMessage>) =
+    let processMessage (inbox: MailboxProcessor<ActorMessage>) =
         task {
             let! msg = inbox.Receive()
 
@@ -53,17 +54,24 @@ type IngestionActor
             | ActorMessage.Document d ->
                 log.LogTrace $"Received document {d.uri}..."
                 do! notificationWriter.SetAsync d
+            | ActorMessage.IndexDocument d -> msg |> (Actor.post indexingActor)
 
             | _ -> ignore 0
+        }
+
+    let rec loop inbox =
+        async {
+            do! processMessage inbox |> Async.AwaitTask
 
             return! loop inbox
         }
 
-    let actor =
-        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
+    let actor = MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
 
     member this.QueueNames =
-        [ Discorss.Queues.QueueNames.feedEntries; Discorss.Queues.QueueNames.documents ]
+        [ Discorss.Queues.QueueNames.feedEntries
+          Discorss.Queues.QueueNames.documents
+          Queues.QueueNames.documentIndexing ]
 
     interface IStatsSource with
         member this.GetStatsAsync() =

@@ -13,7 +13,6 @@ type Startup() =
 
     let serviceCollection =
         Discorss.Feeds.Bootstrap.services
-        >> Discorss.Indexing.Service.WebApp.services
         >> Discorss.Ingestion.Bootstrap.services
         >> Discorss.Documents.Bootstrap.services
 
@@ -24,7 +23,6 @@ type Startup() =
              >=> choose
                      [ Discorss.Server.WebApp.webApp "/" app.ApplicationServices
                        Discorss.Feeds.Service.WebApp.webApp "/feeds" app.ApplicationServices
-                       Discorss.Indexing.Service.WebApp.webApp "/indexing" app.ApplicationServices
                        Discorss.Documents.Service.WebApi.webApp "/documents" app.ApplicationServices ])
 
     member __.ConfigureServices(services: IServiceCollection) =
