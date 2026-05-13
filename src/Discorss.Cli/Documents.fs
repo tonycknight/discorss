@@ -200,8 +200,8 @@ type CycleDocumentsCommand() =
                                             quit <- true
                                             nextDoc <- true
                                         | System.ConsoleKey.O -> r |> Option.map (_.uri >> Process.openUri) |> ignore
-                                        | System.ConsoleKey.LeftArrow -> // move back in history
-                                        | System.ConsoleKey.RightArrow -> true // move forward in history 
+                                        //| System.ConsoleKey.LeftArrow -> // move back in history
+                                        //| System.ConsoleKey.RightArrow -> true // move forward in history 
                                         | _ -> nextDoc <- true
                                 with ex ->
                                     ignore 0
