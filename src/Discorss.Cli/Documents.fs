@@ -165,8 +165,9 @@ type CycleDocumentsCommand() =
                     .StartAsync(fun ctx ->
                         task {
                             let mutable quit = false
+                            // TODO: display list
                             None |> DocumentsConsole.updateDocumentsLayout mainLayout
-
+                            
                             while not quit do
 
                                 try
@@ -181,14 +182,14 @@ type CycleDocumentsCommand() =
 
                                     r |> DocumentsConsole.updateDocumentsLayout mainLayout
 
-                                    r
-                                    |> Option.map (fun _ -> "")
-                                    |> Option.defaultValue (
-                                        ("No article found." |> Console.red)
-                                        + (" Hit Enter to try again." |> Console.cyan)
-                                    )
-                                    |> DocumentsConsole.updateStatus mainLayout
-
+                                    match r with
+                                    | None ->
+                                        ("No article found." |> Console.red) + (" Hit Enter to try again." |> Console.cyan)
+                                        |> DocumentsConsole.updateStatus mainLayout
+                                    | Some doc ->
+                                        "" |> DocumentsConsole.updateStatus mainLayout
+                                        // TODO: add this document to history?    
+                                    
                                     ctx.UpdateTarget(mainLayout)
 
                                     let mutable nextDoc = false
@@ -199,6 +200,8 @@ type CycleDocumentsCommand() =
                                             quit <- true
                                             nextDoc <- true
                                         | System.ConsoleKey.O -> r |> Option.map (_.uri >> Process.openUri) |> ignore
+                                        | System.ConsoleKey.LeftArrow -> // move back in history
+                                        | System.ConsoleKey.RightArrow -> true // move forward in history 
                                         | _ -> nextDoc <- true
                                 with ex ->
                                     ignore 0
