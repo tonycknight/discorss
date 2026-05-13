@@ -55,11 +55,14 @@ module Api =
 
 module ApiStartup =
 
+    open Microsoft.AspNetCore.HttpLogging
+
     let addApiLogging (services: IServiceCollection) =
         services
             .AddLogging()
             .AddHttpLogging(fun lo ->
-                lo.LoggingFields <- Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestPropertiesAndHeaders)
+                lo.CombineLogs <- true
+                lo.LoggingFields <- HttpLoggingFields.RequestPropertiesAndHeaders ||| HttpLoggingFields.ResponseStatusCode)
 
     let addApiConfig (services: IServiceCollection) =
         services.AddOptions<AppConfiguration>().BindConfiguration(AppConfiguration.sectionName).ValidateOnStart()
