@@ -20,7 +20,8 @@ module WebAppHandlers =
                        sp.GetRequiredService<Ingestion.QueueMonitorActor>() :> IStatsSource
                        sp.GetRequiredService<Ingestion.IngestionActor>() :> IStatsSource
                        sp.GetRequiredService<Ingestion.FeedIngestionActor>() :> IStatsSource
-                       sp.GetRequiredService<Ingestion.DocumentIngestionActor>() :> IStatsSource |]
+                       sp.GetRequiredService<Ingestion.DocumentIngestionActor>() :> IStatsSource
+                       sp.GetRequiredService<Ingestion.DocumentIndexingActor>() :> IStatsSource |]
                     |> Array.filter (fun x -> Object.ReferenceEquals(x, null) |> not)
                     |> Array.map _.GetStatsAsync()
 

@@ -32,22 +32,27 @@ type DocumentIndexingActor
                 doc |> ActorMessage.IndexDocument |> Actor.post self
         }
 
-    let rec loop (inbox: MailboxProcessor<ActorMessage>) =
+    let processMessage (inbox: MailboxProcessor<ActorMessage>) =
         task {
             match! inbox.Receive() with
             | ActorMessage.IndexDocument doc ->
                 do! indexDocument doc                
             | _ -> ignore 0
-
-            return! loop inbox // TODO: stack overflow - and all other Task based actor loops
         }
 
-    
+    let rec loop inbox =
+        async {
+            do! processMessage inbox |> Async.AwaitTask
+
+            return! loop inbox
+        }
+            
     let actor =
-        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
+        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
 
     interface IStatsSource with
         member this.GetStatsAsync() =
+            // TODO: query queue?
             actor |> Actor.getStats (self.GetType().Name) |> Task.ofResult
 
     interface IActor with

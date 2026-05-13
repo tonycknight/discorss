@@ -77,7 +77,7 @@ type FeedIngestionActor
             log.LogTrace $"Initiated {xs.Length} feed ingestions."
         }
 
-    let rec loop (inbox: MailboxProcessor<ActorMessage>) =
+    let processMessage (inbox: MailboxProcessor<ActorMessage>) =
         task {
 
             match! inbox.Receive() with
@@ -85,12 +85,17 @@ type FeedIngestionActor
             | ActorMessage.IngestFeeds -> do! startIngestion ()
             | ActorMessage.IngestFeed uri -> do! ingestFeed uri
             | _ -> ignore 0
+        }
+
+    let rec loop inbox =
+        async {
+            do! processMessage inbox |> Async.AwaitTask
 
             return! loop inbox
         }
 
     let actor =
-        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
+        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
 
     interface IStatsSource with
         member this.GetStatsAsync() =

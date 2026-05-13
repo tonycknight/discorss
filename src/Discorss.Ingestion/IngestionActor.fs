@@ -37,7 +37,7 @@ type IngestionActor
                 |> List.ofSeq
         }
 
-    let rec loop (inbox: MailboxProcessor<ActorMessage>) =
+    let processMessage (inbox: MailboxProcessor<ActorMessage>) =
         task {
             let! msg = inbox.Receive()
 
@@ -58,12 +58,17 @@ type IngestionActor
                 msg |> (Actor.post indexingActor)
                 
             | _ -> ignore 0
+        }
+
+    let rec loop inbox =
+        async {
+            do! processMessage inbox |> Async.AwaitTask
 
             return! loop inbox
         }
 
     let actor =
-        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
+        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
 
     member this.QueueNames =
         [ Discorss.Queues.QueueNames.feedEntries; Discorss.Queues.QueueNames.documents; Queues.QueueNames.documentIndexing ]

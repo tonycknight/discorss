@@ -23,7 +23,7 @@ type QueueMonitorActor
         |> List.map (fun queueName -> fun args -> queueName |> ActorMessage.PollQueue |> Actor.post self)
         |> List.map (Actor.createTimer config.Value.queuePollFrequency)
 
-    let rec loop (inbox: MailboxProcessor<ActorMessage>) =
+    let processMessage (inbox: MailboxProcessor<ActorMessage>) =
         task {
             let! msg = inbox.Receive()
 
@@ -34,12 +34,17 @@ type QueueMonitorActor
             | ActorMessage.Start -> do timers |> List.iter (fun t -> t.Enabled <- true)
             | ActorMessage.Stop -> do timers |> List.iter (fun t -> t.Enabled <- false)
             | _ -> ignore msg
+        }
+
+    let rec loop inbox =
+        async {
+            do! processMessage inbox |> Async.AwaitTask
 
             return! loop inbox
         }
 
     let actor =
-        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
+        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
 
     interface IStatsSource with
         member this.GetStatsAsync() =

@@ -85,7 +85,7 @@ type DocumentIngestionActor
             do! broker.PostAsync(Queues.QueueNames.documentIndexing, message)
         }
 
-    let rec loop (inbox: MailboxProcessor<ActorMessage>) =
+    let processMessage (inbox: MailboxProcessor<ActorMessage>) =
         task {
             match! inbox.Receive() with
             | ActorMessage.FeedEntry fe ->
@@ -101,12 +101,17 @@ type DocumentIngestionActor
                     setCachedDocHash d |> ignore
                     log.LogTrace $"Skipping document {d.uri} as already ingested"
             | _ -> ignore 0
+        }
 
-            return! loop inbox // TODO: stack overflow
+    let rec loop inbox =
+        async {
+            do! processMessage inbox |> Async.AwaitTask
+
+            return! loop inbox
         }
 
     let actor =
-        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox |> Async.AwaitTask)
+        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
 
     interface IStatsSource with
         member this.GetStatsAsync() =
