@@ -1,5 +1,6 @@
 ﻿namespace Discorss.Ingestion
 
+open System
 open System.Diagnostics.CodeAnalysis
 open Discorss
 open Discorss.Feeds
@@ -18,10 +19,10 @@ type FeedIngestionActor
         broker: IMicrobrokerProxy
     ) as self =
     let log = logFactory.CreateLogger<FeedIngestionActor>()
-
+    let postTimerFrequency = TimeSpan.FromSeconds 15.
     let postIngestTimer =
         (fun args -> ActorMessage.IngestFeeds |> Actor.post self)
-        |> Actor.createTimer config.Value.feedIngestionFrequency
+        |> Actor.createTimer postTimerFrequency
 
     let getFeedInfo uri = feedRepo.GetFeedInfoAsync uri
 
@@ -56,13 +57,17 @@ type FeedIngestionActor
             do! broker.PostManyAsync(QueueNames.feedEntries, msgs)
         }
 
+    let needsRefresh (feed: FeedInfo) =
+         let exp = feed.lastFetched + config.Value.feedIngestionFrequency
+         exp < DateTime.UtcNow         
+
     let ingestFeed uri =
         task {
             try
                 log.LogTrace $"Starting feed ingestion for {uri}..."
-
+                
                 match! getFeedInfo uri with
-                | Some feedInfo ->
+                | Some feedInfo when needsRefresh feedInfo ->
                     let! feed = getFeed feedInfo
 
                     let feedEntries = feed |> Option.map _.entries |> Option.defaultValue []
@@ -70,6 +75,7 @@ type FeedIngestionActor
                     do! forwardEntries feedEntries
 
                     log.LogTrace $"Completed feed ingestion for {uri}."
+                | Some feedInfo -> log.LogTrace $"Feed {feedInfo.uri} not yet aged"
                 | None -> log.LogWarning $"Cannot find feed for {uri}"
             with ex ->
                 log.LogError(ex, $"Error ingesting feed {uri}")

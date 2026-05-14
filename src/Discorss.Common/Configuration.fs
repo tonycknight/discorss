@@ -19,6 +19,6 @@ type AppConfiguration =
           microbrokerThrottle = TimeSpan.FromSeconds 2.
           documentIngestionWindow = TimeSpan.FromMinutes 60.
           queuePollFrequency = TimeSpan.FromSeconds 5.
-          feedIngestionFrequency = TimeSpan.FromSeconds 15.
+          feedIngestionFrequency = TimeSpan.FromMinutes 5.
           mongoConnection = "mongodb://localhost:27017"
           mongoDbName = "discorss" }
