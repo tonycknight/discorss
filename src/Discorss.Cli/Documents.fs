@@ -132,17 +132,16 @@ module DocumentsConsole =
         layout.["status"].Update(message |> render) |> ignore
 
     let setFetchingStatus (layout: Layout) =
-        "Fetching..."
-        |> Console.cyan
-        |> Console.italic
-        |> updateStatus layout
+        "Fetching..." |> Console.cyan |> Console.italic |> updateStatus layout
 
     let updateDocumentFetchStatus (layout: Layout) document =
         match document with
-        | None ->("No article found." |> Console.red) + (" Hit Enter to try again." |> Console.cyan)            
+        | None ->
+            ("No article found." |> Console.red)
+            + (" Hit Enter to try again." |> Console.cyan)
         | Some _ -> ""
         |> updateStatus layout
-        
+
 
 type GetNextDocumentCommand(nuget: Tk.Nuget.INugetClient) =
     inherit AsyncCommand<DocumentsCommandSettings>()
@@ -167,7 +166,7 @@ type CycleDocumentsCommand() =
     inherit AsyncCommand<DocumentsCommandSettings>()
 
     let mainLayout = DocumentsConsole.screenLayout ()
-        
+
     override this.ExecuteAsync(context, settings, cancellationToken) =
         task {
 
@@ -178,9 +177,9 @@ type CycleDocumentsCommand() =
                     .StartAsync(fun ctx ->
                         task {
                             let mutable quit = false
-                                                                                    
+
                             None |> DocumentsConsole.updateDocumentsLayout mainLayout
-                            
+
                             while not quit do
 
                                 try
@@ -189,13 +188,14 @@ type CycleDocumentsCommand() =
                                     ctx.UpdateTarget(mainLayout)
 
                                     let! doc = DiscorssApi.nextDocument settings.ApiHost
-                                    
+
                                     doc |> DocumentsConsole.updateDocumentsLayout mainLayout
-                                    doc |> DocumentsConsole.updateDocumentFetchStatus mainLayout                                    
-                                                                                                                
+                                    doc |> DocumentsConsole.updateDocumentFetchStatus mainLayout
+
                                     ctx.UpdateTarget(mainLayout)
 
                                     let mutable nextDoc = false
+
                                     while not nextDoc do
                                         match System.Console.ReadKey(true).Key with
                                         | System.ConsoleKey.Q ->

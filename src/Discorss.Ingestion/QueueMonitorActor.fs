@@ -16,15 +16,15 @@ type QueueMonitorActor
     ) as self =
 
     let log = logFactory.CreateLogger<QueueMonitorActor>()
-    
+
     let pollQueue queueName =
         task {
             try
                 log.LogTrace $"Polling queue {queueName}..."
                 do! Actor.pollActorMessageQueue broker queueName (Actor.post ingestionActor)
-            with
-            | ex -> log.LogError (ex, "Error polling queue")
-            
+            with ex ->
+                log.LogError(ex, "Error polling queue")
+
             do! Task.delay config.Value.queuePollFrequency
 
             queueName |> ActorMessage.PollQueue |> Actor.post self
@@ -41,12 +41,9 @@ type QueueMonitorActor
             let! msg = inbox.Receive()
 
             match msg with
-            | ActorMessage.PollQueue queueName -> 
-                do! pollQueue queueName
-            | ActorMessage.Start ->                 
-                do! start ()
-            | ActorMessage.Stop -> 
-                ignore 0                
+            | ActorMessage.PollQueue queueName -> do! pollQueue queueName
+            | ActorMessage.Start -> do! start ()
+            | ActorMessage.Stop -> ignore 0
             | _ -> ignore msg
         }
 

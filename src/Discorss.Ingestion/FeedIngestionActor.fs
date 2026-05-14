@@ -6,12 +6,22 @@ open Discorss.Feeds
 open Discorss.Queues
 open Microbroker.Client
 open Microsoft.Extensions.Logging
+open Microsoft.Extensions.Options
 
 [<ExcludeFromCodeCoverage>]
 type FeedIngestionActor
-    (logFactory: ILoggerFactory, feedRepo: IFeedRepository, feedProvider: IFeedProvider, broker: IMicrobrokerProxy) as self
-    =
+    (
+        logFactory: ILoggerFactory,
+        config: IOptions<AppConfiguration>,
+        feedRepo: IFeedRepository,
+        feedProvider: IFeedProvider,
+        broker: IMicrobrokerProxy
+    ) as self =
     let log = logFactory.CreateLogger<FeedIngestionActor>()
+
+    let postIngestTimer =
+        (fun args -> ActorMessage.IngestFeeds |> Actor.post self)
+        |> Actor.createTimer config.Value.feedIngestionFrequency
 
     let getFeedInfo uri = feedRepo.GetFeedInfoAsync uri
 
@@ -67,21 +77,28 @@ type FeedIngestionActor
 
     let startIngestion () =
         task {
-            log.LogTrace "Starting feed ingestion..."
-            let! feeds = feedRepo.GetFeedInfosAsync()
+            try
+                postIngestTimer.Enabled <- false
+                log.LogTrace "Starting feed ingestion..."
+                
+                let! feeds = feedRepo.GetFeedInfosAsync()
 
-            let xs =
                 feeds
-                |> Array.map (fun f -> f.uri |> ActorMessage.IngestFeed |> (Actor.post self))
+                |> Array.iter (fun f -> f.uri |> ActorMessage.IngestFeed |> (Actor.post self))
 
-            log.LogTrace $"Initiated {xs.Length} feed ingestions."
+                log.LogTrace $"Initiated {feeds.Length} feed ingestions."
+            with ex ->
+                log.LogError(ex, "Error starting feed ingestion.")
+
+            postIngestTimer.Enabled <- true
         }
 
     let processMessage (inbox: MailboxProcessor<ActorMessage>) =
         task {
 
             match! inbox.Receive() with
-            | ActorMessage.Start -> ignore 0
+            | ActorMessage.Start -> do postIngestTimer.Enabled <- true
+            | ActorMessage.Stop -> do postIngestTimer.Enabled <- false
             | ActorMessage.IngestFeeds -> do! startIngestion ()
             | ActorMessage.IngestFeed uri -> do! ingestFeed uri
             | _ -> ignore 0
