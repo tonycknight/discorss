@@ -20,6 +20,7 @@ type FeedIngestionActor
     ) as self =
     let log = logFactory.CreateLogger<FeedIngestionActor>()
     let postTimerFrequency = TimeSpan.FromSeconds 15.
+
     let postIngestTimer =
         (fun args -> ActorMessage.IngestFeeds |> Actor.post self)
         |> Actor.createTimer postTimerFrequency
@@ -58,14 +59,14 @@ type FeedIngestionActor
         }
 
     let needsRefresh (feed: FeedInfo) =
-         let exp = feed.lastFetched + config.Value.feedIngestionFrequency
-         exp < DateTime.UtcNow         
+        let exp = feed.lastFetched + config.Value.feedIngestionFrequency
+        exp < DateTime.UtcNow
 
     let ingestFeed uri =
         task {
             try
                 log.LogTrace $"Starting feed ingestion for {uri}..."
-                
+
                 match! getFeedInfo uri with
                 | Some feedInfo when needsRefresh feedInfo ->
                     let! feed = getFeed feedInfo
@@ -86,7 +87,7 @@ type FeedIngestionActor
             try
                 postIngestTimer.Enabled <- false
                 log.LogTrace "Starting feed ingestion..."
-                
+
                 let! feeds = feedRepo.GetFeedInfosAsync()
 
                 feeds
