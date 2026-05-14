@@ -131,6 +131,19 @@ module DocumentsConsole =
     let updateStatus (layout: Layout) (message: string) =
         layout.["status"].Update(message |> render) |> ignore
 
+    let setFetchingStatus (layout: Layout) =
+        "Fetching..."
+        |> Console.cyan
+        |> Console.italic
+        |> updateStatus layout
+
+    let updateDocumentFetchStatus (layout: Layout) document =
+        match document with
+        | None ->("No article found." |> Console.red) + (" Hit Enter to try again." |> Console.cyan)            
+        | Some _ -> ""
+        |> updateStatus layout
+        
+
 type GetNextDocumentCommand(nuget: Tk.Nuget.INugetClient) =
     inherit AsyncCommand<DocumentsCommandSettings>()
 
@@ -154,7 +167,7 @@ type CycleDocumentsCommand() =
     inherit AsyncCommand<DocumentsCommandSettings>()
 
     let mainLayout = DocumentsConsole.screenLayout ()
-
+        
     override this.ExecuteAsync(context, settings, cancellationToken) =
         task {
 
@@ -165,43 +178,30 @@ type CycleDocumentsCommand() =
                     .StartAsync(fun ctx ->
                         task {
                             let mutable quit = false
-                            // TODO: display list
+                                                                                    
                             None |> DocumentsConsole.updateDocumentsLayout mainLayout
                             
                             while not quit do
 
                                 try
-                                    "Fetching..."
-                                    |> Console.cyan
-                                    |> Console.italic
-                                    |> DocumentsConsole.updateStatus mainLayout
+                                    DocumentsConsole.setFetchingStatus mainLayout
 
                                     ctx.UpdateTarget(mainLayout)
 
-                                    let! r = DiscorssApi.nextDocument settings.ApiHost
-
-                                    r |> DocumentsConsole.updateDocumentsLayout mainLayout
-
-                                    match r with
-                                    | None ->
-                                        ("No article found." |> Console.red) + (" Hit Enter to try again." |> Console.cyan)
-                                        |> DocumentsConsole.updateStatus mainLayout
-                                    | Some doc ->
-                                        "" |> DocumentsConsole.updateStatus mainLayout
-                                        // TODO: add this document to history?    
+                                    let! doc = DiscorssApi.nextDocument settings.ApiHost
                                     
+                                    doc |> DocumentsConsole.updateDocumentsLayout mainLayout
+                                    doc |> DocumentsConsole.updateDocumentFetchStatus mainLayout                                    
+                                                                                                                
                                     ctx.UpdateTarget(mainLayout)
 
                                     let mutable nextDoc = false
-
                                     while not nextDoc do
                                         match System.Console.ReadKey(true).Key with
                                         | System.ConsoleKey.Q ->
                                             quit <- true
                                             nextDoc <- true
-                                        | System.ConsoleKey.O -> r |> Option.map (_.uri >> Process.openUri) |> ignore
-                                        //| System.ConsoleKey.LeftArrow -> // move back in history
-                                        //| System.ConsoleKey.RightArrow -> true // move forward in history 
+                                        | System.ConsoleKey.O -> doc |> Option.map (_.uri >> Process.openUri) |> ignore
                                         | _ -> nextDoc <- true
                                 with ex ->
                                     ignore 0
