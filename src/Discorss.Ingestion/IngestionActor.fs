@@ -3,13 +3,11 @@
 open System.Diagnostics.CodeAnalysis
 open Discorss
 open Microsoft.Extensions.Logging
-open Microsoft.Extensions.Options
 
 [<ExcludeFromCodeCoverage>]
 type IngestionActor
     (
         logFactory: ILoggerFactory,
-        config: IOptions<AppConfiguration>,
         feedActor: FeedIngestionActor,
         docActor: DocumentIngestionActor,
         indexingActor: DocumentIndexingActor,
@@ -19,10 +17,6 @@ type IngestionActor
 
     let log = logFactory.CreateLogger<IngestionActor>()
     let cancellation = new System.Threading.CancellationTokenSource()
-
-    let postIngestTimer =
-        (fun args -> ActorMessage.IngestFeeds |> Actor.post self)
-        |> Actor.createTimer config.Value.feedIngestionFrequency
 
     let queueStats () =
         task {
@@ -42,9 +36,9 @@ type IngestionActor
             let! msg = inbox.Receive()
 
             match msg with
-            | ActorMessage.Start -> do postIngestTimer.Enabled <- true
+            | ActorMessage.Start
             | ActorMessage.Stop ->
-                do postIngestTimer.Enabled <- false
+                msg |> Actor.post feedActor
                 do cancellation.Cancel()
             | ActorMessage.IngestFeeds
             | ActorMessage.IngestFeed _ -> msg |> Actor.post feedActor

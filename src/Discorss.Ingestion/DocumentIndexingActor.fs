@@ -51,8 +51,15 @@ type DocumentIndexingActor
 
     interface IStatsSource with
         member this.GetStatsAsync() =
-            // TODO: query queue?
-            actor |> Actor.getStats (self.GetType().Name) |> Task.ofResult
+            task {
+                let! queueCount = broker.GetQueueCountAsync Queues.QueueNames.documentIndexing
+
+                let stats = actor |> Actor.getStats (self.GetType().Name)
+
+                return
+                    { stats with
+                        itemCount = stats.itemCount + (queueCount |> Option.map _.count |> Option.defaultValue 0) }
+            }
 
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg

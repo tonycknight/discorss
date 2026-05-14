@@ -9,7 +9,7 @@ param (
     [string]$DbName = "discorss",
 
     [Parameter(Mandatory=$false)]
-    [string]$FeedIngestionFrequency = "00:00:15",
+    [string]$FeedIngestionFrequency = "00:05:00",
 
     [Parameter(Mandatory=$false)]
     [string]$LogLevel = "Trace"

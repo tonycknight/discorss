@@ -1,17 +1,29 @@
 ﻿namespace Discorss.Ingestion
 
+open System
 open System.Diagnostics.CodeAnalysis
 open Discorss
 open Discorss.Feeds
 open Discorss.Queues
 open Microbroker.Client
 open Microsoft.Extensions.Logging
+open Microsoft.Extensions.Options
 
 [<ExcludeFromCodeCoverage>]
 type FeedIngestionActor
-    (logFactory: ILoggerFactory, feedRepo: IFeedRepository, feedProvider: IFeedProvider, broker: IMicrobrokerProxy) as self
-    =
+    (
+        logFactory: ILoggerFactory,
+        config: IOptions<AppConfiguration>,
+        feedRepo: IFeedRepository,
+        feedProvider: IFeedProvider,
+        broker: IMicrobrokerProxy
+    ) as self =
     let log = logFactory.CreateLogger<FeedIngestionActor>()
+    let postTimerFrequency = TimeSpan.FromSeconds 15.
+
+    let postIngestTimer =
+        (fun args -> ActorMessage.IngestFeeds |> Actor.post self)
+        |> Actor.createTimer postTimerFrequency
 
     let getFeedInfo uri = feedRepo.GetFeedInfoAsync uri
 
@@ -28,7 +40,7 @@ type FeedIngestionActor
                     }
                 | FeedReadResult.Error msg ->
                     task {
-                        log.LogError msg
+                        log.LogError $"Failed to parse feed {feed.uri}: {msg}"
                         return None
                     }
                 | FeedReadResult.Xml xml ->
@@ -46,20 +58,23 @@ type FeedIngestionActor
             do! broker.PostManyAsync(QueueNames.feedEntries, msgs)
         }
 
+    let needsRefresh (feed: FeedInfo) =
+        let exp = feed.lastFetched + config.Value.feedIngestionFrequency
+        exp < DateTime.UtcNow
+
     let ingestFeed uri =
         task {
             try
                 log.LogTrace $"Starting feed ingestion for {uri}..."
 
                 match! getFeedInfo uri with
-                | Some feedInfo ->
+                | Some feedInfo when needsRefresh feedInfo ->
                     let! feed = getFeed feedInfo
 
-                    let feedEntries = feed |> Option.map _.entries |> Option.defaultValue []
-
-                    do! forwardEntries feedEntries
+                    do! feed |> Option.map _.entries |> Option.defaultValue [] |> forwardEntries
 
                     log.LogTrace $"Completed feed ingestion for {uri}."
+                | Some feedInfo -> log.LogTrace $"Feed {feedInfo.uri} not yet aged."
                 | None -> log.LogWarning $"Cannot find feed for {uri}"
             with ex ->
                 log.LogError(ex, $"Error ingesting feed {uri}")
@@ -67,21 +82,28 @@ type FeedIngestionActor
 
     let startIngestion () =
         task {
-            log.LogTrace "Starting feed ingestion..."
-            let! feeds = feedRepo.GetFeedInfosAsync()
+            try
+                postIngestTimer.Enabled <- false
+                log.LogTrace "Starting feed ingestion..."
 
-            let xs =
+                let! feeds = feedRepo.GetFeedInfosAsync()
+
                 feeds
-                |> Array.map (fun f -> f.uri |> ActorMessage.IngestFeed |> (Actor.post self))
+                |> Array.iter (fun f -> f.uri |> ActorMessage.IngestFeed |> (Actor.post self))
 
-            log.LogTrace $"Initiated {xs.Length} feed ingestions."
+                log.LogTrace $"Initiated {feeds.Length} feed ingestions."
+            with ex ->
+                log.LogError(ex, "Error starting feed ingestion.")
+
+            postIngestTimer.Enabled <- true
         }
 
     let processMessage (inbox: MailboxProcessor<ActorMessage>) =
         task {
 
             match! inbox.Receive() with
-            | ActorMessage.Start -> ignore 0
+            | ActorMessage.Start -> do postIngestTimer.Enabled <- true
+            | ActorMessage.Stop -> do postIngestTimer.Enabled <- false
             | ActorMessage.IngestFeeds -> do! startIngestion ()
             | ActorMessage.IngestFeed uri -> do! ingestFeed uri
             | _ -> ignore 0
