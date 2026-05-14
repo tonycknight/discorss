@@ -71,12 +71,10 @@ type FeedIngestionActor
                 | Some feedInfo when needsRefresh feedInfo ->
                     let! feed = getFeed feedInfo
 
-                    let feedEntries = feed |> Option.map _.entries |> Option.defaultValue []
-
-                    do! forwardEntries feedEntries
+                    do! feed |> Option.map _.entries |> Option.defaultValue [] |> forwardEntries
 
                     log.LogTrace $"Completed feed ingestion for {uri}."
-                | Some feedInfo -> log.LogTrace $"Feed {feedInfo.uri} not yet aged"
+                | Some feedInfo -> log.LogTrace $"Feed {feedInfo.uri} not yet aged."
                 | None -> log.LogWarning $"Cannot find feed for {uri}"
             with ex ->
                 log.LogError(ex, $"Error ingesting feed {uri}")
