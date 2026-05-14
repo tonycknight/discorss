@@ -40,7 +40,7 @@ type FeedIngestionActor
                     }
                 | FeedReadResult.Error msg ->
                     task {
-                        log.LogError msg
+                        log.LogError $"Failed to parse feed {feed.uri}: {msg}"
                         return None
                     }
                 | FeedReadResult.Xml xml ->
