@@ -1,6 +1,5 @@
 namespace Discorss.Ingestion
 
-open System
 open System.Diagnostics.CodeAnalysis
 open Discorss
 open Microbroker.Client
@@ -17,22 +16,37 @@ type QueueMonitorActor
     ) as self =
 
     let log = logFactory.CreateLogger<QueueMonitorActor>()
+    
+    let pollQueue queueName =
+        task {
+            try
+                log.LogTrace $"Polling queue {queueName}..."
+                do! Actor.pollActorMessageQueue broker queueName (Actor.post ingestionActor)
+            with
+            | ex -> log.LogError (ex, "Error polling queue")
+            
+            do! Task.delay config.Value.queuePollFrequency
 
-    let timers =
-        ingestionActor.QueueNames
-        |> List.map (fun queueName -> fun args -> queueName |> ActorMessage.PollQueue |> Actor.post self)
-        |> List.map (Actor.createTimer config.Value.queuePollFrequency)
+            queueName |> ActorMessage.PollQueue |> Actor.post self
+        }
+
+    let start () =
+        task {
+            for name in ingestionActor.QueueNames do
+                do! pollQueue name
+        }
 
     let processMessage (inbox: MailboxProcessor<ActorMessage>) =
         task {
             let! msg = inbox.Receive()
 
             match msg with
-            | ActorMessage.PollQueue queueName ->
-                log.LogTrace $"Polling queue {queueName}..."
-                do! Actor.pollActorMessageQueue broker queueName (Actor.post ingestionActor)
-            | ActorMessage.Start -> do timers |> List.iter (fun t -> t.Enabled <- true)
-            | ActorMessage.Stop -> do timers |> List.iter (fun t -> t.Enabled <- false)
+            | ActorMessage.PollQueue queueName -> 
+                do! pollQueue queueName
+            | ActorMessage.Start ->                 
+                do! start ()
+            | ActorMessage.Stop -> 
+                ignore 0                
             | _ -> ignore msg
         }
 
