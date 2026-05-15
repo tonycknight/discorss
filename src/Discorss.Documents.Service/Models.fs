@@ -1,6 +1,7 @@
 namespace Discorss.Documents.Service
 
 open System
+open Discorss
 open Discorss.ApiModels
 open Discorss.Documents
 
@@ -16,7 +17,7 @@ module Mapping =
           categories = value.categories }
 
     let toDocumentLikeApiModel (value: Discorss.Documents.DocumentLike) =
-        { Discorss.ApiModels.DocumentLike.uri = value.uri
+        { Discorss.ApiModels.DocumentLike.uri = value.uri |> Strings.lower
           liked = value.liked }
 
     let fromDocumentLikeApiModel (value: Discorss.ApiModels.DocumentLike) =

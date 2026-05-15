@@ -1,3 +1,20 @@
 ### Get next document
-GET http://localhost:8081/api/v1/documents/
+GET http://localhost:8081/api/v1/documents/queue/
+content-type: application/json
+
+### Set Document Like
+PUT http://localhost:8081/api/v1/documents/likes/
+content-type: application/json
+
+{
+    "uri": "aaaa",
+    "liked": false
+}
+
+### Get Document Like
+GET http://localhost:8081/api/v1/documents/likes/aaaa/
+content-type: application/json
+
+### Delete Document Like
+DELETE http://localhost:8081/api/v1/documents/likes/aaaa/
 content-type: application/json
