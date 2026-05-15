@@ -19,9 +19,7 @@ type DocumentStatistics =
 
 type WordStatistics = { word: string; wordCounts: int }
 
-type DocumentLike =
-    { uri: string
-      liked: bool option }
+type DocumentLike = { uri: string; liked: bool option }
 
 module BsonMapping =
     open Discorss
@@ -77,15 +75,15 @@ module BsonMapping =
           wordFrequencies = freqs }
 
     let toDocumentLikeBson (document: DocumentLike) =
-        let bson = 
-            newObject () 
+        let bson =
+            newObject ()
             |> setDocId (value document.uri)
             |> setProperty "uri" (value document.uri)
-            
+
         match document.liked with
         | Some x -> bson |> setProperty "liked" (value x)
         | None -> bson
-        
-    let fromDocumentLikeBson (document: BsonDocument)=
+
+    let fromDocumentLikeBson (document: BsonDocument) =
         { DocumentLike.uri = document |> getProperty "uri" |> asString
           liked = document |> getPropertyOption "liked" |> Option.map asBoolean }
