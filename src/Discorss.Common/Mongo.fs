@@ -32,7 +32,14 @@ module MongoBson =
 
     let getProperty (key: string) (doc: BsonDocument) = doc.[key]
 
+    let getPropertyOption (key: string) (doc: BsonDocument) = 
+        match doc.TryGetValue key with
+        | (true, x) -> Some x
+        | (false, _) -> None
+        
     let asString (value: BsonValue) = value.AsString
+
+    let asBoolean (value: BsonValue) = value.AsBoolean
 
     let asInt32 (value: BsonValue) = value.AsInt32
 

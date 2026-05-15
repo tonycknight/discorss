@@ -35,3 +35,10 @@ module BsonMappingTests =
         result.wordFrequencies |> should equalSeq doc.wordFrequencies
 
         true
+
+    [<Property(Arbitrary = [| typeof<AlphaNumericString> |])>]
+    let ``toDocumentLikeBson / fromDocumentLikeBson is symmetric`` (doc: DocumentLike) =
+        let result =
+            doc |> BsonMapping.toDocumentLikeBson |> BsonMapping.fromDocumentLikeBson
+
+        result = doc
