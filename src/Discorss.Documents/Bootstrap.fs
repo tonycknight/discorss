@@ -15,10 +15,12 @@ module Bootstrap =
                 services
                     .AddSingleton<IDocumentRepository, StubDocumentRepository>()
                     .AddSingleton<IDocumentStatisticsRepository, StubDocumentStatisticsRepository>()
+                    .AddSingleton<IDocumentLikeRepository, StubDocumentLikeRepository>()
             else
                 services
                     .AddSingleton<IDocumentRepository, MongoDocumentRepository>()
                     .AddSingleton<IDocumentStatisticsRepository, MongoDocumentStatisticsRepository>()
+                    .AddSingleton<IDocumentLikeRepository, MongoDocumentLikeRepository>()
 
         services
             .AddSingleton<IDocumentNotificationWriter, DocumentNotificationWriter>()
