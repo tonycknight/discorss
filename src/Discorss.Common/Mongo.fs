@@ -131,6 +131,16 @@ module Mongo =
 
         collection.ReplaceOneAsync(filter, doc, opts)
 
+    let delete (collection: IMongoCollection<BsonDocument>) (predicate: string) =
+        let opts = DeleteOptions()
+        
+        let filter =
+            predicate
+            |> MongoBson.ofJson
+            |> FilterDefinition.op_Implicit
+
+        collection.DeleteOneAsync(filter, opts)
+
     let query<'a> (collection: IMongoCollection<BsonDocument>) =
         collection.AsQueryable<BsonDocument>() |> Seq.map MongoBson.toObject<'a>
 

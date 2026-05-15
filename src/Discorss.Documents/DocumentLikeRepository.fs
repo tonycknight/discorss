@@ -10,12 +10,14 @@ open MongoDB.Bson
 type IDocumentLikeRepository =
     abstract member GetAsync: string -> Task<DocumentLike option>
     abstract member SetAsync: DocumentLike -> Task<DocumentLike>
+    abstract member DeleteAsync: string -> Task
 
 [<ExcludeFromCodeCoverage>]
 type StubDocumentLikeRepository() =
     interface IDocumentLikeRepository with
         member this.GetAsync(uri: string) = None |> Task.ofResult
         member this.SetAsync(value: DocumentLike) = value |> Task.ofResult
+        member this.DeleteAsync(uri: string) = task { ignore 0 }
 
 type MongoDocumentLikeRepository(config: IOptions<AppConfiguration>) =
     [<Literal>]
@@ -38,7 +40,7 @@ type MongoDocumentLikeRepository(config: IOptions<AppConfiguration>) =
     interface IDocumentLikeRepository with
         member this.GetAsync(uri: string) =
             task {
-                let! xs = $"{{ _id: '{uri}' }}" |> Mongo.getMany<BsonDocument> collection
+                let! xs = $"{{ _id: '{Strings.lower uri}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromDocumentLikeBson |> Seq.tryHead
             }
@@ -51,4 +53,10 @@ type MongoDocumentLikeRepository(config: IOptions<AppConfiguration>) =
                     new Exception("Set not acknowledged") |> raise
 
                 return value
+            }
+
+        member this.DeleteAsync(uri: string) =
+            task {
+                let! r = $"{{ _id: '{Strings.lower uri}' }}" |> Mongo.delete collection
+                ignore r
             }
