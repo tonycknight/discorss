@@ -2,6 +2,7 @@ namespace Discorss.Documents.Service
 
 open System
 open Discorss.ApiModels
+open Discorss.Documents
 
 module Mapping =
 
@@ -13,3 +14,10 @@ module Mapping =
           author = value.author
           publication = value.publication |> DateTimeOffset
           categories = value.categories }
+
+    let toDocumentLikeApiModel (value: Discorss.Documents.DocumentLike) =
+        { Discorss.ApiModels.DocumentLike.uri = value.uri
+          liked = value.liked }
+
+    let fromDocumentLikeApiModel (value: Discorss.ApiModels.DocumentLike) =
+        { Discorss.Documents.DocumentLike.uri = value.uri; liked = value.liked }
