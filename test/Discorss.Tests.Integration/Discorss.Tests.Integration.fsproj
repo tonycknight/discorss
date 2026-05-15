@@ -8,7 +8,8 @@
   <ItemGroup>
     <Compile Include="Arbitraries.fs" />
     <Compile Include="TestHelpers.fs" />
-    <Compile Include="Feeds\MongoFeedRepositoryTests.fs" />    
+    <Compile Include="Feeds\MongoFeedRepositoryTests.fs" />
+    <Compile Include="Documents\MongoDocumentLikesRepositoryTests.fs" />    
     <Compile Include="Documents\MongoDocumentRepositoryTests.fs" />    
     <Compile Include="Documents\MongoDocumentStatisticsRepositoryTests.fs" />
   </ItemGroup>

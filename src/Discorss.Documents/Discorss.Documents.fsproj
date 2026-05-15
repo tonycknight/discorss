@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="Models.fs" />
     <Compile Include="DocumentRepository.fs" />
+    <Compile Include="DocumentLikeRepository.fs" />
     <Compile Include="DocumentNotificationWriter.fs" />
     <Compile Include="DocumentNotificationReader.fs" />
     <Compile Include="Lexicons.fs" />
