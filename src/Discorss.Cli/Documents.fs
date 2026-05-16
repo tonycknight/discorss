@@ -186,6 +186,16 @@ type CycleDocumentsCommand() =
     let openBrowser (document: Document) =
         document.uri |> Process.openUri |> ignore
 
+    let getNextDocument (settings: DocumentsCommandSettings) layout =
+        task {
+            try
+                let! doc = DiscorssApi.nextDocument settings.ApiHost
+                return Choice1Of2 doc
+            with
+            | ex ->
+                return Choice2Of2 ex.Message
+        }
+
     override this.ExecuteAsync(context, settings, cancellationToken) =
         task {
             let likeDoc = likeDoc settings.ApiHost
@@ -200,44 +210,44 @@ type CycleDocumentsCommand() =
 
                             None |> DocumentsConsole.updateDocumentsLayout mainLayout
 
-                            while not quit do
+                            while not quit do    
+                                let mutable doc: Document option = None
+                                DocumentsConsole.setFetchingStatus mainLayout
 
-                                try
-                                    DocumentsConsole.setFetchingStatus mainLayout
+                                ctx.UpdateTarget(mainLayout)
 
+                                let! docResponse = getNextDocument settings mainLayout
+                                match docResponse with
+                                | Choice2Of2 msg ->
+                                    msg |> Console.red |> DocumentsConsole.updateStatus mainLayout
                                     ctx.UpdateTarget(mainLayout)
-
-                                    let! doc = DiscorssApi.nextDocument settings.ApiHost
-
+                                | Choice1Of2 d ->                                    
+                                    doc <- d
                                     doc |> DocumentsConsole.updateDocumentsLayout mainLayout
                                     doc |> DocumentsConsole.updateDocumentFetchStatus mainLayout
-
                                     ctx.UpdateTarget(mainLayout)
 
-                                    let mutable nextDoc = false
+                                let mutable nextDoc = false
 
-                                    while not nextDoc do
-                                        match System.Console.ReadKey(true).Key with
-                                        | System.ConsoleKey.Q ->
-                                            quit <- true
-                                            nextDoc <- true
-                                        | System.ConsoleKey.UpArrow
-                                        | System.ConsoleKey.Add
-                                        | System.ConsoleKey.OemPlus ->
-                                            match doc with
-                                            | Some doc -> do! doc |> likeDoc true
-                                            | None -> ignore 0
-                                        | System.ConsoleKey.DownArrow
-                                        | System.ConsoleKey.Subtract
-                                        | System.ConsoleKey.OemMinus -> 
-                                            match doc with
-                                            | Some doc -> do! doc |> likeDoc false
-                                            | None -> ignore 0
-                                        | System.ConsoleKey.O -> doc |> Option.iter openBrowser
-                                        | _ -> nextDoc <- true
-                                with ex ->
-                                    ex.Message |> Console.red |> DocumentsConsole.updateStatus mainLayout
-                                    ctx.UpdateTarget(mainLayout)
+                                while not nextDoc do
+                                    match System.Console.ReadKey(true).Key with
+                                    | System.ConsoleKey.Q ->
+                                        quit <- true
+                                        nextDoc <- true
+                                    | System.ConsoleKey.UpArrow
+                                    | System.ConsoleKey.Add
+                                    | System.ConsoleKey.OemPlus ->
+                                        match doc with
+                                        | Some doc -> do! doc |> likeDoc true
+                                        | None -> ignore 0
+                                    | System.ConsoleKey.DownArrow
+                                    | System.ConsoleKey.Subtract
+                                    | System.ConsoleKey.OemMinus -> 
+                                        match doc with
+                                        | Some doc -> do! doc |> likeDoc false
+                                        | None -> ignore 0
+                                    | System.ConsoleKey.O -> doc |> Option.iter openBrowser
+                                    | _ -> nextDoc <- true
                                     
                         })
 
