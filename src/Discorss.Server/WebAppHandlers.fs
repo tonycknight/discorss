@@ -16,6 +16,7 @@ module WebAppHandlers =
                 let statsTasks =
                     [| sp.GetRequiredService<Documents.IDocumentRepository>() :?> IStatsSource
                        sp.GetRequiredService<Documents.IDocumentStatisticsRepository>() :?> IStatsSource
+                       sp.GetRequiredService<Documents.IDocumentLikeRepository>() :?> IStatsSource
                        sp.GetRequiredService<Feeds.IFeedRepository>() :?> IStatsSource
                        sp.GetRequiredService<Documents.IDocumentNotificationReader>() :?> IStatsSource
                        sp.GetRequiredService<Ingestion.QueueMonitorActor>() :> IStatsSource
