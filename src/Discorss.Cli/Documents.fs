@@ -11,6 +11,9 @@ module DocumentsConsole =
     let private render value =
         value |> Console.markup |> Console.renderable
 
+    let private yellow = Console.yellow
+    let private cyan = Console.cyan
+
     let documentsLayout () =
         let titlePanel = Layout("title").Size(1)
         let uriPanel = Layout("uri").Size(1)
@@ -28,16 +31,20 @@ module DocumentsConsole =
         let instructions =
             let line =
                 seq {
-                    "Press " |> Console.yellow
-                    "Q" |> Console.cyan
-                    " to quit, " |> Console.yellow
-                    "O" |> Console.cyan
-                    " to open page, " |> Console.yellow
-                    "any key to continue." |> Console.yellow
+                    yellow "Press "
+                    cyan "Q"
+                    yellow " to quit, "
+                    cyan "O"
+                    yellow " to open page, "
+                    cyan "↑"
+                    yellow " to like, "
+                    cyan "↓"
+                    yellow " to dislike,"
+                    yellow " any key to continue."
                 }
                 |> Strings.join ""
 
-            Panel(line |> render).Border(BoxBorder.Rounded).BorderColor(Color.Lime)
+            Panel(render line).Border(BoxBorder.Rounded).BorderColor(Color.Lime)
 
         let instructions = Layout(instructions).Size(4)
 
