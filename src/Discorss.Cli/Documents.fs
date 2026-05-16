@@ -178,22 +178,27 @@ type CycleDocumentsCommand() =
     let mainLayout = DocumentsConsole.screenLayout ()
 
     let likeDoc host (ctx: LiveDisplayContext) (value: bool) (document: Document) =
+        let likeDoc host (value: bool) (document: Document) =
+            task {
+                try
+                    let! r = document |> DiscorssApi.likeDocument host value
+                    return 
+                        if r.liked then $"Document liked." |> Console.green else "Document unliked." |> Console.orange                
+                with
+                | ex ->
+                    return ex.Message |> Console.red
+            }
+
         task {
-            try
-                let! r = document |> DiscorssApi.likeDocument host value
-                let msg = if r.liked then $"Document liked." |> Console.green else "Document unliked." |> Console.orange
-                msg |> DocumentsConsole.updateStatus mainLayout
-                ctx.UpdateTarget(mainLayout)                
-            with
-            | ex ->
-                ex.Message |> Console.red |> DocumentsConsole.updateStatus mainLayout
-                ctx.UpdateTarget(mainLayout)
+            let! msg = document |> likeDoc host value 
+            msg |> DocumentsConsole.updateStatus mainLayout
+            ctx.UpdateTarget(mainLayout)                
         }
 
     let openBrowser (document: Document) =
         document.uri |> Process.openUri |> ignore
 
-    let getNextDocument (settings: DocumentsCommandSettings) (ctx: LiveDisplayContext) mainLayout =
+    let getNextDocument (settings: DocumentsCommandSettings) (ctx: LiveDisplayContext) =
         task {
             try
                 DocumentsConsole.setFetchingStatus mainLayout
@@ -215,9 +220,7 @@ type CycleDocumentsCommand() =
         }
 
     override this.ExecuteAsync(context, settings, cancellationToken) =
-        task {
-            
-
+        task {            
             do!
                 AnsiConsole
                     .Live(mainLayout)
@@ -231,7 +234,7 @@ type CycleDocumentsCommand() =
 
                             while not quit do    
                                 
-                                let! doc = getNextDocument settings ctx mainLayout
+                                let! doc = getNextDocument settings ctx
 
                                 let mutable nextDoc = false
 
