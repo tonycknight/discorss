@@ -32,7 +32,14 @@ module MongoBson =
 
     let getProperty (key: string) (doc: BsonDocument) = doc.[key]
 
+    let getPropertyOption (key: string) (doc: BsonDocument) =
+        match doc.TryGetValue key with
+        | (true, x) -> Some x
+        | (false, _) -> None
+
     let asString (value: BsonValue) = value.AsString
+
+    let asBoolean (value: BsonValue) = value.AsBoolean
 
     let asInt32 (value: BsonValue) = value.AsInt32
 
@@ -123,6 +130,13 @@ module Mongo =
             |> FilterDefinition.op_Implicit
 
         collection.ReplaceOneAsync(filter, doc, opts)
+
+    let delete (collection: IMongoCollection<BsonDocument>) (predicate: string) =
+        let opts = DeleteOptions()
+
+        let filter = predicate |> MongoBson.ofJson |> FilterDefinition.op_Implicit
+
+        collection.DeleteOneAsync(filter, opts)
 
     let query<'a> (collection: IMongoCollection<BsonDocument>) =
         collection.AsQueryable<BsonDocument>() |> Seq.map MongoBson.toObject<'a>

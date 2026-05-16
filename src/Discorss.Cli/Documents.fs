@@ -11,6 +11,9 @@ module DocumentsConsole =
     let private render value =
         value |> Console.markup |> Console.renderable
 
+    let private yellow = Console.yellow
+    let private cyan = Console.cyan
+
     let documentsLayout () =
         let titlePanel = Layout("title").Size(1)
         let uriPanel = Layout("uri").Size(1)
@@ -26,13 +29,22 @@ module DocumentsConsole =
             Layout("status").Update(panel).Size(2)
 
         let instructions =
-            Panel(
-                "Press Q to quit, O to open page, any key to continue."
-                |> Console.yellow
-                |> render
-            )
-                .Border(BoxBorder.Rounded)
-                .BorderColor(Color.Lime)
+            let line =
+                seq {
+                    yellow "Press "
+                    cyan "Q"
+                    yellow " to quit, "
+                    cyan "O"
+                    yellow " to open page, "
+                    cyan "↑"
+                    yellow " to like, "
+                    cyan "↓"
+                    yellow " to dislike,"
+                    yellow " any key to continue."
+                }
+                |> Strings.join ""
+
+            Panel(render line).Border(BoxBorder.Rounded).BorderColor(Color.Lime)
 
         let instructions = Layout(instructions).Size(4)
 
@@ -142,7 +154,6 @@ module DocumentsConsole =
         | Some _ -> ""
         |> updateStatus layout
 
-
 type GetNextDocumentCommand(nuget: Tk.Nuget.INugetClient) =
     inherit AsyncCommand<DocumentsCommandSettings>()
 
@@ -162,14 +173,88 @@ type GetNextDocumentCommand(nuget: Tk.Nuget.INugetClient) =
 
     interface ICommandLimiter<CommandSettings>
 
+type ConsoleKey = System.ConsoleKey
+
 type CycleDocumentsCommand() =
     inherit AsyncCommand<DocumentsCommandSettings>()
 
     let mainLayout = DocumentsConsole.screenLayout ()
 
+    let likeDoc host (ctx: LiveDisplayContext) (value: bool) (document: Document) =
+        let likeDoc host (value: bool) (document: Document) =
+            task {
+                try
+                    let! r = document |> DiscorssApi.likeDocument host value
+
+                    return
+                        if r.liked then
+                            $"Document liked." |> Console.green
+                        else
+                            "Document unliked." |> Console.orange
+                with ex ->
+                    return ex.Message |> Console.red
+            }
+
+        task {
+            let! msg = document |> likeDoc host value
+            msg |> DocumentsConsole.updateStatus mainLayout
+            ctx.UpdateTarget(mainLayout)
+        }
+
+    let openBrowser (document: Document) =
+        document.uri |> Process.openUri |> ignore
+
+    let getNextDocument (settings: DocumentsCommandSettings) (ctx: LiveDisplayContext) =
+        task {
+            try
+                DocumentsConsole.setFetchingStatus mainLayout
+                ctx.UpdateTarget(mainLayout)
+
+                let! doc = DiscorssApi.nextDocument settings.ApiHost
+
+                doc |> DocumentsConsole.updateDocumentsLayout mainLayout
+                doc |> DocumentsConsole.updateDocumentFetchStatus mainLayout
+                ctx.UpdateTarget(mainLayout)
+
+                return doc
+            with ex ->
+                None |> DocumentsConsole.updateDocumentsLayout mainLayout
+                ex.Message |> Console.red |> DocumentsConsole.updateStatus mainLayout
+                ctx.UpdateTarget(mainLayout)
+                return None
+        }
+
+    let keyLoop (settings: DocumentsCommandSettings) (ctx: LiveDisplayContext) (doc: Document option) =
+        task {
+            let mutable quitApp = false
+            let mutable quitLoop = false
+            let likeDoc = likeDoc settings.ApiHost ctx
+
+            while not quitLoop do
+                match System.Console.ReadKey(true).Key with
+                | ConsoleKey.Q ->
+                    quitApp <- true
+                    quitLoop <- true
+                | ConsoleKey.UpArrow
+                | ConsoleKey.Add
+                | ConsoleKey.OemPlus ->
+                    match doc with
+                    | Some doc -> do! doc |> likeDoc true
+                    | None -> ignore 0
+                | ConsoleKey.DownArrow
+                | ConsoleKey.Subtract
+                | ConsoleKey.OemMinus ->
+                    match doc with
+                    | Some doc -> do! doc |> likeDoc false
+                    | None -> ignore 0
+                | ConsoleKey.O -> doc |> Option.iter openBrowser
+                | _ -> quitLoop <- true
+
+            return quitApp
+        }
+
     override this.ExecuteAsync(context, settings, cancellationToken) =
         task {
-
             do!
                 AnsiConsole
                     .Live(mainLayout)
@@ -182,31 +267,10 @@ type CycleDocumentsCommand() =
 
                             while not quit do
 
-                                try
-                                    DocumentsConsole.setFetchingStatus mainLayout
+                                let! doc = getNextDocument settings ctx
 
-                                    ctx.UpdateTarget(mainLayout)
-
-                                    let! doc = DiscorssApi.nextDocument settings.ApiHost
-
-                                    doc |> DocumentsConsole.updateDocumentsLayout mainLayout
-                                    doc |> DocumentsConsole.updateDocumentFetchStatus mainLayout
-
-                                    ctx.UpdateTarget(mainLayout)
-
-                                    let mutable nextDoc = false
-
-                                    while not nextDoc do
-                                        match System.Console.ReadKey(true).Key with
-                                        | System.ConsoleKey.Q ->
-                                            quit <- true
-                                            nextDoc <- true
-                                        | System.ConsoleKey.O -> doc |> Option.map (_.uri >> Process.openUri) |> ignore
-                                        | _ -> nextDoc <- true
-                                with ex ->
-                                    ignore 0
-
-
+                                let! q = keyLoop settings ctx doc
+                                quit <- q
                         })
 
             return ReturnCodes.ok

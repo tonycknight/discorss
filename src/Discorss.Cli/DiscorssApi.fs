@@ -119,3 +119,22 @@ module DiscorssApi =
                         |> Some
                     | _ -> None)
         }
+
+    let likeDocument host like (document: Document) =
+        task {
+            let uri = Http.route host "api/v1/documents/likes/"
+
+            let req =
+                { ApiModels.DocumentLike.uri = document.uri
+                  liked = like }
+
+            let body = req |> Newtonsoft.Json.JsonConvert.SerializeObject
+            let req = new HttpRequestMessage(HttpMethod.Put, uri) |> Http.applyJsonContent body
+
+            let! resp = send req
+
+            return
+                resp
+                |> onResponse (fun (_, body, _, _) ->
+                    Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.DocumentLike> body)
+        }

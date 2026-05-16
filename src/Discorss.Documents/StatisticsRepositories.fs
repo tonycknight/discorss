@@ -49,7 +49,7 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
 
         member this.GetAsync(uri: string) =
             task {
-                let! xs = $"{{ _id: '{uri}' }}" |> Mongo.getMany<BsonDocument> collection
+                let! xs = $"{{ _id: '{Strings.lower uri}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromDocumentStatisticsBson |> Seq.tryHead
             }

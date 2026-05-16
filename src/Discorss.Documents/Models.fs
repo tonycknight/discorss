@@ -12,7 +12,6 @@ type Document =
       categories: string[]
       sha512: string }
 
-
 type DocumentStatistics =
     { uri: string
       wordCount: int
@@ -20,6 +19,7 @@ type DocumentStatistics =
 
 type WordStatistics = { word: string; wordCounts: int }
 
+type DocumentLike = { uri: string; liked: bool }
 
 module BsonMapping =
     open Discorss
@@ -28,7 +28,7 @@ module BsonMapping =
 
     let toDocumentBson (document: Document) =
         newObject ()
-        |> setDocId (value document.uri)
+        |> setDocId (document.uri |> Strings.lower |> value)
         |> setProperty "uri" (value document.uri)
         |> setProperty "title" (value document.title)
         |> setProperty "content" (value document.content)
@@ -51,10 +51,9 @@ module BsonMapping =
           publication = document |> getProperty "publication" |> asDateTime
           categories = document |> getProperty "categories" |> asStringArray }
 
-
     let toDocumentStatisticsBson (stats: DocumentStatistics) =
         newObject ()
-        |> setDocId (value stats.uri)
+        |> setDocId (stats.uri |> Strings.lower |> value)
         |> setProperty "uri" (value stats.uri)
         |> setProperty "wordCount" (value stats.wordCount)
         |> setProperty "wordFrequencies" (stats.wordFrequencies |> Dictionary.ofMap |> value)
@@ -74,3 +73,13 @@ module BsonMapping =
         { DocumentStatistics.uri = document |> asString "uri"
           wordCount = document |> asInt "wordCount"
           wordFrequencies = freqs }
+
+    let toDocumentLikeBson (document: DocumentLike) =
+        newObject ()
+        |> setDocId (document.uri |> Strings.lower |> value)
+        |> setProperty "uri" (value document.uri)
+        |> setProperty "liked" (value document.liked)
+
+    let fromDocumentLikeBson (document: BsonDocument) =
+        { DocumentLike.uri = document |> getProperty "uri" |> asString
+          liked = document |> getProperty "liked" |> asBoolean }

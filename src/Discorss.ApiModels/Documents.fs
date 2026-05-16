@@ -11,3 +11,6 @@ type Document =
       author: string
       content: string
       categories: string[] }
+
+[<CLIMutable>]
+type DocumentLike = { uri: string; liked: bool }

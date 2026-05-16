@@ -57,7 +57,7 @@ type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILo
 
         member this.GetDocumentAsync(key: string) =
             task {
-                let! xs = $"{{ _id: '{key}' }}" |> Mongo.getMany<BsonDocument> collection
+                let! xs = $"{{ _id: '{Strings.lower key}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromDocumentBson |> Seq.tryHead
             }
