@@ -177,28 +177,46 @@ type CycleDocumentsCommand() =
 
     let mainLayout = DocumentsConsole.screenLayout ()
 
-    let likeDoc host (value: bool) (document: Document) =
+    let likeDoc host (ctx: LiveDisplayContext) (value: bool) (document: Document) =
         task {
-            let! r = document |> DiscorssApi.likeDocument host value
-            ignore 0
+            try
+                let! r = document |> DiscorssApi.likeDocument host value
+                let msg = if r.liked then $"Document liked." |> Console.green else "Document unliked." |> Console.orange
+                msg |> DocumentsConsole.updateStatus mainLayout
+                ctx.UpdateTarget(mainLayout)                
+            with
+            | ex ->
+                ex.Message |> Console.red |> DocumentsConsole.updateStatus mainLayout
+                ctx.UpdateTarget(mainLayout)
         }
 
     let openBrowser (document: Document) =
         document.uri |> Process.openUri |> ignore
 
-    let getNextDocument (settings: DocumentsCommandSettings) layout =
+    let getNextDocument (settings: DocumentsCommandSettings) (ctx: LiveDisplayContext) mainLayout =
         task {
             try
+                DocumentsConsole.setFetchingStatus mainLayout
+                ctx.UpdateTarget(mainLayout)
+
                 let! doc = DiscorssApi.nextDocument settings.ApiHost
-                return Choice1Of2 doc
+
+                doc |> DocumentsConsole.updateDocumentsLayout mainLayout
+                doc |> DocumentsConsole.updateDocumentFetchStatus mainLayout
+                ctx.UpdateTarget(mainLayout)
+
+                return doc
             with
             | ex ->
-                return Choice2Of2 ex.Message
+                None |> DocumentsConsole.updateDocumentsLayout mainLayout
+                ex.Message |> Console.red |> DocumentsConsole.updateStatus mainLayout
+                ctx.UpdateTarget(mainLayout)
+                return None
         }
 
     override this.ExecuteAsync(context, settings, cancellationToken) =
         task {
-            let likeDoc = likeDoc settings.ApiHost
+            
 
             do!
                 AnsiConsole
@@ -207,25 +225,13 @@ type CycleDocumentsCommand() =
                     .StartAsync(fun ctx ->
                         task {
                             let mutable quit = false
+                            let likeDoc = likeDoc settings.ApiHost ctx
 
                             None |> DocumentsConsole.updateDocumentsLayout mainLayout
 
                             while not quit do    
-                                let mutable doc: Document option = None
-                                DocumentsConsole.setFetchingStatus mainLayout
-
-                                ctx.UpdateTarget(mainLayout)
-
-                                let! docResponse = getNextDocument settings mainLayout
-                                match docResponse with
-                                | Choice2Of2 msg ->
-                                    msg |> Console.red |> DocumentsConsole.updateStatus mainLayout
-                                    ctx.UpdateTarget(mainLayout)
-                                | Choice1Of2 d ->                                    
-                                    doc <- d
-                                    doc |> DocumentsConsole.updateDocumentsLayout mainLayout
-                                    doc |> DocumentsConsole.updateDocumentFetchStatus mainLayout
-                                    ctx.UpdateTarget(mainLayout)
+                                
+                                let! doc = getNextDocument settings ctx mainLayout
 
                                 let mutable nextDoc = false
 
