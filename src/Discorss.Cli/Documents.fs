@@ -236,9 +236,9 @@ type CycleDocumentsCommand() =
                                         | System.ConsoleKey.O -> doc |> Option.iter openBrowser
                                         | _ -> nextDoc <- true
                                 with ex ->
-                                    ignore 0
-
-
+                                    ex.Message |> Console.red |> DocumentsConsole.updateStatus mainLayout
+                                    ctx.UpdateTarget(mainLayout)
+                                    
                         })
 
             return ReturnCodes.ok
