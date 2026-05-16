@@ -74,12 +74,12 @@ module BsonMapping =
           wordCount = document |> asInt "wordCount"
           wordFrequencies = freqs }
 
-    let toDocumentLikeBson (document: DocumentLike) =        
+    let toDocumentLikeBson (document: DocumentLike) =
         newObject ()
         |> setDocId (document.uri |> Strings.lower |> value)
         |> setProperty "uri" (value document.uri)
         |> setProperty "liked" (value document.liked)
-        
+
     let fromDocumentLikeBson (document: BsonDocument) =
         { DocumentLike.uri = document |> getProperty "uri" |> asString
           liked = document |> getProperty "liked" |> asBoolean }

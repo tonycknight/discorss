@@ -21,4 +21,5 @@ module Mapping =
           liked = value.liked }
 
     let fromDocumentLikeApiModel (value: Discorss.ApiModels.DocumentLike) =
-        { Discorss.Documents.DocumentLike.uri = value.uri; liked = value.liked }
+        { Discorss.Documents.DocumentLike.uri = value.uri
+          liked = value.liked }

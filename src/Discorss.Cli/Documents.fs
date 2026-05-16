@@ -26,13 +26,18 @@ module DocumentsConsole =
             Layout("status").Update(panel).Size(2)
 
         let instructions =
-            Panel(
-                "Press Q to quit, O to open page, any key to continue."
-                |> Console.yellow
-                |> render
-            )
-                .Border(BoxBorder.Rounded)
-                .BorderColor(Color.Lime)
+            let line =
+                seq {
+                    "Press " |> Console.yellow
+                    "Q" |> Console.cyan
+                    " to quit, " |> Console.yellow
+                    "O" |> Console.cyan
+                    " to open page, " |> Console.yellow
+                    "any key to continue." |> Console.yellow
+                }
+                |> Strings.join ""
+
+            Panel(line |> render).Border(BoxBorder.Rounded).BorderColor(Color.Lime)
 
         let instructions = Layout(instructions).Size(4)
 
@@ -142,7 +147,6 @@ module DocumentsConsole =
         | Some _ -> ""
         |> updateStatus layout
 
-
 type GetNextDocumentCommand(nuget: Tk.Nuget.INugetClient) =
     inherit AsyncCommand<DocumentsCommandSettings>()
 
@@ -167,8 +171,18 @@ type CycleDocumentsCommand() =
 
     let mainLayout = DocumentsConsole.screenLayout ()
 
+    let likeDoc host (value: bool) (document: Document) =
+        task {
+            let! r = document |> DiscorssApi.likeDocument host value
+            ignore 0
+        }
+
+    let openBrowser (document: Document) =
+        document.uri |> Process.openUri |> ignore
+
     override this.ExecuteAsync(context, settings, cancellationToken) =
         task {
+            let likeDoc = likeDoc settings.ApiHost
 
             do!
                 AnsiConsole
@@ -201,7 +215,19 @@ type CycleDocumentsCommand() =
                                         | System.ConsoleKey.Q ->
                                             quit <- true
                                             nextDoc <- true
-                                        | System.ConsoleKey.O -> doc |> Option.map (_.uri >> Process.openUri) |> ignore
+                                        | System.ConsoleKey.UpArrow
+                                        | System.ConsoleKey.Add
+                                        | System.ConsoleKey.OemPlus ->
+                                            match doc with
+                                            | Some doc -> do! doc |> (likeDoc true)
+                                            | None -> ignore 0
+                                        | System.ConsoleKey.DownArrow
+                                        | System.ConsoleKey.Subtract
+                                        | System.ConsoleKey.OemMinus ->
+                                            match doc with
+                                            | Some doc -> do! doc |> (likeDoc false)
+                                            | None -> ignore 0
+                                        | System.ConsoleKey.O -> doc |> Option.iter openBrowser
                                         | _ -> nextDoc <- true
                                 with ex ->
                                     ignore 0

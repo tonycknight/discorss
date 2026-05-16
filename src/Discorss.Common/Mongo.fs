@@ -133,11 +133,8 @@ module Mongo =
 
     let delete (collection: IMongoCollection<BsonDocument>) (predicate: string) =
         let opts = DeleteOptions()
-        
-        let filter =
-            predicate
-            |> MongoBson.ofJson
-            |> FilterDefinition.op_Implicit
+
+        let filter = predicate |> MongoBson.ofJson |> FilterDefinition.op_Implicit
 
         collection.DeleteOneAsync(filter, opts)
 
