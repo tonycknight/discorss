@@ -172,9 +172,11 @@ type GetNextDocumentCommand(nuget: Tk.Nuget.INugetClient) =
 
     interface ICommandLimiter<CommandSettings>
 
+type ConsoleKey = System.ConsoleKey
+
 type CycleDocumentsCommand() =
     inherit AsyncCommand<DocumentsCommandSettings>()
-
+    
     let mainLayout = DocumentsConsole.screenLayout ()
 
     let likeDoc host (ctx: LiveDisplayContext) (value: bool) (document: Document) =
@@ -217,6 +219,35 @@ type CycleDocumentsCommand() =
                 ex.Message |> Console.red |> DocumentsConsole.updateStatus mainLayout
                 ctx.UpdateTarget(mainLayout)
                 return None
+        }
+
+    let keyLoop (settings: DocumentsCommandSettings) (ctx: LiveDisplayContext) (doc: Document option) =
+        task {
+            let mutable quitApp = false
+            let mutable quitLoop = false
+            let likeDoc = likeDoc settings.ApiHost ctx
+
+            while not quitLoop do
+                match System.Console.ReadKey(true).Key with
+                | ConsoleKey.Q ->
+                    quitApp <- true
+                    quitLoop <- true
+                | ConsoleKey.UpArrow
+                | ConsoleKey.Add
+                | ConsoleKey.OemPlus ->
+                    match doc with
+                    | Some doc -> do! doc |> likeDoc true
+                    | None -> ignore 0
+                | ConsoleKey.DownArrow
+                | ConsoleKey.Subtract
+                | ConsoleKey.OemMinus -> 
+                    match doc with
+                    | Some doc -> do! doc |> likeDoc false
+                    | None -> ignore 0
+                | ConsoleKey.O -> doc |> Option.iter openBrowser
+                | _ -> quitLoop <- true
+                                    
+            return quitApp
         }
 
     override this.ExecuteAsync(context, settings, cancellationToken) =
