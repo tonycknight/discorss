@@ -8,9 +8,7 @@ type DocumentsCommandSettings() =
     inherit BaseCommandSettings()
 
 module DocumentsConsole =
-    let private render value =
-        value |> Console.markup |> Console.renderable
-
+    let private render value = value |> Console.markup |> Console.renderable
     let private yellow = Console.yellow
     let private cyan = Console.cyan
 
@@ -29,7 +27,7 @@ module DocumentsConsole =
             Layout("status").Update(panel).Size(2)
 
         let instructions =
-            let line =
+            let line = 
                 seq {
                     yellow "Press "
                     cyan "Q"
@@ -41,10 +39,11 @@ module DocumentsConsole =
                     cyan "↓"
                     yellow " to dislike,"
                     yellow " any key to continue."
-                }
-                |> Strings.join ""
+                } |> Strings.join ""
 
-            Panel(render line).Border(BoxBorder.Rounded).BorderColor(Color.Lime)
+            Panel(render line)
+                .Border(BoxBorder.Rounded)
+                .BorderColor(Color.Lime)
 
         let instructions = Layout(instructions).Size(4)
 
@@ -226,13 +225,13 @@ type CycleDocumentsCommand() =
                                         | System.ConsoleKey.Add
                                         | System.ConsoleKey.OemPlus ->
                                             match doc with
-                                            | Some doc -> do! doc |> (likeDoc true)
+                                            | Some doc -> do! doc |> likeDoc true
                                             | None -> ignore 0
                                         | System.ConsoleKey.DownArrow
                                         | System.ConsoleKey.Subtract
-                                        | System.ConsoleKey.OemMinus ->
+                                        | System.ConsoleKey.OemMinus -> 
                                             match doc with
-                                            | Some doc -> do! doc |> (likeDoc false)
+                                            | Some doc -> do! doc |> likeDoc false
                                             | None -> ignore 0
                                         | System.ConsoleKey.O -> doc |> Option.iter openBrowser
                                         | _ -> nextDoc <- true
