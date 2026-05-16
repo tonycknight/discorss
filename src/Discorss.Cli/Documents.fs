@@ -8,7 +8,9 @@ type DocumentsCommandSettings() =
     inherit BaseCommandSettings()
 
 module DocumentsConsole =
-    let private render value = value |> Console.markup |> Console.renderable
+    let private render value =
+        value |> Console.markup |> Console.renderable
+
     let private yellow = Console.yellow
     let private cyan = Console.cyan
 
@@ -27,7 +29,7 @@ module DocumentsConsole =
             Layout("status").Update(panel).Size(2)
 
         let instructions =
-            let line = 
+            let line =
                 seq {
                     yellow "Press "
                     cyan "Q"
@@ -39,11 +41,10 @@ module DocumentsConsole =
                     cyan "↓"
                     yellow " to dislike,"
                     yellow " any key to continue."
-                } |> Strings.join ""
+                }
+                |> Strings.join ""
 
-            Panel(render line)
-                .Border(BoxBorder.Rounded)
-                .BorderColor(Color.Lime)
+            Panel(render line).Border(BoxBorder.Rounded).BorderColor(Color.Lime)
 
         let instructions = Layout(instructions).Size(4)
 
@@ -176,7 +177,7 @@ type ConsoleKey = System.ConsoleKey
 
 type CycleDocumentsCommand() =
     inherit AsyncCommand<DocumentsCommandSettings>()
-    
+
     let mainLayout = DocumentsConsole.screenLayout ()
 
     let likeDoc host (ctx: LiveDisplayContext) (value: bool) (document: Document) =
@@ -184,17 +185,20 @@ type CycleDocumentsCommand() =
             task {
                 try
                     let! r = document |> DiscorssApi.likeDocument host value
-                    return 
-                        if r.liked then $"Document liked." |> Console.green else "Document unliked." |> Console.orange                
-                with
-                | ex ->
+
+                    return
+                        if r.liked then
+                            $"Document liked." |> Console.green
+                        else
+                            "Document unliked." |> Console.orange
+                with ex ->
                     return ex.Message |> Console.red
             }
 
         task {
-            let! msg = document |> likeDoc host value 
+            let! msg = document |> likeDoc host value
             msg |> DocumentsConsole.updateStatus mainLayout
-            ctx.UpdateTarget(mainLayout)                
+            ctx.UpdateTarget(mainLayout)
         }
 
     let openBrowser (document: Document) =
@@ -213,8 +217,7 @@ type CycleDocumentsCommand() =
                 ctx.UpdateTarget(mainLayout)
 
                 return doc
-            with
-            | ex ->
+            with ex ->
                 None |> DocumentsConsole.updateDocumentsLayout mainLayout
                 ex.Message |> Console.red |> DocumentsConsole.updateStatus mainLayout
                 ctx.UpdateTarget(mainLayout)
@@ -240,18 +243,18 @@ type CycleDocumentsCommand() =
                     | None -> ignore 0
                 | ConsoleKey.DownArrow
                 | ConsoleKey.Subtract
-                | ConsoleKey.OemMinus -> 
+                | ConsoleKey.OemMinus ->
                     match doc with
                     | Some doc -> do! doc |> likeDoc false
                     | None -> ignore 0
                 | ConsoleKey.O -> doc |> Option.iter openBrowser
                 | _ -> quitLoop <- true
-                                    
+
             return quitApp
         }
 
     override this.ExecuteAsync(context, settings, cancellationToken) =
-        task {            
+        task {
             do!
                 AnsiConsole
                     .Live(mainLayout)
@@ -259,36 +262,15 @@ type CycleDocumentsCommand() =
                     .StartAsync(fun ctx ->
                         task {
                             let mutable quit = false
-                            let likeDoc = likeDoc settings.ApiHost ctx
 
                             None |> DocumentsConsole.updateDocumentsLayout mainLayout
 
-                            while not quit do    
-                                
+                            while not quit do
+
                                 let! doc = getNextDocument settings ctx
 
-                                let mutable nextDoc = false
-
-                                while not nextDoc do
-                                    match System.Console.ReadKey(true).Key with
-                                    | System.ConsoleKey.Q ->
-                                        quit <- true
-                                        nextDoc <- true
-                                    | System.ConsoleKey.UpArrow
-                                    | System.ConsoleKey.Add
-                                    | System.ConsoleKey.OemPlus ->
-                                        match doc with
-                                        | Some doc -> do! doc |> likeDoc true
-                                        | None -> ignore 0
-                                    | System.ConsoleKey.DownArrow
-                                    | System.ConsoleKey.Subtract
-                                    | System.ConsoleKey.OemMinus -> 
-                                        match doc with
-                                        | Some doc -> do! doc |> likeDoc false
-                                        | None -> ignore 0
-                                    | System.ConsoleKey.O -> doc |> Option.iter openBrowser
-                                    | _ -> nextDoc <- true
-                                    
+                                let! q = keyLoop settings ctx doc
+                                quit <- q
                         })
 
             return ReturnCodes.ok
