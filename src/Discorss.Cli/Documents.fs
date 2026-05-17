@@ -40,7 +40,7 @@ module DocumentsConsole =
                     yellow " to like, "
                     cyan "↓"
                     yellow " to dislike,"
-                    yellow " any key to continue."
+                    yellow " any other key to continue."
                 }
                 |> Strings.join ""
 
