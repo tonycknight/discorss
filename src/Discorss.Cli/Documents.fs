@@ -192,7 +192,7 @@ type CycleDocumentsCommand() =
         task {
             try
                 let! like = document |> DiscorssApi.getLikeDocument host
-                return likeStatus like                    
+                return likeStatus like
             with ex ->
                 return ex.Message |> Console.red
         }
@@ -248,10 +248,10 @@ type CycleDocumentsCommand() =
                     task {
                         return!
                             match doc with
-                            | None -> task { return "" }
+                            | None -> Tasks.toTaskResult ""
                             | Some d -> getLikeStatus settings.ApiHost d
                     }
-                likeStatus |> DocumentsConsole.updateStatus mainLayout
+                if likeStatus <> "" then likeStatus |> DocumentsConsole.updateStatus mainLayout
                 
                 ctx.UpdateTarget(mainLayout)
 
