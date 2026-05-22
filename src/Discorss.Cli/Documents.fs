@@ -39,7 +39,9 @@ module DocumentsConsole =
                     cyan "↑"
                     yellow " to like, "
                     cyan "↓"
-                    yellow " to dislike," // TODO: need a button to clear the like/dislike. Del?
+                    yellow " to dislike, "
+                    cyan "Del"
+                    yellow " to remove like/dislike,"
                     yellow " any other key to continue."
                 }
                 |> Strings.join ""
