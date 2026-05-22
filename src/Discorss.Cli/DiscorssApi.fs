@@ -138,3 +138,18 @@ module DiscorssApi =
                 |> onResponse (fun (_, body, _, _) ->
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.DocumentLike> body)
         }
+
+    let deleteDocumentLike host (document: Document) =
+        task {
+            let uri =
+                document.uri
+                |> Http.encode
+                |> sprintf "api/v1/documents/likes/%s/"
+                |> Http.route host
+
+            let req = new HttpRequestMessage(HttpMethod.Delete, uri)
+
+            let! resp = send req
+
+            return resp |> onResponse (fun (_, body, _, _) -> ignore body)
+        }
