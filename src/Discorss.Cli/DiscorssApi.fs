@@ -25,17 +25,9 @@ module DiscorssApi =
         | HttpErrorRequestResponse(status, body, headers, errors) -> error (status, body, headers, errors)
         | HttpExceptionRequestResponse ex -> raise ex
         | HttpOkRequestResponse(status, body, contentType, headers) -> ok (status, body, contentType, headers)
-
-    let private handleErrorResponse (status, body, headers, errors) : ErrorResponseHandler<'a> = new Exception($"{status} received.") |> raise
-
-    let private handleOkResponse (ok: OkResponseHandler<'a>) (resp: HttpRequestResponse) =
-        match resp with
-        | HttpBadGatewayResponse _
-        | HttpTooManyRequestsResponse _ -> new Exception($"{resp.GetType().Name} received.") |> raise
-        | HttpErrorRequestResponse(status, body, headers, errors) -> new Exception($"{status} received.") |> raise
-        | HttpExceptionRequestResponse ex -> raise ex
-        | HttpOkRequestResponse(status, body, contentType, headers) -> ok (status, body, contentType, headers)
-
+            
+    let private handleOkResponse ok = handleResponse ok (fun (status, _, _, _) -> new Exception($"{status} received.") |> raise)
+        
     let getHeartbeat host =
         task {
             let uri = Http.route host "api/v1/heartbeat/"
