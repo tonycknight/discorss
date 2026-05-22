@@ -26,7 +26,9 @@ module DiscorssApi =
         | HttpExceptionRequestResponse ex -> raise ex
         | HttpOkRequestResponse(status, body, contentType, headers) -> ok (status, body, contentType, headers)
 
-    let private onResponse (ok: OkResponseHandler<'a>) (resp: HttpRequestResponse) =
+    let private handleErrorResponse (status, body, headers, errors) : ErrorResponseHandler<'a> = new Exception($"{status} received.") |> raise
+
+    let private handleOkResponse (ok: OkResponseHandler<'a>) (resp: HttpRequestResponse) =
         match resp with
         | HttpBadGatewayResponse _
         | HttpTooManyRequestsResponse _ -> new Exception($"{resp.GetType().Name} received.") |> raise
@@ -60,7 +62,7 @@ module DiscorssApi =
 
             return
                 resp
-                |> onResponse (fun (_, body, _, _) ->
+                |> handleOkResponse (fun (_, body, _, _) ->
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.Stats[]> body)
         }
 
@@ -75,7 +77,7 @@ module DiscorssApi =
 
             return
                 resp
-                |> onResponse (fun (_, body, _, _) ->
+                |> handleOkResponse (fun (_, body, _, _) ->
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.FeedInfo[]> body)
         }
 
@@ -89,7 +91,7 @@ module DiscorssApi =
 
             return
                 resp
-                |> onResponse (fun (_, body, _, _) ->
+                |> handleOkResponse (fun (_, body, _, _) ->
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.Feed> body)
         }
 
@@ -106,7 +108,7 @@ module DiscorssApi =
 
             return
                 resp
-                |> onResponse (fun (_, body, _, _) ->
+                |> handleOkResponse (fun (_, body, _, _) ->
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.FeedInfo> body)
         }
 
@@ -120,7 +122,7 @@ module DiscorssApi =
 
             return
                 resp
-                |> onResponse (fun (status, body, _, _) ->
+                |> handleOkResponse (fun (status, body, _, _) ->
                     match status with
                     | HttpStatusCode.OK ->
                         body
@@ -163,7 +165,7 @@ module DiscorssApi =
 
             return
                 resp
-                |> onResponse (fun (_, body, _, _) ->
+                |> handleOkResponse (fun (_, body, _, _) ->
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.DocumentLike> body)
         }
 
@@ -179,5 +181,5 @@ module DiscorssApi =
 
             let! resp = send req
 
-            return resp |> onResponse (fun (_, body, _, _) -> ignore body)
+            return resp |> handleOkResponse (fun (_, body, _, _) -> ignore body)
         }
