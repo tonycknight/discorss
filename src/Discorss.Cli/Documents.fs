@@ -229,9 +229,21 @@ type CycleDocumentsCommand() =
                 ctx.UpdateTarget(mainLayout)
 
                 let! doc = DiscorssApi.nextDocument settings.ApiHost
-
+                
                 doc |> DocumentsConsole.updateDocumentsLayout mainLayout
                 doc |> DocumentsConsole.updateDocumentFetchStatus mainLayout
+                (*
+                let! like =
+                    task {
+                        match doc with
+                        | None -> return None
+                        | Some d ->
+                            let! result = d |> DiscorssApi.getLikeDocument settings.ApiHost
+                            return Some result
+                    }
+                let msg = like |> Option.map (fun l -> if l.liked then "You liked this document." else "You disliked this document.") |> Option.defaultValue ""
+                msg |> DocumentsConsole.updateStatus mainLayout
+                *)
                 ctx.UpdateTarget(mainLayout)
 
                 return doc
