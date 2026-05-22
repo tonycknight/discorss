@@ -182,17 +182,28 @@ type CycleDocumentsCommand() =
 
     let mainLayout = DocumentsConsole.screenLayout ()
 
+    let likeStatus (like: DocumentLike option) =
+        match  like with
+        | None -> ""
+        | Some l when l.liked -> Console.green "Document liked."
+        | Some l -> Console.orange "Document disliked."
+
+    let getLikeStatus host (document: Document) =
+        task {
+            try
+                let! like = document |> DiscorssApi.getLikeDocument host
+                return likeStatus like                    
+            with ex ->
+                return ex.Message |> Console.red
+        }
+
     let likeDoc host (ctx: LiveDisplayContext) (value: bool) (document: Document) =
         let likeDoc host value (document: Document) =
             task {
                 try
                     let! r = document |> DiscorssApi.likeDocument host value
 
-                    return
-                        if r.liked then
-                            $"Document liked." |> Console.green
-                        else
-                            "Document unliked." |> Console.orange
+                    return Some r |> likeStatus
                 with ex ->
                     return ex.Message |> Console.red
             }
@@ -232,18 +243,16 @@ type CycleDocumentsCommand() =
                 
                 doc |> DocumentsConsole.updateDocumentsLayout mainLayout
                 doc |> DocumentsConsole.updateDocumentFetchStatus mainLayout
-                (*
-                let! like =
+                
+                let! likeStatus =
                     task {
-                        match doc with
-                        | None -> return None
-                        | Some d ->
-                            let! result = d |> DiscorssApi.getLikeDocument settings.ApiHost
-                            return Some result
+                        return!
+                            match doc with
+                            | None -> task { return "" }
+                            | Some d -> getLikeStatus settings.ApiHost d
                     }
-                let msg = like |> Option.map (fun l -> if l.liked then "You liked this document." else "You disliked this document.") |> Option.defaultValue ""
-                msg |> DocumentsConsole.updateStatus mainLayout
-                *)
+                likeStatus |> DocumentsConsole.updateStatus mainLayout
+                
                 ctx.UpdateTarget(mainLayout)
 
                 return doc
