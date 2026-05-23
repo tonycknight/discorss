@@ -36,7 +36,11 @@ module FeedsConsole =
             }
 
         let entry (entry: ApiModels.FeedEntry) =
-            $"{entry.title |> Strings.escapeMarkup |> Console.cyan}"
+            seq {
+                $"{entry.title |> Strings.escapeMarkup |> Console.cyan}"
+                $"{entry.content |> Strings.truncate 100 |> Strings.escapeMarkup |> Console.white}"
+            }
+            |> Strings.join Environment.NewLine
 
         let rows (feed: ApiModels.Feed) =
             seq {
