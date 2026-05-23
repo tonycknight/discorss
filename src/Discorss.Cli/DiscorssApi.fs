@@ -8,7 +8,8 @@ open Discorss.ApiModels
 
 module DiscorssApi =
 
-    type OnOkResponse<'a> = (HttpStatusCode * string * string option * HttpResponseHeaders) -> 'a
+    type OkResponseHandler<'a> = (HttpStatusCode * string * string option * HttpResponseHeaders) -> 'a
+    type ErrorResponseHandler<'a> = (HttpStatusCode * string * HttpResponseHeaders * HttpResponseErrors) -> 'a
 
     let private send req =
         task {
@@ -17,13 +18,20 @@ module DiscorssApi =
             return! req |> Http.send CancellationToken.None client
         }
 
-    let private onResponse (ok: OnOkResponse<'a>) (resp: HttpRequestResponse) =
+    let private handleResponse
+        (ok: OkResponseHandler<'a>)
+        (error: ErrorResponseHandler<'a>)
+        (resp: HttpRequestResponse)
+        =
         match resp with
         | HttpBadGatewayResponse _
         | HttpTooManyRequestsResponse _ -> new Exception($"{resp.GetType().Name} received.") |> raise
-        | HttpErrorRequestResponse(status, body, headers, errors) -> new Exception($"{status} received.") |> raise
+        | HttpErrorRequestResponse(status, body, headers, errors) -> error (status, body, headers, errors)
         | HttpExceptionRequestResponse ex -> raise ex
         | HttpOkRequestResponse(status, body, contentType, headers) -> ok (status, body, contentType, headers)
+
+    let private handleOkResponse ok =
+        handleResponse ok (fun (status, _, _, _) -> new Exception($"{status} received.") |> raise)
 
     let getHeartbeat host =
         task {
@@ -51,7 +59,7 @@ module DiscorssApi =
 
             return
                 resp
-                |> onResponse (fun (_, body, _, _) ->
+                |> handleOkResponse (fun (_, body, _, _) ->
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.Stats[]> body)
         }
 
@@ -66,7 +74,7 @@ module DiscorssApi =
 
             return
                 resp
-                |> onResponse (fun (_, body, _, _) ->
+                |> handleOkResponse (fun (_, body, _, _) ->
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.FeedInfo[]> body)
         }
 
@@ -80,7 +88,7 @@ module DiscorssApi =
 
             return
                 resp
-                |> onResponse (fun (_, body, _, _) ->
+                |> handleOkResponse (fun (_, body, _, _) ->
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.Feed> body)
         }
 
@@ -97,7 +105,7 @@ module DiscorssApi =
 
             return
                 resp
-                |> onResponse (fun (_, body, _, _) ->
+                |> handleOkResponse (fun (_, body, _, _) ->
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.FeedInfo> body)
         }
 
@@ -111,13 +119,34 @@ module DiscorssApi =
 
             return
                 resp
-                |> onResponse (fun (status, body, _, _) ->
+                |> handleOkResponse (fun (status, body, _, _) ->
                     match status with
                     | HttpStatusCode.OK ->
                         body
                         |> Newtonsoft.Json.JsonConvert.DeserializeObject<ApiModels.Document>
                         |> Some
                     | _ -> None)
+        }
+
+    let getLikeDocument host (document: Document) =
+        task {
+            let uri =
+                document.uri
+                |> Http.encode
+                |> sprintf "api/v1/documents/likes/%s/"
+                |> Http.route host
+
+            let req = new HttpRequestMessage(HttpMethod.Get, uri)
+
+            let! resp = send req
+
+            return
+                resp
+                |> handleResponse
+                    (fun (_, body, _, _) ->
+                        Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.DocumentLike> body
+                        |> Some)
+                    (fun (status, body, headers, errors) -> None)
         }
 
     let likeDocument host like (document: Document) =
@@ -135,6 +164,21 @@ module DiscorssApi =
 
             return
                 resp
-                |> onResponse (fun (_, body, _, _) ->
+                |> handleOkResponse (fun (_, body, _, _) ->
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.DocumentLike> body)
+        }
+
+    let deleteDocumentLike host (document: Document) =
+        task {
+            let uri =
+                document.uri
+                |> Http.encode
+                |> sprintf "api/v1/documents/likes/%s/"
+                |> Http.route host
+
+            let req = new HttpRequestMessage(HttpMethod.Delete, uri)
+
+            let! resp = send req
+
+            return resp |> handleOkResponse (fun (_, body, _, _) -> ignore body)
         }

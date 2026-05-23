@@ -36,14 +36,41 @@ type DocumentIngestionActor
         | true, x -> (x :?> string) <> document.sha512 |> Some
         | false, _ -> None
 
-    let checkDocumentDelta (document: Documents.Document) =
+    let documentEditDistance (x: Documents.Document) (y: Documents.Document) =
+
+        let abs (x: int) = System.Math.Abs(x)
+
+        let title = Strings.editDistance x.title y.title
+        let content = Strings.editDistance x.content y.content
+        let desc = Strings.editDistance x.description y.description
+        let auth = Strings.editDistance x.author y.author
+
+        abs title + abs content + abs desc + abs auth
+
+    let hasRepoDelta (document: Documents.Document) =
         task {
             try
                 let! doc = docRepo.GetDocumentAsync document.uri
 
                 return
                     match doc with
-                    | Some doc -> doc.sha512 <> document.sha512
+                    | Some doc ->
+                        if doc.sha512 <> document.sha512 then
+                            let distance = documentEditDistance doc document
+
+                            let msg =
+                                $"Document {document.uri} has changed since last ingestion. Edits: {distance}."
+
+                            let (result, msg) =
+                                if distance >= config.Value.documentEditDistanceThreshold then
+                                    (true, $"{msg} Rebuilding...")
+                                else
+                                    (false, $"{msg}. Skipping...")
+
+                            msg |> log.LogTrace
+                            result
+                        else
+                            false
                     | None -> true
 
             with ex ->
@@ -54,7 +81,8 @@ type DocumentIngestionActor
     let shouldWriteDocument (document: Documents.Document) =
         task {
             match hasCacheDelta document with
-            | None -> return! checkDocumentDelta document
+            | None -> return! hasRepoDelta document
+            | Some x when x -> return! hasRepoDelta document
             | Some x -> return x
         }
 

@@ -70,3 +70,6 @@ module Strings =
         outStream.Seek(0, System.IO.SeekOrigin.Begin) |> ignore
         use reader = new System.IO.StreamReader(outStream)
         reader.ReadToEnd()
+
+    let editDistance x y =
+        Tk.Extensions.StringExtensions.GetDamerauLevenshteinDistance(x, y)

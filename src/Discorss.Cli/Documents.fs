@@ -39,8 +39,10 @@ module DocumentsConsole =
                     cyan "↑"
                     yellow " to like, "
                     cyan "↓"
-                    yellow " to dislike,"
-                    yellow " any key to continue."
+                    yellow " to dislike, "
+                    cyan "Del"
+                    yellow " to remove like/dislike,"
+                    yellow " any other key to continue."
                 }
                 |> Strings.join ""
 
@@ -180,23 +182,50 @@ type CycleDocumentsCommand() =
 
     let mainLayout = DocumentsConsole.screenLayout ()
 
+    let likeStatus (like: DocumentLike option) =
+        match like with
+        | None -> ""
+        | Some l when l.liked -> Console.green "Document liked."
+        | Some l -> Console.orange "Document disliked."
+
+    let getLikeStatus host (document: Document) =
+        task {
+            try
+                let! like = document |> DiscorssApi.getLikeDocument host
+                return likeStatus like
+            with ex ->
+                return ex.Message |> Console.red
+        }
+
     let likeDoc host (ctx: LiveDisplayContext) (value: bool) (document: Document) =
-        let likeDoc host (value: bool) (document: Document) =
+        let likeDoc host value (document: Document) =
             task {
                 try
                     let! r = document |> DiscorssApi.likeDocument host value
 
-                    return
-                        if r.liked then
-                            $"Document liked." |> Console.green
-                        else
-                            "Document unliked." |> Console.orange
+                    return Some r |> likeStatus
                 with ex ->
                     return ex.Message |> Console.red
             }
 
         task {
             let! msg = document |> likeDoc host value
+            msg |> DocumentsConsole.updateStatus mainLayout
+            ctx.UpdateTarget(mainLayout)
+        }
+
+    let deleteLikeDoc host (ctx: LiveDisplayContext) document =
+        let deleteLikeDoc host (document: Document) =
+            task {
+                try
+                    do! document |> DiscorssApi.deleteDocumentLike host
+                    return "Document like removed." |> Console.orange
+                with ex ->
+                    return ex.Message |> Console.red
+            }
+
+        task {
+            let! msg = document |> deleteLikeDoc host
             msg |> DocumentsConsole.updateStatus mainLayout
             ctx.UpdateTarget(mainLayout)
         }
@@ -214,6 +243,18 @@ type CycleDocumentsCommand() =
 
                 doc |> DocumentsConsole.updateDocumentsLayout mainLayout
                 doc |> DocumentsConsole.updateDocumentFetchStatus mainLayout
+
+                let! likeStatus =
+                    task {
+                        return!
+                            match doc with
+                            | None -> Tasks.toTaskResult ""
+                            | Some d -> getLikeStatus settings.ApiHost d
+                    }
+
+                if likeStatus <> "" then
+                    likeStatus |> DocumentsConsole.updateStatus mainLayout
+
                 ctx.UpdateTarget(mainLayout)
 
                 return doc
@@ -246,6 +287,10 @@ type CycleDocumentsCommand() =
                 | ConsoleKey.OemMinus ->
                     match doc with
                     | Some doc -> do! doc |> likeDoc false
+                    | None -> ignore 0
+                | ConsoleKey.Delete ->
+                    match doc with
+                    | Some doc -> do! doc |> deleteLikeDoc settings.ApiHost ctx
                     | None -> ignore 0
                 | ConsoleKey.O -> doc |> Option.iter openBrowser
                 | _ -> quitLoop <- true
