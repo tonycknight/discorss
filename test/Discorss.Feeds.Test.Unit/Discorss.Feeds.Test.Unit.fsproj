@@ -26,6 +26,7 @@
     <None Include="SampleFeeds\MsRss20Feed.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Compile Include="AtomParserTests.fs" />
     <Compile Include="Rss091ParserTests.fs" />
     <Compile Include="Rss092ParserTests.fs" />
     <Compile Include="Rss20ParserTests.fs" />
