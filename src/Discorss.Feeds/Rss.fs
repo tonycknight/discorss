@@ -11,4 +11,5 @@ module Rss =
         | None ->
             match Xml.docName xml with
             | "rdf" -> Some "rdf"
+            | "feed" -> Some "atom"
             | _ -> None

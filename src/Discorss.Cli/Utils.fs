@@ -35,6 +35,12 @@ module Strings =
 
     let indent (pad: int) (value: string) = $"{new String(' ', pad)}{value}"
 
+    let truncate (maxLength: int) (value: string) =
+        if value.Length <= maxLength then
+            value
+        else
+            value.Substring(0, maxLength - 3) + "..."
+
     let escapeMarkup (value: string) =
         value.Replace("[", "[[").Replace("]", "]]")
 

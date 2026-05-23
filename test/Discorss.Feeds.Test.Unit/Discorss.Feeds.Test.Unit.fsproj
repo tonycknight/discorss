@@ -8,6 +8,9 @@
     <Compile Include="TestHelpers.fs" />
     <Compile Include="BsonMappingTests.fs" />
     <Compile Include="FeedReaderTests.fs" />
+    <Content Include="SampleFeeds\AtomFeed.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="SampleFeeds\RdfFeed.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -23,6 +26,7 @@
     <None Include="SampleFeeds\MsRss20Feed.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Compile Include="AtomParserTests.fs" />
     <Compile Include="Rss091ParserTests.fs" />
     <Compile Include="Rss092ParserTests.fs" />
     <Compile Include="Rss20ParserTests.fs" />
