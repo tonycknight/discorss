@@ -8,6 +8,9 @@
     <Compile Include="TestHelpers.fs" />
     <Compile Include="BsonMappingTests.fs" />
     <Compile Include="FeedReaderTests.fs" />
+    <Content Include="SampleFeeds\AtomFeed.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="SampleFeeds\RdfFeed.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -17,6 +17,7 @@
     <Compile Include="Rss092Parser.fs" />
     <Compile Include="Rss20Parser.fs" />
     <Compile Include="RdfParser.fs" />
+    <Compile Include="AtomParser.fs" />
     <Compile Include="FeedReader.fs" />
     <Compile Include="FeedRepository.fs" />
     <Compile Include="FeedProvider.fs" />

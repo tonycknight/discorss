@@ -32,6 +32,7 @@ module FeedReader =
         | Rss092Parser.IsRss092 x -> Rss092Parser.parse |> Choice1Of2
         | Rss091Parser.IsRss091 x -> Rss091Parser.parse |> Choice1Of2
         | RdfParser.IsRdf x -> RdfParser.parse |> Choice1Of2
+        | AtomParser.IsAtom x -> AtomParser.parse |> Choice1Of2
         | _ -> Choice2Of2 "Unrecognised feed type"
 
     let private parseXmlToFeed (url: string) (xml: XDocument) =
