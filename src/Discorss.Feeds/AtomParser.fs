@@ -4,7 +4,7 @@ open System
 open System.Xml.Linq
 open Discorss
 
-module AtomParser = 
+module AtomParser =
     // Example: https://github.com/anthropics/claude-code/releases.atom
 
     let parseChannel (xml: XDocument) =
@@ -25,7 +25,11 @@ module AtomParser =
     let parseEntries (xml: XDocument) =
         let uri (e: XElement) =
             match e |> Xml.elementValueDefault "link" with
-            | "" -> e |> Xml.element "link" |> Option.bind (Xml.attributeValue "href") |> Option.defaultValue ""
+            | "" ->
+                e
+                |> Xml.element "link"
+                |> Option.bind (Xml.attributeValue "href")
+                |> Option.defaultValue ""
             | x -> x
 
         let parse (e: XElement) =
