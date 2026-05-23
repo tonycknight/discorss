@@ -183,7 +183,7 @@ type CycleDocumentsCommand() =
     let mainLayout = DocumentsConsole.screenLayout ()
 
     let likeStatus (like: DocumentLike option) =
-        match  like with
+        match like with
         | None -> ""
         | Some l when l.liked -> Console.green "Document liked."
         | Some l -> Console.orange "Document disliked."
@@ -240,10 +240,10 @@ type CycleDocumentsCommand() =
                 ctx.UpdateTarget(mainLayout)
 
                 let! doc = DiscorssApi.nextDocument settings.ApiHost
-                
+
                 doc |> DocumentsConsole.updateDocumentsLayout mainLayout
                 doc |> DocumentsConsole.updateDocumentFetchStatus mainLayout
-                
+
                 let! likeStatus =
                     task {
                         return!
@@ -251,8 +251,10 @@ type CycleDocumentsCommand() =
                             | None -> Tasks.toTaskResult ""
                             | Some d -> getLikeStatus settings.ApiHost d
                     }
-                if likeStatus <> "" then likeStatus |> DocumentsConsole.updateStatus mainLayout
-                
+
+                if likeStatus <> "" then
+                    likeStatus |> DocumentsConsole.updateStatus mainLayout
+
                 ctx.UpdateTarget(mainLayout)
 
                 return doc

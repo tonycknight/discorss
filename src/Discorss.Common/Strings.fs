@@ -71,4 +71,5 @@ module Strings =
         use reader = new System.IO.StreamReader(outStream)
         reader.ReadToEnd()
 
-    let editDistance x y = Tk.Extensions.StringExtensions.GetLevenshteinDistance(x, y)
+    let editDistance x y =
+        Tk.Extensions.StringExtensions.GetLevenshteinDistance(x, y)
