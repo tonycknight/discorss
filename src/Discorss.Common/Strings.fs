@@ -72,4 +72,4 @@ module Strings =
         reader.ReadToEnd()
 
     let editDistance x y =
-        Tk.Extensions.StringExtensions.GetLevenshteinDistance(x, y)
+        Tk.Extensions.StringExtensions.GetDamerauLevenshteinDistance(x, y)
