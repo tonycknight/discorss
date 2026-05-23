@@ -9,6 +9,7 @@ type AppConfiguration =
       documentIngestionWindow: TimeSpan
       queuePollFrequency: TimeSpan
       feedIngestionFrequency: TimeSpan
+      documentEditDistanceThreshold: int
       mongoConnection: string
       mongoDbName: string }
 
@@ -20,5 +21,6 @@ type AppConfiguration =
           documentIngestionWindow = TimeSpan.FromMinutes 60.
           queuePollFrequency = TimeSpan.FromSeconds 5.
           feedIngestionFrequency = TimeSpan.FromMinutes 5.
+          documentEditDistanceThreshold = 20
           mongoConnection = "mongodb://localhost:27017"
           mongoDbName = "discorss" }
