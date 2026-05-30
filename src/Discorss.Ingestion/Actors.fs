@@ -7,6 +7,8 @@ type IActor =
     abstract member ReplyAsync: ActorMessage -> Async<ActorMessage>
     abstract member Stop: unit -> unit
 
+type ActorState<'a> = { stopped: bool; state: 'a }
+
 module Actor =
     open System
 

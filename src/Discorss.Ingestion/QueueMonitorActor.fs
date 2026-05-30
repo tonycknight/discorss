@@ -43,7 +43,7 @@ type QueueMonitorActor
             match msg with
             | ActorMessage.PollQueue queueName -> do! pollQueue queueName
             | ActorMessage.Start -> do! start ()
-            | ActorMessage.Stop rc -> rc.Reply () // TODO: stop the actor and reply when done
+            | ActorMessage.Stop rc -> rc.Reply() // TODO: stop the actor and reply when done
             | _ -> ignore msg
         }
 
@@ -63,4 +63,6 @@ type QueueMonitorActor
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg
         member this.ReplyAsync(msg: ActorMessage) = actor.PostAndAsyncReply(fun rc -> msg)
-        member this.Stop() = actor.PostAndReply(fun rc -> ActorMessage.Stop rc)
+
+        member this.Stop() =
+            actor.PostAndReply(fun rc -> ActorMessage.Stop rc)

@@ -49,12 +49,12 @@ module Program =
     let stop (sp: IServiceProvider) =
         let log = sp.GetService<ILoggerFactory>().CreateLogger()
         log.LogInformation "Ingestion shutting down..."
-                
+
         //sp.GetRequiredService<QueueMonitorActor>() |> Actor.stop
-        //sp.GetRequiredService<IngestionActor>() |> Actor.stop 
-                
+        //sp.GetRequiredService<IngestionActor>() |> Actor.stop
+
         log.LogInformation "Ingestion shut down."
-        
+
 
     [<EntryPoint>]
     let main args =
@@ -73,7 +73,7 @@ module Program =
 
         host.Start()
         host.WaitForShutdown()
-        
+
         host.Services |> stop
 
         0
