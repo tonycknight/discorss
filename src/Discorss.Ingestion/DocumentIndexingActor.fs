@@ -63,5 +63,5 @@ type DocumentIndexingActor
 
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg
-
         member this.ReplyAsync(msg: ActorMessage) = actor.PostAndAsyncReply(fun rc -> msg)
+        member this.Stop() = actor.PostAndReply(fun rc -> ActorMessage.Stop rc)

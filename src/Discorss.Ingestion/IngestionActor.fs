@@ -39,9 +39,9 @@ type IngestionActor
             | ActorMessage.Start ->
                 msg |> Actor.post feedActor
                 do cancellation.Cancel()
-            | ActorMessage.Stop rc ->
-                msg |> Actor.post feedActor
+            | ActorMessage.Stop rc ->                
                 do cancellation.Cancel()
+                feedActor |> Actor.stop
                 // TODO: prevent further actions
                 rc.Reply ()
             | ActorMessage.IngestFeeds
@@ -81,7 +81,6 @@ type IngestionActor
             }
 
     interface IActor with
-
         member this.Post(msg: ActorMessage) = actor.Post msg
-
         member this.ReplyAsync(msg: ActorMessage) = actor.PostAndAsyncReply(fun rc -> msg)
+        member this.Stop() = actor.PostAndReply(fun rc -> ActorMessage.Stop rc)

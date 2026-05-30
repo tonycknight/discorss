@@ -49,10 +49,10 @@ module Program =
     let stop (sp: IServiceProvider) =
         let log = sp.GetService<ILoggerFactory>().CreateLogger()
         log.LogInformation "Ingestion shutting down..."
-
-        let ingestion = sp.GetRequiredService<IngestionActor>() :> IActor
-        // TODO: send Stop messages and wait
-        
+                
+        //sp.GetRequiredService<QueueMonitorActor>() |> Actor.stop
+        //sp.GetRequiredService<IngestionActor>() |> Actor.stop 
+                
         log.LogInformation "Ingestion shut down."
         
 
