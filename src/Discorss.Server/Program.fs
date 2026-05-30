@@ -50,8 +50,8 @@ module Program =
         let log = sp.GetService<ILoggerFactory>().CreateLogger()
         log.LogInformation "Ingestion shutting down..."
 
-        //sp.GetRequiredService<QueueMonitorActor>() |> Actor.stop
-        //sp.GetRequiredService<IngestionActor>() |> Actor.stop
+        sp.GetRequiredService<QueueMonitorActor>() |> Actor.stop
+        sp.GetRequiredService<IngestionActor>() |> Actor.stop
 
         log.LogInformation "Ingestion shut down."
 
