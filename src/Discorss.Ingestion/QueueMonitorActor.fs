@@ -43,7 +43,7 @@ type QueueMonitorActor
             match msg with
             | ActorMessage.PollQueue queueName -> do! pollQueue queueName
             | ActorMessage.Start -> do! start ()
-            | ActorMessage.Stop -> ignore 0
+            | ActorMessage.Stop rc -> rc.Reply () // TODO: stop the actor and reply when done
             | _ -> ignore msg
         }
 

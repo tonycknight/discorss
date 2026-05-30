@@ -36,10 +36,14 @@ type IngestionActor
             let! msg = inbox.Receive()
 
             match msg with
-            | ActorMessage.Start
-            | ActorMessage.Stop ->
+            | ActorMessage.Start ->
                 msg |> Actor.post feedActor
                 do cancellation.Cancel()
+            | ActorMessage.Stop rc ->
+                msg |> Actor.post feedActor
+                do cancellation.Cancel()
+                // TODO: prevent further actions
+                rc.Reply ()
             | ActorMessage.IngestFeeds
             | ActorMessage.IngestFeed _ -> msg |> Actor.post feedActor
             | ActorMessage.FeedEntry e ->

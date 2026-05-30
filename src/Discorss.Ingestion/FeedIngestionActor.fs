@@ -100,10 +100,13 @@ type FeedIngestionActor
 
     let processMessage (inbox: MailboxProcessor<ActorMessage>) =
         task {
-
-            match! inbox.Receive() with
+            let! msg = inbox.Receive()
+            match msg with
             | ActorMessage.Start -> do postIngestTimer.Enabled <- true
-            | ActorMessage.Stop -> do postIngestTimer.Enabled <- false
+            | ActorMessage.Stop rc ->
+                do postIngestTimer.Enabled <- false
+                // TODO: prevent further actions
+                rc.Reply ()
             | ActorMessage.IngestFeeds -> do! startIngestion ()
             | ActorMessage.IngestFeed uri -> do! ingestFeed uri
             | _ -> ignore 0
