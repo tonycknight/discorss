@@ -46,7 +46,15 @@ module Program =
 
         actors |> Array.iter (fun a -> ActorMessage.Start |> a.Post)
 
+    let stop (sp: IServiceProvider) =
+        let log = sp.GetService<ILoggerFactory>().CreateLogger()
+        log.LogInformation "Ingestion shutting down..."
 
+        let ingestion = sp.GetRequiredService<IngestionActor>() :> IActor
+        // TODO: send Stop messages and wait
+        
+        log.LogInformation "Ingestion shut down."
+        
 
     [<EntryPoint>]
     let main args =
@@ -63,6 +71,9 @@ module Program =
 
         host.Services |> startup
 
-        host.Run()
+        host.Start()
+        host.WaitForShutdown()
+        
+        host.Services |> stop
 
         0
