@@ -69,3 +69,24 @@ module MongoDocumentLikesRepositoryTests =
 
             return persistedResult = None
         }
+
+    [<Property(Arbitrary = [| typeof<AlphaNumericString> |])>]
+    let ``GetLikeUris returns list`` (value: DocumentLike) (like: bool) =
+        task {
+            let opts = TestHelpers.config () |> TestHelpers.configOptions
+
+            let value =
+                { value with
+                    uri = value.uri + (System.Guid.NewGuid().ToString()) |> Strings.lower }
+
+            let repo = new MongoDocumentLikeRepository(opts) :> IDocumentLikeRepository
+
+            let! result = repo.SetAsync value
+
+            let! uris = repo.GetLikeUris like
+
+            let isMatch = uris |> List.contains value.uri
+
+            return isMatch = (like = value.liked)
+
+        }
