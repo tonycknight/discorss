@@ -12,6 +12,7 @@ type IFeedRepository =
     abstract member GetFeedInfoAsync: string -> Task<FeedInfo option>
     abstract member GetFeedInfosAsync: unit -> Task<FeedInfo[]>
     abstract member SetFeedInfoAsync: FeedInfo -> Task<FeedInfo>
+    abstract member DeleteFeedInfoAsync: FeedInfo -> Task
     abstract member SetFeedLastFetchedAsync: FeedInfo -> Task
 
 [<ExcludeFromCodeCoverage>]
@@ -58,6 +59,9 @@ type StubFeedRepository(feedUris) =
 
                 return feed
             }
+
+        member this.DeleteFeedInfoAsync(feed: FeedInfo) =
+            task { feedCache.TryRemove(feed.uri) |> ignore }
 
         member this.SetFeedLastFetchedAsync(feed: FeedInfo) =
             task {
@@ -129,4 +133,12 @@ type MongoFeedRepository(config: IOptions<AppConfiguration>, logFactory: ILogger
 
                     let! x = this.SetFeedInfoAsync feed
                     ignore 0
+            }
+
+        member this.DeleteFeedInfoAsync(feed: FeedInfo) =
+            task {
+                let! result = $"{{ _id: '{feed.uri}' }}" |> Mongo.delete collection
+
+                if not result.IsAcknowledged then
+                    new Exception("Delete not acknowledged") |> raise
             }

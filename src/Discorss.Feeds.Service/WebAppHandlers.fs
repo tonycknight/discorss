@@ -82,3 +82,23 @@ module WebAppHandlers =
                         let result = json { ApiErrorResult.errors = [| "An error occurred." |] }
                         return! ServerErrors.internalError result next ctx
             }
+
+    let deleteFeed (sp: IServiceProvider) feedUri =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                if Uri.tryParse feedUri |> Option.isNone then
+                    let result = json { ApiErrorResult.errors = [| "Invalid Uri" |] }
+                    return! RequestErrors.badRequest result next ctx
+                else
+                    let feed =
+                        { FeedInfo.uri = feedUri
+                          title = ""
+                          description = ""
+                          updated = DateTime.UtcNow
+                          lastFetched = DateTime.MinValue }
+
+                    do! (feedRepo sp).DeleteFeedInfoAsync feed
+
+                    return! Successful.NO_CONTENT next ctx
+
+            }
