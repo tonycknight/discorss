@@ -16,3 +16,17 @@ module Dictionary =
 
     let toMap (value: IDictionary<'a, 'b>) =
         value |> Seq.fold (fun map kvp -> map |> Map.add kvp.Key kvp.Value) Map.empty
+
+module Map =
+    let getValue (key: 'a) (map: Map<'a, 'b>) =
+        match map.TryGetValue key with
+        | (true, value) -> Some value
+        | _ -> None
+
+    let add (y: Map<'a, int>) (x: Map<'a, int>) = 
+        
+        y |>
+            Map.fold 
+                (fun m k i ->   let j = m |> getValue k |> Option.defaultValue 0
+                                m |> Map.add k (i + j))                
+                x
