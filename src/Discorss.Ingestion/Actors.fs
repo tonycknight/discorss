@@ -5,6 +5,7 @@ open Discorss
 type IActor =
     abstract member Post: ActorMessage -> unit
     abstract member ReplyAsync: ActorMessage -> Async<ActorMessage>
+    abstract member Start: unit -> unit
     abstract member Stop: unit -> unit
 
 type ActorState<'a> = { stopped: bool; state: 'a }
@@ -14,6 +15,7 @@ module Actor =
 
     let post<'a> actor message = (actor :> IActor).Post message
 
+    let start actor = (actor :> IActor).Start()
     let stop actor = (actor :> IActor).Stop()
 
     let getStats name (mailbox: MailboxProcessor<ActorMessage>) =

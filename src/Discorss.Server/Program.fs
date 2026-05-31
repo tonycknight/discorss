@@ -44,13 +44,13 @@ module Program =
 
     let startup (sp: IServiceProvider) =
 
-        sp |> ingestionActors |> Array.iter (fun a -> ActorMessage.Start |> a.Post)
+        sp |> ingestionActors |> Array.iter Actor.start
 
     let stop (sp: IServiceProvider) =
         let log = sp.GetService<ILoggerFactory>().CreateLogger()
         log.LogInformation "Ingestion shutting down..."
 
-        sp |> ingestionActors |> Array.iter (fun a -> a.Stop())
+        sp |> ingestionActors |> Array.iter Actor.stop
 
         log.LogInformation "Ingestion shut down."
 
