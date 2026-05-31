@@ -38,12 +38,10 @@ type IngestionActor
             let! state =
                 match msg with
                 | ActorMessage.Start ->
-                    msg |> Actor.post feedActor
                     do cancellation.Cancel()
                     state |> Task.ofResult
                 | ActorMessage.Stop rc ->
                     do cancellation.Cancel()
-                    feedActor |> Actor.stop
                     rc.Reply()
                     { state with stopped = true } |> Task.ofResult
                 | ActorMessage.IngestFeeds

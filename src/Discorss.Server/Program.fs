@@ -39,7 +39,8 @@ module Program =
     open Discorss.Ingestion
 
     let ingestionActors (sp: IServiceProvider) =
-        [| sp.GetRequiredService<QueueMonitorActor>() :> IOrchestrationActor
+        [| sp.GetRequiredService<FeedIngestionActor>() :> IOrchestrationActor
+           sp.GetRequiredService<QueueMonitorActor>() :> IOrchestrationActor
            sp.GetRequiredService<IngestionActor>() :> IOrchestrationActor |]
 
     let startup (sp: IServiceProvider) =
