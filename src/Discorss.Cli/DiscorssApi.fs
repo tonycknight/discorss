@@ -109,6 +109,19 @@ module DiscorssApi =
                     Newtonsoft.Json.JsonConvert.DeserializeObject<Discorss.ApiModels.FeedInfo> body)
         }
 
+    let deleteFeed host feedUri =
+        task {
+            let uri = Http.route host $"api/v1/feeds/{Http.encode feedUri}/"
+
+            let req = new HttpRequestMessage(HttpMethod.Delete, uri)
+
+            let! resp = send req
+
+            return
+                resp
+                |> handleOkResponse (fun (_, body, _, _) -> ignore body)
+        }
+
     let nextDocument host =
         task {
             let uri = Http.route host "api/v1/documents/queue/"

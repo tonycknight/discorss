@@ -29,6 +29,7 @@ module Program =
                     c.SetDescription("Work with feeds.")
                     c.AddCommand<AddFeedCommand>("add").WithDescription("Add a new feed.") |> ignore
                     c.AddCommand<ListFeedsCommand>("list").WithDescription("List feeds.") |> ignore
+                    c.AddCommand<DeleteFeedCommand>("delete").WithDescription("Delete a feed.") |> ignore
 
                     c.AddCommand<PreviewFeedCommand>("preview").WithDescription("Preview a feed.")
                     |> ignore
