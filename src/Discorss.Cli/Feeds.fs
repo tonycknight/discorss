@@ -150,7 +150,7 @@ type DeleteFeedCommand(nuget: Tk.Nuget.INugetClient) =
         task {
             if not settings.NoBanner then
                 Commands.renderBanner nuget
-                                  
+
             do! DiscorssApi.deleteFeed settings.ApiHost settings.FeedUri
 
             "Done" |> Console.green |> Console.markup |> AnsiConsole.Console.Write

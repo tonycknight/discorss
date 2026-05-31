@@ -117,9 +117,7 @@ module DiscorssApi =
 
             let! resp = send req
 
-            return
-                resp
-                |> handleOkResponse (fun (_, body, _, _) -> ignore body)
+            return resp |> handleOkResponse (fun (_, body, _, _) -> ignore body)
         }
 
     let nextDocument host =
