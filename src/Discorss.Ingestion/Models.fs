@@ -15,5 +15,5 @@ module Models =
           title = value.title
           description = value.description
           content = value.content
-          categories = value.categories
+          categories = value.categories |> Array.map Strings.lower
           sha512 = sha512 value }
