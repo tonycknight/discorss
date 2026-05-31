@@ -78,6 +78,9 @@ module MongoBson =
 module Mongo =
     let private idFilter id = sprintf @"{ _id: ""%s"" }" id
 
+    let pipeline (jsons: string[]) =
+        jsons |> Array.map MongoBson.ofJson |> PipelineDefinition.op_Implicit
+
     let setDbConnection dbName (connectionString: string) =
         if String.IsNullOrWhiteSpace dbName then
             connectionString

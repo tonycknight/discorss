@@ -11,14 +11,15 @@ open MongoDB.Bson
 type IDocumentRepository =
     abstract member SetDocumentAsync: Document -> Task<Document>
     abstract member GetDocumentAsync: string -> Task<Document option>
+    abstract member GetDocumentCategoryStatsAsync: unit -> Task<Map<string, int>>
 
 [<ExcludeFromCodeCoverage>]
 type StubDocumentRepository() =
 
     interface IDocumentRepository with
         member this.SetDocumentAsync(value: Document) = task { return value }
-
         member this.GetDocumentAsync(value: string) = task { return None }
+        member this.GetDocumentCategoryStatsAsync() = task { return Map.empty }
 
 type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILoggerFactory) =
 
@@ -60,4 +61,30 @@ type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILo
                 let! xs = $"{{ _id: '{Strings.lower key}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromDocumentBson |> Seq.tryHead
+            }
+
+        member this.GetDocumentCategoryStatsAsync() =
+            task {
+                let getString key doc = doc |> MongoBson.getProperty key |> MongoBson.asString
+                let getInt32 key doc = doc |> MongoBson.getProperty key |> MongoBson.asInt32
+
+                let rec read (acc: (string * int) list) (cursor: MongoDB.Driver.IAsyncCursor<obj>) =
+                    match cursor.MoveNext() with
+                    | false -> acc
+                    | true ->
+                        let counts = 
+                            cursor.Current 
+                            |> Seq.map (fun x -> x.ToBsonDocument())
+                            |> Seq.map (fun d -> (d |> getString "_id", d |> getInt32 "count" ))
+                            |> List.ofSeq
+                        let acc = acc |> List.append counts
+                        read acc cursor
+
+                let pipeline = 
+                    [| "{ $project: { categories: 1 } }"; "{ $unwind: { path: \"$categories\" } }"; "{ $group: { _id: \"$categories\", count: { $count: {} } } }]" |]
+                    |> Mongo.pipeline
+                
+                use cursor = collection.Aggregate pipeline
+
+                return read [] cursor |> Map.ofSeq                       
             }

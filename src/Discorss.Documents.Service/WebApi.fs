@@ -15,7 +15,10 @@ module WebApi =
                      [ GET
                        >=> choose
                                [ route "/queue/" >=> noResponseCaching >=> WebAppHandlers.getNextDocument sp
-                                 routeCif "/likes/%s/" (fun uri -> uri |> WebAppHandlers.getDocumentLike sp) ]
+                                 routeCif "/likes/%s/" (fun uri -> uri |> WebAppHandlers.getDocumentLike sp)
+                                 route "/categories/stats/"
+                                 >=> noResponseCaching
+                                 >=> WebAppHandlers.getCategoryStats sp ]
 
                        DELETE
                        >=> choose [ routeCif "/likes/%s/" (fun uri -> uri |> WebAppHandlers.deleteDocumentLike sp) ]

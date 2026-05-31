@@ -18,3 +18,7 @@ content-type: application/json
 ### Delete Document Like
 DELETE http://localhost:8081/api/v1/documents/likes/aaaa/
 content-type: application/json
+
+### Get Document category stats
+GET http://localhost:8081/api/v1/documents/categories/stats/
+content-type: application/json
