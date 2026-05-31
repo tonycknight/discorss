@@ -31,36 +31,54 @@ type IngestionActor
                 |> List.ofSeq
         }
 
-    let processMessage (inbox: MailboxProcessor<ActorMessage>) =
+    let processMessage (inbox: MailboxProcessor<ActorMessage>) (state: ActorState<unit>) =
         task {
             let! msg = inbox.Receive()
 
-            match msg with
-            | ActorMessage.Start
-            | ActorMessage.Stop ->
-                msg |> Actor.post feedActor
-                do cancellation.Cancel()
-            | ActorMessage.IngestFeeds
-            | ActorMessage.IngestFeed _ -> msg |> Actor.post feedActor
-            | ActorMessage.FeedEntry e ->
-                log.LogTrace $"Received feedentry {e.uri}..."
-                e |> ActorMessage.FeedEntry |> (Actor.post docActor)
-            | ActorMessage.Document d ->
-                log.LogTrace $"Received document {d.uri}..."
-                do! notificationWriter.SetAsync d
-            | ActorMessage.IndexDocument d -> msg |> (Actor.post indexingActor)
+            let! state =
+                match msg with
+                | ActorMessage.Start ->
+                    do cancellation.Cancel()
+                    state |> Task.ofResult
+                | ActorMessage.Stop rc ->
+                    do cancellation.Cancel()
+                    rc.Reply()
+                    { state with stopped = true } |> Task.ofResult
+                | ActorMessage.IngestFeeds
+                | ActorMessage.IngestFeed _ ->
+                    msg |> Actor.post feedActor
+                    state |> Task.ofResult
+                | ActorMessage.FeedEntry e ->
+                    log.LogTrace $"Received feedentry {e.uri}..."
+                    e |> ActorMessage.FeedEntry |> (Actor.post docActor)
+                    state |> Task.ofResult
+                | ActorMessage.Document d ->
+                    log.LogTrace $"Received document {d.uri}..."
 
-            | _ -> ignore 0
+                    task {
+                        do! notificationWriter.SetAsync d
+                        return state
+                    }
+                | ActorMessage.IndexDocument d ->
+                    msg |> (Actor.post indexingActor)
+                    state |> Task.ofResult
+                | _ -> state |> Task.ofResult
+
+            return state
         }
 
-    let rec loop inbox =
+    let rec loop inbox (state: ActorState<unit>) =
         async {
-            do! processMessage inbox |> Async.AwaitTask
+            let! state = processMessage inbox state |> Async.AwaitTask
 
-            return! loop inbox
+            return!
+                match state.stopped with
+                | true -> async { }
+                | _ -> loop inbox state
         }
 
-    let actor = MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
+    let actor =
+        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox { stopped = false; state = () })
 
     member this.QueueNames =
         [ Discorss.Queues.QueueNames.feedEntries
@@ -77,7 +95,10 @@ type IngestionActor
             }
 
     interface IActor with
-
         member this.Post(msg: ActorMessage) = actor.Post msg
 
-        member this.ReplyAsync(msg: ActorMessage) = actor.PostAndAsyncReply(fun rc -> msg)
+    interface IOrchestrationActor with
+        member this.Start() = actor.Post ActorMessage.Start
+
+        member this.Stop() =
+            actor.PostAndReply(fun rc -> ActorMessage.Stop rc)

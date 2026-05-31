@@ -98,25 +98,46 @@ type FeedIngestionActor
             postIngestTimer.Enabled <- true
         }
 
-    let processMessage (inbox: MailboxProcessor<ActorMessage>) =
+    let processMessage (inbox: MailboxProcessor<ActorMessage>) (state: ActorState<unit>) =
         task {
+            let! msg = inbox.Receive()
 
-            match! inbox.Receive() with
-            | ActorMessage.Start -> do postIngestTimer.Enabled <- true
-            | ActorMessage.Stop -> do postIngestTimer.Enabled <- false
-            | ActorMessage.IngestFeeds -> do! startIngestion ()
-            | ActorMessage.IngestFeed uri -> do! ingestFeed uri
-            | _ -> ignore 0
+            let! state =
+                match msg with
+                | ActorMessage.Start ->
+                    do postIngestTimer.Enabled <- true
+                    state |> Task.ofResult
+                | ActorMessage.Stop rc ->
+                    do postIngestTimer.Enabled <- false
+                    rc.Reply()
+                    { state with stopped = true } |> Task.ofResult
+                | ActorMessage.IngestFeeds ->
+                    task {
+                        do! startIngestion ()
+                        return state
+                    }
+                | ActorMessage.IngestFeed uri ->
+                    task {
+                        do! ingestFeed uri
+                        return state
+                    }
+                | _ -> state |> Task.ofResult
+
+            return state
         }
 
-    let rec loop inbox =
+    let rec loop inbox state =
         async {
-            do! processMessage inbox |> Async.AwaitTask
+            let! state = processMessage inbox state |> Async.AwaitTask
 
-            return! loop inbox
+            return!
+                match state.stopped with
+                | true -> async { }
+                | _ -> loop inbox state
         }
 
-    let actor = MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
+    let actor =
+        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox { stopped = false; state = () })
 
     interface IStatsSource with
         member this.GetStatsAsync() =
@@ -125,4 +146,8 @@ type FeedIngestionActor
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg
 
-        member this.ReplyAsync(msg: ActorMessage) = actor.PostAndAsyncReply(fun rc -> msg)
+    interface IOrchestrationActor with
+        member this.Start() = actor.Post ActorMessage.Start
+
+        member this.Stop() =
+            actor.PostAndReply(fun rc -> ActorMessage.Stop rc)

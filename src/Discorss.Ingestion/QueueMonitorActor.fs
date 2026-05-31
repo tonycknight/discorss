@@ -36,25 +36,42 @@ type QueueMonitorActor
                 do! pollQueue name
         }
 
-    let processMessage (inbox: MailboxProcessor<ActorMessage>) =
+    let processMessage (inbox: MailboxProcessor<ActorMessage>) (state: ActorState<unit>) =
         task {
             let! msg = inbox.Receive()
 
-            match msg with
-            | ActorMessage.PollQueue queueName -> do! pollQueue queueName
-            | ActorMessage.Start -> do! start ()
-            | ActorMessage.Stop -> ignore 0
-            | _ -> ignore msg
+            let! state =
+                match msg with
+                | ActorMessage.PollQueue queueName ->
+                    task {
+                        do! pollQueue queueName
+                        return state
+                    }
+                | ActorMessage.Start ->
+                    task {
+                        do! start ()
+                        return state
+                    }
+                | ActorMessage.Stop rc ->
+                    rc.Reply()
+                    { state with stopped = true } |> Task.ofResult
+                | _ -> state |> Task.ofResult
+
+            return state
         }
 
-    let rec loop inbox =
+    let rec loop inbox state =
         async {
-            do! processMessage inbox |> Async.AwaitTask
+            let! state = processMessage inbox state |> Async.AwaitTask
 
-            return! loop inbox
+            return!
+                match state.stopped with
+                | true -> async { }
+                | _ -> loop inbox state
         }
 
-    let actor = MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox)
+    let actor =
+        MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox { stopped = false; state = () })
 
     interface IStatsSource with
         member this.GetStatsAsync() =
@@ -63,4 +80,8 @@ type QueueMonitorActor
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg
 
-        member this.ReplyAsync(msg: ActorMessage) = actor.PostAndAsyncReply(fun rc -> msg)
+    interface IOrchestrationActor with
+        member this.Start() = actor.Post ActorMessage.Start
+
+        member this.Stop() =
+            actor.PostAndReply(fun rc -> ActorMessage.Stop rc)

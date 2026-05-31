@@ -3,7 +3,7 @@
 open Discorss
 
 type ActorMessage =
-    | Stop
+    | Stop of rc: AsyncReplyChannel<unit>
     | Start
     | GetFeeds
     | IngestFeed of url: string
