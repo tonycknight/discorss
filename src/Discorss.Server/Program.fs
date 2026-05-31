@@ -38,20 +38,19 @@ module Program =
 
     open Discorss.Ingestion
 
+    let ingestionActors (sp: IServiceProvider) =
+        [| sp.GetRequiredService<QueueMonitorActor>() :> IActor 
+           sp.GetRequiredService<IngestionActor>() :> IActor |]
+
     let startup (sp: IServiceProvider) =
 
-        let actors =
-            [| sp.GetRequiredService<IngestionActor>() :> IActor
-               sp.GetRequiredService<QueueMonitorActor>() :> IActor |]
-
-        actors |> Array.iter (fun a -> ActorMessage.Start |> a.Post)
+        sp |> ingestionActors |> Array.iter (fun a -> ActorMessage.Start |> a.Post)
 
     let stop (sp: IServiceProvider) =
         let log = sp.GetService<ILoggerFactory>().CreateLogger()
         log.LogInformation "Ingestion shutting down..."
 
-        sp.GetRequiredService<QueueMonitorActor>() |> Actor.stop
-        sp.GetRequiredService<IngestionActor>() |> Actor.stop
+        sp |> ingestionActors |> Array.iter (fun a -> a.Stop())
 
         log.LogInformation "Ingestion shut down."
 
