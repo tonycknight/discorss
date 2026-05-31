@@ -25,7 +25,10 @@ module ModelsTests =
 
         result.uri |> should equal value.uri
         result.author |> should equal value.author
-        result.categories |> should equalSeq value.categories
+
+        result.categories
+        |> should equalSeq (value.categories |> Array.map Strings.lower)
+
         result.content |> should equal value.content
         result.description |> should equal value.description
         result.publication |> should equal value.publication

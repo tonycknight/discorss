@@ -12,9 +12,9 @@ module Strings =
 
     let join (delim: string) (strings: seq<string>) = String.Join(delim, strings)
 
-    let lower (text: string) = text.ToLower()
+    let lower (text: string) = text.ToLowerInvariant()
 
-    let upper (text: string) = text.ToUpper()
+    let upper (text: string) = text.ToUpperInvariant()
 
     let mixed (text: string) =
         let flip =

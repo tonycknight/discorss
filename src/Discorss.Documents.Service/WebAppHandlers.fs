@@ -62,3 +62,13 @@ module WebAppHandlers =
 
                     return! Successful.ok (r |> Mapping.toDocumentLikeApiModel |> json) next ctx
             }
+
+    let getCategoryStats (sp: IServiceProvider) =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                let reader = sp.GetRequiredService<IDocumentRepository>()
+
+                let! doc = reader.GetDocumentCategoryStatsAsync()
+
+                return! Successful.ok (json doc) next ctx
+            }
