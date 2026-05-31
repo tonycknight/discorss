@@ -79,7 +79,8 @@ module MongoDocumentRepositoryTests =
         task {
             let opts = TestHelpers.config () |> TestHelpers.configOptions
 
-            let repo = new MongoDocumentRepository(opts, TestHelpers.logFactory ()) :> IDocumentRepository
+            let repo =
+                new MongoDocumentRepository(opts, TestHelpers.logFactory ()) :> IDocumentRepository
 
             // set a document
             let document =

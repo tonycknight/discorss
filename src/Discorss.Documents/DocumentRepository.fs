@@ -65,26 +65,32 @@ type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILo
 
         member this.GetDocumentCategoryStatsAsync() =
             task {
-                let getString key doc = doc |> MongoBson.getProperty key |> MongoBson.asString
-                let getInt32 key doc = doc |> MongoBson.getProperty key |> MongoBson.asInt32
+                let getString key doc =
+                    doc |> MongoBson.getProperty key |> MongoBson.asString
+
+                let getInt32 key doc =
+                    doc |> MongoBson.getProperty key |> MongoBson.asInt32
 
                 let rec read (acc: (string * int) list) (cursor: MongoDB.Driver.IAsyncCursor<obj>) =
                     match cursor.MoveNext() with
                     | false -> acc
                     | true ->
-                        let counts = 
-                            cursor.Current 
+                        let counts =
+                            cursor.Current
                             |> Seq.map (fun x -> x.ToBsonDocument())
-                            |> Seq.map (fun d -> (d |> getString "_id", d |> getInt32 "count" ))
+                            |> Seq.map (fun d -> (d |> getString "_id", d |> getInt32 "count"))
                             |> List.ofSeq
+
                         let acc = acc |> List.append counts
                         read acc cursor
 
-                let pipeline = 
-                    [| "{ $project: { categories: 1 } }"; "{ $unwind: { path: \"$categories\" } }"; "{ $group: { _id: \"$categories\", count: { $count: {} } } }]" |]
+                let pipeline =
+                    [| "{ $project: { categories: 1 } }"
+                       "{ $unwind: { path: \"$categories\" } }"
+                       "{ $group: { _id: \"$categories\", count: { $count: {} } } }]" |]
                     |> Mongo.pipeline
-                
+
                 use cursor = collection.Aggregate pipeline
 
-                return read [] cursor |> Map.ofSeq                       
+                return read [] cursor |> Map.ofSeq
             }
