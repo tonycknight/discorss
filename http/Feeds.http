@@ -19,3 +19,6 @@ content-type: application/json
 GET http://localhost:8081/api/v1/feeds/https%3A%2F%2Fdevblogs.microsoft.com%2Fdotnet%2Ftag%2Fc%2Ffeed%2F/
 content-type: application/json
 
+### Delete a feed by its URI
+DELETE http://localhost:8081/api/v1/feeds/https%3A%2F%2Fdevblogs%2F/
+content-type: application/json
