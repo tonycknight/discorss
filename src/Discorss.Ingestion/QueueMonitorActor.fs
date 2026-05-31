@@ -79,7 +79,6 @@ type QueueMonitorActor
 
     interface IActor with
         member this.Post(msg: ActorMessage) = actor.Post msg
-        member this.ReplyAsync(msg: ActorMessage) = actor.PostAndAsyncReply(fun rc -> msg)
 
     interface IOrchestrationActor with
         member this.Start() = actor.Post ActorMessage.Start
