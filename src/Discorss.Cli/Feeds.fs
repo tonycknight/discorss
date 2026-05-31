@@ -27,6 +27,21 @@ type AddFeedCommandSettings() =
         else
             base.Validate()
 
+type DeleteFeedCommandSettings() =
+    inherit FeedsCommandSettings()
+
+    [<CommandArgument(0, "[FEED_URI]")>]
+    [<Description("The feed URI.")>]
+    member val FeedUri = "" with get, set
+
+    override this.Validate() : ValidationResult =
+        if Strings.isEmptyWhitespace this.FeedUri then
+            ValidationResult.Error "The Feed URI is missing."
+        else if Strings.isUri this.FeedUri |> not then
+            ValidationResult.Error "The Feed URI is invalid."
+        else
+            base.Validate()
+
 module FeedsConsole =
     let feedPreview (feed: ApiModels.Feed) =
         let channel (feed: ApiModels.Feed) =
@@ -104,7 +119,6 @@ type PreviewFeedCommand(nuget: Tk.Nuget.INugetClient) =
 
     interface ICommandLimiter<CommandSettings>
 
-
 type AddFeedCommand(nuget: Tk.Nuget.INugetClient) =
     inherit AsyncCommand<AddFeedCommandSettings>()
 
@@ -123,6 +137,23 @@ type AddFeedCommand(nuget: Tk.Nuget.INugetClient) =
             let! feed = DiscorssApi.addFeeds settings.ApiHost feed
 
             [ feed ] |> FeedsConsole.feedsTable |> AnsiConsole.Console.Write
+
+            return ReturnCodes.ok
+        }
+
+    interface ICommandLimiter<CommandSettings>
+
+type DeleteFeedCommand(nuget: Tk.Nuget.INugetClient) =
+    inherit AsyncCommand<DeleteFeedCommandSettings>()
+
+    override this.ExecuteAsync(context, settings, cancellationToken) =
+        task {
+            if not settings.NoBanner then
+                Commands.renderBanner nuget
+
+            do! DiscorssApi.deleteFeed settings.ApiHost settings.FeedUri
+
+            "Done" |> Console.green |> Console.markup |> AnsiConsole.Console.Write
 
             return ReturnCodes.ok
         }
