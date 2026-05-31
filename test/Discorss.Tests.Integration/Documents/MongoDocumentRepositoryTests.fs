@@ -73,3 +73,29 @@ module MongoDocumentRepositoryTests =
 
             persistedDocument.Value.categories |> should equalSeq document.categories
         }
+
+    [<Xunit.Fact>]
+    let ``GetDocumentCategoryStatsAsync gets counts`` () =
+        task {
+            let opts = TestHelpers.config () |> TestHelpers.configOptions
+
+            let repo = new MongoDocumentRepository(opts, TestHelpers.logFactory ()) :> IDocumentRepository
+
+            // set a document
+            let document =
+                { Document.uri = $"http://localhost/{Guid.NewGuid()}"
+                  publication = DateTime.UtcNow
+                  author = "test author name"
+                  title = "test doc title"
+                  description = "test description"
+                  content = "test content"
+                  categories = [| "tag1"; "tag2" |]
+                  sha512 = "test sha" }
+
+            let! result = repo.SetDocumentAsync document
+
+            let! counts = repo.GetDocumentCategoryStatsAsync()
+
+            counts.["tag1"] |> should be (greaterThan 1)
+            counts.["tag2"] |> should be (greaterThan 1)
+        }
