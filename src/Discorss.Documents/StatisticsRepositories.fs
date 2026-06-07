@@ -27,6 +27,14 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
         Mongo.initCollection "uri" config.Value.mongoDbName colName config.Value.mongoConnection
         |> Mongo.setIndex "wordFrequencies"
 
+    let normaliseWords (value: DocumentStatistics) =
+        let words =
+            value.wordFrequencies
+            |> Seq.map (fun kvp -> (String.lower kvp.Key, kvp.Value) |> Seq.singleton |> Map.ofSeq)
+
+        { value with
+            wordFrequencies = Map.empty |> Map.addMany words }
+
     interface IStatsSource with
         member this.GetStatsAsync() =
             task {
@@ -41,7 +49,11 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
     interface IDocumentStatisticsRepository with
         member this.SetAsync(value: DocumentStatistics) =
             task {
-                let! result = value |> BsonMapping.toDocumentStatisticsBson |> Mongo.upsert collection
+                let! result =
+                    value
+                    |> normaliseWords
+                    |> BsonMapping.toDocumentStatisticsBson
+                    |> Mongo.upsert collection
 
                 if not result.IsAcknowledged then
                     new Exception("Set not acknowledged") |> raise
@@ -51,7 +63,7 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
 
         member this.GetAsync(uri: string) =
             task {
-                let! xs = $"{{ _id: '{Strings.lower uri}' }}" |> Mongo.getMany<BsonDocument> collection
+                let! xs = $"{{ _id: '{String.lower uri}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromDocumentStatisticsBson |> Seq.tryHead
             }
@@ -78,7 +90,7 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
 
             task {
 
-                let uris = uris |> Seq.map (fun x -> $"\"{Strings.lower x}\"") |> Strings.join ", "
+                let uris = uris |> Seq.map (fun x -> $"\"{String.lower x}\"") |> String.concat ", "
 
                 let pipeline =
                     [| sprintf "{ $match: { _id: { $in: [ %s ] }}}" uris

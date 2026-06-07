@@ -15,4 +15,4 @@ module Html =
     let stripHtml (value: string) =
         let value = value |> Option.ofNull |> Option.defaultValue ""
 
-        value |> innerHtml |> Option.defaultValue value |> decode |> Strings.trim
+        value |> innerHtml |> Option.defaultValue value |> decode |> String.trim

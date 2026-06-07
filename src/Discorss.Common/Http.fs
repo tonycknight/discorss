@@ -27,7 +27,7 @@ module Http =
                 | Some x when x = "gzip" ->
                     task {
                         use s = resp.Content.ReadAsStream(System.Threading.CancellationToken.None)
-                        return Strings.fromGzip s
+                        return String.fromGzip s
                     }
                 | _ -> resp.Content.ReadAsStringAsync()
 

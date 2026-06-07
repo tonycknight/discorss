@@ -36,7 +36,7 @@ module Tokenisation =
         text
         |> Seq.filter ((Char.IsPunctuation >> not) &&>> (Char.IsWhiteSpace >> not))
         |> Seq.fold (fun (sb: StringBuilder) c -> sb.Append(c)) (new StringBuilder())
-        |> Strings.str
+        |> String.str
 
     let isCandidateWord (text: string) = text |> Seq.exists Char.IsLetterOrDigit
 

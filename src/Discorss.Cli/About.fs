@@ -24,7 +24,7 @@ module AboutConsole =
                    else
                        Console.red ":warning:  Server is sick"
                }
-               |> Strings.join " " |]
+               |> String.join " " |]
             |> Array.map (Console.markup >> Console.renderable)
 
         let table = Console.table () |> Console.tableColumn "" |> Console.tableColumn ""

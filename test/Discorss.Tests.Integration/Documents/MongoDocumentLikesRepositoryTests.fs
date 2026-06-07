@@ -39,8 +39,8 @@ module MongoDocumentLikesRepositoryTests =
 
             let! result = repo.SetAsync value
 
-            let! upperResult = value.uri |> Strings.upper |> repo.GetAsync
-            let! lowerResult = value.uri |> Strings.lower |> repo.GetAsync
+            let! upperResult = value.uri |> String.upper |> repo.GetAsync
+            let! lowerResult = value.uri |> String.lower |> repo.GetAsync
             let! persistedResult = repo.GetAsync value.uri
 
             return
@@ -63,7 +63,7 @@ module MongoDocumentLikesRepositoryTests =
 
             let! result = repo.SetAsync value
 
-            do! value.uri |> Strings.upper |> repo.DeleteAsync
+            do! value.uri |> String.upper |> repo.DeleteAsync
 
             let! persistedResult = repo.GetAsync value.uri
 
@@ -77,7 +77,7 @@ module MongoDocumentLikesRepositoryTests =
 
             let value =
                 { value with
-                    uri = value.uri + (System.Guid.NewGuid().ToString()) |> Strings.lower }
+                    uri = value.uri + (System.Guid.NewGuid().ToString()) |> String.lower }
 
             let repo = new MongoDocumentLikeRepository(opts) :> IDocumentLikeRepository
 

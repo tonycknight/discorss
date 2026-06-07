@@ -23,7 +23,35 @@ module MongoDocumentStatisticsRepositoryTests =
 
             let! persistedResult = repo.GetAsync value.uri
 
-            return result = value && value = Option.get persistedResult
+            let totalPersistedWords =
+                Option.get persistedResult |> fun x -> x.wordFrequencies |> Seq.sumBy _.Value
+
+            let originalWords = value.wordFrequencies |> Seq.sumBy _.Value
+
+            return
+                (persistedResult |> Option.map _.uri |> Option.defaultValue "") = value.uri
+                && totalPersistedWords = originalWords
+        }
+
+    [<Property(Arbitrary = [| typeof<AlphaNumericString> |])>]
+    let ``SetAsync ensures all words are lower case`` (value: DocumentStatistics) =
+        task {
+            let opts = TestHelpers.config () |> TestHelpers.configOptions
+
+            let value =
+                { value with
+                    uri = value.uri + (System.Guid.NewGuid().ToString()) }
+
+            let repo =
+                new MongoDocumentStatisticsRepository(opts) :> IDocumentStatisticsRepository
+
+            let! result = repo.SetAsync value
+
+            let! persistedResult = repo.GetAsync value.uri
+
+            let words = Option.get persistedResult |> _.wordFrequencies |> Seq.map _.Key
+
+            return words |> Seq.forall (fun w -> w = String.lower w)
         }
 
     [<Property(Arbitrary = [| typeof<AlphaNumericString> |])>]

@@ -11,13 +11,13 @@ module AtomParser =
         match xml |> Xml.docElement "feed" with
         | Some channel ->
             let title =
-                channel |> Xml.elementValueDefault "title" |> Html.stripHtml |> Strings.trim
+                channel |> Xml.elementValueDefault "title" |> Html.stripHtml |> String.trim
 
             let description =
                 channel
                 |> Xml.elementValueDefault "description"
                 |> Html.stripHtml
-                |> Strings.trim
+                |> String.trim
 
             (title, description)
         | _ -> ("", "")

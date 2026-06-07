@@ -26,9 +26,9 @@ type BaseCommandSettings() =
     member val NoBanner = false with get, set
 
     override this.Validate() : ValidationResult =
-        if Strings.isEmptyWhitespace this.ApiHost then
+        if String.isEmptyWhitespace this.ApiHost then
             ValidationResult.Error "The API URI is missing."
-        else if Strings.isUri this.ApiHost |> not then
+        else if String.isUri this.ApiHost |> not then
             ValidationResult.Error "The API URI is invalid."
         else
             base.Validate()

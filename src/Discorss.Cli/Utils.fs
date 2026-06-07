@@ -22,7 +22,7 @@ module ReturnCodes =
     [<Literal>]
     let sysError = 2
 
-module Strings =
+module String =
 
     let toLower (value: string) = value.ToLower()
 

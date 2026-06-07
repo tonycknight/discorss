@@ -85,7 +85,7 @@ module Mongo =
         if String.IsNullOrWhiteSpace dbName then
             connectionString
         else
-            $"""{connectionString |> Strings.appendIfMissing "/"}{dbName}"""
+            $"""{connectionString |> String.appendIfMissing "/"}{dbName}"""
 
     let initDb dbName (connection: string) =
         let client = new MongoClient(connection)

@@ -31,10 +31,10 @@ type Lexicon() =
     let knownWords = [ ".net"; "asp.net" ] |> Set.ofSeq
 
     let isStopWord word =
-        stopWords |> Set.contains (Strings.lower word)
+        stopWords |> Set.contains (String.lower word)
 
     let isKnownWord word =
-        knownWords |> Set.contains (Strings.lower word)
+        knownWords |> Set.contains (String.lower word)
 
     interface ILexicon with
         member this.IsStopWord(word: string) = isStopWord word

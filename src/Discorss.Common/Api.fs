@@ -24,7 +24,7 @@ module Api =
     let errorHandler: ErrorHandler =
         fun (ex: exn) (logger: ILogger) ->
             [ ex.GetType().FullName; ex.Message; ex.StackTrace ]
-            |> Strings.join System.Environment.NewLine
+            |> String.concat System.Environment.NewLine
             |> logger.LogError
 
             clearResponse

@@ -19,11 +19,11 @@ module TokenisationTests =
     let ``wordSplit of equal size`` (count) =
         let xs = "aaa" |> Seq.replicate count |> Array.ofSeq
 
-        let text = xs |> Strings.join " "
+        let text = xs |> String.concat " "
 
         let words = text |> Tokenisation.wordSplit |> Array.ofSeq
 
-        words |> Strings.join " " |> should equal text
+        words |> String.concat " " |> should equal text
 
 
     [<Theory>]
@@ -40,9 +40,12 @@ module TokenisationTests =
 
         let expectedWords =
             expected.Split('|', StringSplitOptions.RemoveEmptyEntries ||| StringSplitOptions.TrimEntries)
-            |> Strings.join " "
+            |> String.concat " "
 
-        text |> Tokenisation.wordSplit |> Strings.join " " |> should equal expectedWords
+        text
+        |> Tokenisation.wordSplit
+        |> String.concat " "
+        |> should equal expectedWords
 
 
     [<Theory>]

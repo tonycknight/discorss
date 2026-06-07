@@ -11,7 +11,7 @@ module StringsTests =
     let ``join yields concatenation`` (NonEmptyString value, PositiveInt count) =
         let xs = [ 1..count ] |> List.map (fun _ -> value)
 
-        let result = xs |> Strings.join " "
+        let result = xs |> String.concat " "
         let expected = System.String.Join(' ', xs)
 
         result = expected
@@ -19,37 +19,37 @@ module StringsTests =
     [<Property(Verbose = true)>]
     let ``lower yields lower case`` (NonEmptyString value) =
 
-        let result = value |> Strings.lower
+        let result = value |> String.lower
 
         value.ToLower() = result
 
     [<Property(Verbose = true)>]
     let ``upper yields upper case`` (NonEmptyString value) =
 
-        let result = value |> Strings.upper
+        let result = value |> String.upper
 
         value.ToUpper() = result
 
     [<Property(Verbose = true)>]
     let ``sha256 is idempotent`` (NonEmptyString value) =
-        Strings.sha256 value = Strings.sha256 value
+        String.sha256 value = String.sha256 value
 
     [<Property(Verbose = true)>]
     let ``sha256 produces non-empty string`` (NonEmptyString value) =
-        Strings.sha256 value |> String.IsNullOrWhiteSpace |> not
+        String.sha256 value |> String.IsNullOrWhiteSpace |> not
 
     [<Property(Verbose = true)>]
     let ``sha256 produces base64 string`` (NonEmptyString value) =
-        Strings.sha256 value |> System.Convert.FromBase64String |> (<>) Array.empty
+        String.sha256 value |> System.Convert.FromBase64String |> (<>) Array.empty
 
     [<Property(Verbose = true)>]
     let ``sha512 is idempotent`` (NonEmptyString value) =
-        Strings.sha512 value = Strings.sha512 value
+        String.sha512 value = String.sha512 value
 
     [<Property(Verbose = true)>]
     let ``sha512 produces non-empty string`` (NonEmptyString value) =
-        Strings.sha512 value |> String.IsNullOrWhiteSpace |> not
+        String.sha512 value |> String.IsNullOrWhiteSpace |> not
 
     [<Property(Verbose = true)>]
     let ``sha512 produces base64 string`` (NonEmptyString value) =
-        Strings.sha512 value |> System.Convert.FromBase64String |> (<>) Array.empty
+        String.sha512 value |> System.Convert.FromBase64String |> (<>) Array.empty

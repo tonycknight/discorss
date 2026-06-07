@@ -49,7 +49,7 @@ module Http =
                 | Some x when x = "gzip" ->
                     task {
                         use s = resp.Content.ReadAsStream(cancellation)
-                        return Strings.fromGzip s
+                        return String.fromGzip s
                     }
                 | _ -> resp.Content.ReadAsStringAsync()
 
@@ -72,11 +72,11 @@ module Http =
 
     let private contentHeaders (resp: HttpResponseMessage) =
         resp.Content.Headers
-        |> Seq.collect (fun x -> x.Value |> Seq.map (fun v -> Strings.toLower x.Key, v))
+        |> Seq.collect (fun x -> x.Value |> Seq.map (fun v -> String.toLower x.Key, v))
 
     let private respHeaders (resp: HttpResponseMessage) =
         resp.Headers
-        |> Seq.collect (fun x -> x.Value |> Seq.map (fun v -> (Strings.toLower x.Key, v)))
+        |> Seq.collect (fun x -> x.Value |> Seq.map (fun v -> (String.toLower x.Key, v)))
 
     let private headers (resp: HttpResponseMessage) =
         respHeaders resp

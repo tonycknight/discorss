@@ -28,7 +28,7 @@ type TokenisationBenchmarks() =
             new String(cs)
 
         let createWords size =
-            [ 0..size ] |> Seq.map createWord |> Strings.join " "
+            [ 0..size ] |> Seq.map createWord |> String.concat " "
 
         this.Text <- createWords this.Size
 
