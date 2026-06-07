@@ -9,12 +9,14 @@ open MongoDB.Bson
 type IDocumentStatisticsRepository =
     abstract member SetAsync: DocumentStatistics -> Task<DocumentStatistics>
     abstract member GetAsync: string -> Task<DocumentStatistics option>
+    abstract member GetAggregatedStatsAsync: string seq -> Task<Map<string, int>>
 
 type StubDocumentStatisticsRepository() =
 
     interface IDocumentStatisticsRepository with
         member this.SetAsync(stats: DocumentStatistics) = task { return stats }
         member this.GetAsync(uri: string) = task { return None }
+        member this.GetAggregatedStatsAsync uris = Map.empty |> Task.ofResult
 
 type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
 
@@ -52,4 +54,39 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
                 let! xs = $"{{ _id: '{Strings.lower uri}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromDocumentStatisticsBson |> Seq.tryHead
+            }
+
+        member this.GetAggregatedStatsAsync uris =
+            task {
+                let getString key doc =
+                    doc |> MongoBson.getProperty key |> MongoBson.asString
+
+                let getInt32 key doc =
+                    doc |> MongoBson.getProperty key |> MongoBson.asInt32
+
+                let rec read (acc: (string * int) list) (cursor: MongoDB.Driver.IAsyncCursor<obj>) =
+                    match cursor.MoveNext() with
+                    | false -> acc
+                    | true ->
+                        let counts =
+                            cursor.Current
+                            |> Seq.map (fun x -> x.ToBsonDocument())
+                            |> Seq.map (fun d -> (d |> getString "_id", d |> getInt32 "count"))
+                            |> List.ofSeq
+
+                        let acc = acc |> List.append counts
+                        read acc cursor
+
+                let uris = uris |> Seq.map (fun x -> $"\"{Strings.lower x}\"") |> Strings.join ", "
+
+                let pipeline =
+                    [| sprintf "{ $match: { _id: { $in: [ %s ] }}}" uris
+                       "{ $project: { words: { $objectToArray: \"$wordFrequencies\" } } }"
+                       "{ $unwind: { path: \"$words\" } }"
+                       "{ $group: { _id: \"$words.k\", count: { $sum: \"$words.v\" } } }" |]
+                    |> Mongo.pipeline
+
+                use cursor = collection.Aggregate pipeline
+
+                return read [] cursor |> Map.ofSeq
             }

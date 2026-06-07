@@ -23,10 +23,11 @@ module Map =
         | (true, value) -> Some value
         | _ -> None
 
-    let add (y: Map<'a, int>) (x: Map<'a, int>) = 
-        
-        y |>
-            Map.fold 
-                (fun m k i ->   let j = m |> getValue k |> Option.defaultValue 0
-                                m |> Map.add k (i + j))                
-                x
+    let add (y: Map<'a, int>) (x: Map<'a, int>) =
+
+        y
+        |> Map.fold
+            (fun m k i ->
+                let j = m |> getValue k |> Option.defaultValue 0
+                m |> Map.add k (i + j))
+            x
