@@ -57,25 +57,25 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
             }
 
         member this.GetAggregatedStatsAsync uris =
-            task {
-                let getString key doc =
+            let getString key doc =
                     doc |> MongoBson.getProperty key |> MongoBson.asString
 
-                let getInt32 key doc =
-                    doc |> MongoBson.getProperty key |> MongoBson.asInt32
+            let getInt32 key doc =
+                doc |> MongoBson.getProperty key |> MongoBson.asInt32
 
-                let rec read (acc: (string * int) list) (cursor: MongoDB.Driver.IAsyncCursor<obj>) =
-                    match cursor.MoveNext() with
-                    | false -> acc
-                    | true ->
-                        let counts =
-                            cursor.Current
-                            |> Seq.map (fun x -> x.ToBsonDocument())
-                            |> Seq.map (fun d -> (d |> getString "_id", d |> getInt32 "count"))
-                            |> List.ofSeq
+            let rec read (acc) (cursor: MongoDB.Driver.IAsyncCursor<obj>) =
+                match cursor.MoveNext() with
+                | false -> acc
+                | true ->
+                    let counts =
+                        cursor.Current
+                        |> Seq.map (fun x -> x.ToBsonDocument())
+                        |> Seq.map (fun d -> (d |> getString "_id", d |> getInt32 "count"))
+                        |> Map.ofSeq
+                    let acc = acc |> Map.add counts
+                    read acc cursor
 
-                        let acc = acc |> List.append counts
-                        read acc cursor
+            task {
 
                 let uris = uris |> Seq.map (fun x -> $"\"{Strings.lower x}\"") |> Strings.join ", "
 
@@ -86,7 +86,5 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
                        "{ $group: { _id: \"$words.k\", count: { $sum: \"$words.v\" } } }" |]
                     |> Mongo.pipeline
 
-                use cursor = collection.Aggregate pipeline
-
-                return read [] cursor |> Map.ofSeq
+                return pipeline |> collection.Aggregate |> read Map.empty
             }
