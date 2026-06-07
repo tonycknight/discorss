@@ -31,3 +31,5 @@ module Map =
                 let j = m |> getValue k |> Option.defaultValue 0
                 m |> Map.add k (i + j))
             x
+
+    let addMany maps x = maps |> Seq.fold add x
