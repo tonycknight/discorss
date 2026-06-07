@@ -11,7 +11,7 @@ module StringsTests =
     let ``join yields concatenation`` (NonEmptyString value, PositiveInt count) =
         let xs = [ 1..count ] |> List.map (fun _ -> value)
 
-        let result = xs |> Strings.join " "
+        let result = xs |> String.concat " "
         let expected = System.String.Join(' ', xs)
 
         result = expected

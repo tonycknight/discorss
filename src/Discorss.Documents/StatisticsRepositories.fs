@@ -90,7 +90,7 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
 
             task {
 
-                let uris = uris |> Seq.map (fun x -> $"\"{Strings.lower x}\"") |> Strings.join ", "
+                let uris = uris |> Seq.map (fun x -> $"\"{Strings.lower x}\"") |> String.concat ", "
 
                 let pipeline =
                     [| sprintf "{ $match: { _id: { $in: [ %s ] }}}" uris

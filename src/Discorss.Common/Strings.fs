@@ -10,8 +10,6 @@ module Strings =
 
     let trim (value: string) = value.Trim()
 
-    let join (delim: string) (strings: seq<string>) = String.Join(delim, strings)
-
     let lower (text: string) = text.ToLowerInvariant()
 
     let upper (text: string) = text.ToUpperInvariant()
