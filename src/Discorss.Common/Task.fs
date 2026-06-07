@@ -7,3 +7,5 @@ module Task =
     let ofResult value = Task.FromResult value
 
     let delay (duration: TimeSpan) = Task.Delay duration
+
+    let whenAll (tasks: Task<'a>[]) = Task.WhenAll tasks
