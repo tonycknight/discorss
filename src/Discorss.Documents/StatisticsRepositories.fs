@@ -58,7 +58,7 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
 
         member this.GetAggregatedStatsAsync uris =
             let getString key doc =
-                    doc |> MongoBson.getProperty key |> MongoBson.asString
+                doc |> MongoBson.getProperty key |> MongoBson.asString
 
             let getInt32 key doc =
                 doc |> MongoBson.getProperty key |> MongoBson.asInt32
@@ -72,6 +72,7 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
                         |> Seq.map (fun x -> x.ToBsonDocument())
                         |> Seq.map (fun d -> (d |> getString "_id", d |> getInt32 "count"))
                         |> Map.ofSeq
+
                     let acc = acc |> Map.add counts
                     read acc cursor
 

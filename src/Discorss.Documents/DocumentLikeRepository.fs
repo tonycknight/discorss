@@ -30,22 +30,23 @@ type MongoDocumentLikeRepository(config: IOptions<AppConfiguration>) =
         Mongo.initCollection "uri" config.Value.mongoDbName colName config.Value.mongoConnection
 
     let getStatsUris (like: bool) =
+        let getString key doc =
+            doc |> MongoBson.getProperty key |> MongoBson.asString
+
+        let rec read (acc: string list) (cursor: MongoDB.Driver.IAsyncCursor<obj>) =
+            match cursor.MoveNext() with
+            | false -> acc
+            | true ->
+                let counts =
+                    cursor.Current
+                    |> Seq.map (fun x -> x.ToBsonDocument())
+                    |> Seq.map (fun d -> d |> getString "_id")
+                    |> List.ofSeq
+
+                let acc = acc |> List.append counts
+                read acc cursor
+
         task {
-            let getString key doc =
-                doc |> MongoBson.getProperty key |> MongoBson.asString
-
-            let rec read (acc: string list) (cursor: MongoDB.Driver.IAsyncCursor<obj>) =
-                match cursor.MoveNext() with
-                | false -> acc
-                | true ->
-                    let counts =
-                        cursor.Current
-                        |> Seq.map (fun x -> x.ToBsonDocument())
-                        |> Seq.map (fun d -> d |> getString "_id")
-                        |> List.ofSeq
-
-                    let acc = acc |> List.append counts
-                    read acc cursor
 
             let pipeline =
                 [| sprintf "{ $match: { liked: %b } }" like; "{ $project: { _id: 1 } }" |]
