@@ -12,7 +12,7 @@ module ModelsTests =
     let ``sha512 returns non-empty string`` (value: FeedEntry) =
         let result = Models.sha512 value
 
-        result |> Strings.isEmptyWhitespace |> not
+        result |> String.isEmptyWhitespace |> not
 
     [<Property>]
     let ``sha512 returns stable string`` (value: FeedEntry) =
@@ -27,12 +27,12 @@ module ModelsTests =
         result.author |> should equal value.author
 
         result.categories
-        |> should equalSeq (value.categories |> Array.map Strings.lower)
+        |> should equalSeq (value.categories |> Array.map String.lower)
 
         result.content |> should equal value.content
         result.description |> should equal value.description
         result.publication |> should equal value.publication
         result.title |> should equal value.title
-        Strings.isEmptyWhitespace result.sha512 |> should equal false
+        String.isEmptyWhitespace result.sha512 |> should equal false
 
         true

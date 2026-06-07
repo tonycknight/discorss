@@ -81,7 +81,7 @@ module App =
 
             ""
         }
-        |> Strings.join Environment.NewLine
+        |> String.join Environment.NewLine
 
     let svcs () =
         new ServiceCollection() |> Tk.Nuget.ServiceExtensions.AddNugetClient

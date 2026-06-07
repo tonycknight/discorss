@@ -10,7 +10,7 @@ module Bootstrap =
         let config = sp.GetRequiredService<IOptions<AppConfiguration>>()
 
         let services =
-            if config.Value.mongoConnection |> Strings.isEmptyWhitespace then
+            if config.Value.mongoConnection |> String.isEmptyWhitespace then
                 services.AddSingleton<Discorss.Feeds.IFeedRepository, Discorss.Feeds.StubFeedRepository>()
             else
                 services.AddSingleton<Discorss.Feeds.IFeedRepository, Discorss.Feeds.MongoFeedRepository>()

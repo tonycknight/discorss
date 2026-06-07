@@ -28,7 +28,7 @@ module BsonMapping =
 
     let toDocumentBson (document: Document) =
         newObject ()
-        |> setDocId (document.uri |> Strings.lower |> value)
+        |> setDocId (document.uri |> String.lower |> value)
         |> setProperty "uri" (value document.uri)
         |> setProperty "title" (value document.title)
         |> setProperty "content" (value document.content)
@@ -53,7 +53,7 @@ module BsonMapping =
 
     let toDocumentStatisticsBson (stats: DocumentStatistics) =
         newObject ()
-        |> setDocId (stats.uri |> Strings.lower |> value)
+        |> setDocId (stats.uri |> String.lower |> value)
         |> setProperty "uri" (value stats.uri)
         |> setProperty "wordCount" (value stats.wordCount)
         |> setProperty "wordFrequencies" (stats.wordFrequencies |> Dictionary.ofMap |> value)
@@ -76,7 +76,7 @@ module BsonMapping =
 
     let toDocumentLikeBson (document: DocumentLike) =
         newObject ()
-        |> setDocId (document.uri |> Strings.lower |> value)
+        |> setDocId (document.uri |> String.lower |> value)
         |> setProperty "uri" (value document.uri)
         |> setProperty "liked" (value document.liked)
 

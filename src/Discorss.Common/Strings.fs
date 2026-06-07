@@ -3,7 +3,7 @@
 open System
 open System.Security.Cryptography
 
-module Strings =
+module String =
     let isEmptyWhitespace (value: string) = String.IsNullOrWhiteSpace value
 
     let str (value: 'a) = value.ToString()

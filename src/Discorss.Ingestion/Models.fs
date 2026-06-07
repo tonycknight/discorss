@@ -6,7 +6,7 @@ open Discorss.Feeds
 
 module Models =
     let sha512 (value: FeedEntry) =
-        value.author + value.title + value.description + value.content |> Strings.sha512
+        value.author + value.title + value.description + value.content |> String.sha512
 
     let toDocument (value: FeedEntry) =
         { Document.uri = value.uri
@@ -15,5 +15,5 @@ module Models =
           title = value.title
           description = value.description
           content = value.content
-          categories = value.categories |> Array.map Strings.lower
+          categories = value.categories |> Array.map String.lower
           sha512 = sha512 value }

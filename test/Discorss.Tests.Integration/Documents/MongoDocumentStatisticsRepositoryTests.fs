@@ -51,7 +51,7 @@ module MongoDocumentStatisticsRepositoryTests =
 
             let words = Option.get persistedResult |> _.wordFrequencies |> Seq.map _.Key
 
-            return words |> Seq.forall (fun w -> w = Strings.lower w)
+            return words |> Seq.forall (fun w -> w = String.lower w)
         }
 
     [<Property(Arbitrary = [| typeof<AlphaNumericString> |])>]

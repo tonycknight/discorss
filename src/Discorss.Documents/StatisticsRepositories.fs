@@ -30,7 +30,7 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
     let normaliseWords (value: DocumentStatistics) =
         let words =
             value.wordFrequencies
-            |> Seq.map (fun kvp -> (Strings.lower kvp.Key, kvp.Value) |> Seq.singleton |> Map.ofSeq)
+            |> Seq.map (fun kvp -> (String.lower kvp.Key, kvp.Value) |> Seq.singleton |> Map.ofSeq)
 
         { value with
             wordFrequencies = Map.empty |> Map.addMany words }
@@ -63,7 +63,7 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
 
         member this.GetAsync(uri: string) =
             task {
-                let! xs = $"{{ _id: '{Strings.lower uri}' }}" |> Mongo.getMany<BsonDocument> collection
+                let! xs = $"{{ _id: '{String.lower uri}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromDocumentStatisticsBson |> Seq.tryHead
             }
@@ -90,7 +90,7 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
 
             task {
 
-                let uris = uris |> Seq.map (fun x -> $"\"{Strings.lower x}\"") |> String.concat ", "
+                let uris = uris |> Seq.map (fun x -> $"\"{String.lower x}\"") |> String.concat ", "
 
                 let pipeline =
                     [| sprintf "{ $match: { _id: { $in: [ %s ] }}}" uris

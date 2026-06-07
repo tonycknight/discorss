@@ -17,7 +17,7 @@ module Xml =
         | Some n ->
             n.LocalName
             |> Option.ofNull
-            |> Option.map Strings.lower
+            |> Option.map String.lower
             |> Option.defaultValue ""
         | _ -> ""
 

@@ -61,5 +61,5 @@ module Program =
         try
             app.Run(args)
         with ex ->
-            ex.Message |> Strings.escapeMarkup |> Console.error |> console
+            ex.Message |> String.escapeMarkup |> Console.error |> console
             ReturnCodes.sysError

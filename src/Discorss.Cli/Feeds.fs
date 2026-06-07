@@ -20,9 +20,9 @@ type AddFeedCommandSettings() =
     member val FeedUri = "" with get, set
 
     override this.Validate() : ValidationResult =
-        if Strings.isEmptyWhitespace this.FeedUri then
+        if String.isEmptyWhitespace this.FeedUri then
             ValidationResult.Error "The Feed URI is missing."
-        else if Strings.isUri this.FeedUri |> not then
+        else if String.isUri this.FeedUri |> not then
             ValidationResult.Error "The Feed URI is invalid."
         else
             base.Validate()
@@ -35,9 +35,9 @@ type DeleteFeedCommandSettings() =
     member val FeedUri = "" with get, set
 
     override this.Validate() : ValidationResult =
-        if Strings.isEmptyWhitespace this.FeedUri then
+        if String.isEmptyWhitespace this.FeedUri then
             ValidationResult.Error "The Feed URI is missing."
-        else if Strings.isUri this.FeedUri |> not then
+        else if String.isUri this.FeedUri |> not then
             ValidationResult.Error "The Feed URI is invalid."
         else
             base.Validate()
@@ -46,16 +46,16 @@ module FeedsConsole =
     let feedPreview (feed: ApiModels.Feed) =
         let channel (feed: ApiModels.Feed) =
             seq {
-                $"{feed.feed.title |> Strings.escapeMarkup |> Console.cyan} {feed.feed.uri |> Console.yellow}"
-                $"{feed.feed.description |> Strings.escapeMarkup |> Console.white}"
+                $"{feed.feed.title |> String.escapeMarkup |> Console.cyan} {feed.feed.uri |> Console.yellow}"
+                $"{feed.feed.description |> String.escapeMarkup |> Console.white}"
             }
 
         let entry (entry: ApiModels.FeedEntry) =
             seq {
-                $"{entry.title |> Strings.escapeMarkup |> Console.cyan}"
-                $"{entry.content |> Strings.truncate 100 |> Strings.escapeMarkup |> Console.white}"
+                $"{entry.title |> String.escapeMarkup |> Console.cyan}"
+                $"{entry.content |> String.truncate 100 |> String.escapeMarkup |> Console.white}"
             }
-            |> Strings.join Environment.NewLine
+            |> String.join Environment.NewLine
 
         let rows (feed: ApiModels.Feed) =
             seq {

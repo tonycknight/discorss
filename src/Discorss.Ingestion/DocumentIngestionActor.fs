@@ -40,10 +40,10 @@ type DocumentIngestionActor
 
         let abs (x: int) = System.Math.Abs(x)
 
-        let title = Strings.editDistance x.title y.title
-        let content = Strings.editDistance x.content y.content
-        let desc = Strings.editDistance x.description y.description
-        let auth = Strings.editDistance x.author y.author
+        let title = String.editDistance x.title y.title
+        let content = String.editDistance x.content y.content
+        let desc = String.editDistance x.description y.description
+        let auth = String.editDistance x.author y.author
 
         abs title + abs content + abs desc + abs auth
 

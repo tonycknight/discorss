@@ -70,7 +70,7 @@ type MongoDocumentLikeRepository(config: IOptions<AppConfiguration>) =
     interface IDocumentLikeRepository with
         member this.GetAsync(uri: string) =
             task {
-                let! xs = $"{{ _id: '{Strings.lower uri}' }}" |> Mongo.getMany<BsonDocument> collection
+                let! xs = $"{{ _id: '{String.lower uri}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromDocumentLikeBson |> Seq.tryHead
             }
@@ -87,7 +87,7 @@ type MongoDocumentLikeRepository(config: IOptions<AppConfiguration>) =
 
         member this.DeleteAsync(uri: string) =
             task {
-                let! r = $"{{ _id: '{Strings.lower uri}' }}" |> Mongo.delete collection
+                let! r = $"{{ _id: '{String.lower uri}' }}" |> Mongo.delete collection
                 ignore r
             }
 

@@ -14,8 +14,7 @@ module LexiconsTests =
 
         let lexicon = (new Lexicon() :> ILexicon)
 
-        let hits =
-            lexicon.StopWords() |> Seq.map Strings.upper |> Seq.map lexicon.IsStopWord
+        let hits = lexicon.StopWords() |> Seq.map String.upper |> Seq.map lexicon.IsStopWord
 
         hits |> Seq.exists (fun x -> not x) |> should equal false
 
@@ -23,8 +22,7 @@ module LexiconsTests =
     let ``IsStopWord mapped to lower are all true on known members`` () =
         let lexicon = (new Lexicon() :> ILexicon)
 
-        let hits =
-            lexicon.StopWords() |> Seq.map Strings.lower |> Seq.map lexicon.IsStopWord
+        let hits = lexicon.StopWords() |> Seq.map String.lower |> Seq.map lexicon.IsStopWord
 
         hits |> Seq.exists (fun x -> not x) |> should equal false
 
@@ -32,8 +30,7 @@ module LexiconsTests =
     let ``IsStopWord mapped to mixed are all true on known members`` () =
         let lexicon = (new Lexicon() :> ILexicon)
 
-        let hits =
-            lexicon.StopWords() |> Seq.map Strings.mixed |> Seq.map lexicon.IsStopWord
+        let hits = lexicon.StopWords() |> Seq.map String.mixed |> Seq.map lexicon.IsStopWord
 
         hits |> Seq.exists (fun x -> not x) |> should equal false
 
@@ -53,7 +50,7 @@ module LexiconsTests =
         let lexicon = (new Lexicon() :> ILexicon)
 
         let hits =
-            lexicon.KnownWords() |> Seq.map Strings.upper |> Seq.map lexicon.IsKnownWord
+            lexicon.KnownWords() |> Seq.map String.upper |> Seq.map lexicon.IsKnownWord
 
         hits |> Seq.exists (fun x -> not x) |> should equal false
 
@@ -62,7 +59,7 @@ module LexiconsTests =
         let lexicon = (new Lexicon() :> ILexicon)
 
         let hits =
-            lexicon.KnownWords() |> Seq.map Strings.lower |> Seq.map lexicon.IsKnownWord
+            lexicon.KnownWords() |> Seq.map String.lower |> Seq.map lexicon.IsKnownWord
 
         hits |> Seq.exists (fun x -> not x) |> should equal false
 
@@ -71,7 +68,7 @@ module LexiconsTests =
         let lexicon = (new Lexicon() :> ILexicon)
 
         let hits =
-            lexicon.KnownWords() |> Seq.map Strings.mixed |> Seq.map lexicon.IsKnownWord
+            lexicon.KnownWords() |> Seq.map String.mixed |> Seq.map lexicon.IsKnownWord
 
         hits |> Seq.exists (fun x -> not x) |> should equal false
 

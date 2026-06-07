@@ -44,7 +44,7 @@ module DocumentsConsole =
                     yellow " to remove like/dislike,"
                     yellow " any other key to continue."
                 }
-                |> Strings.join ""
+                |> String.join ""
 
             Panel(render line).Border(BoxBorder.Rounded).BorderColor(Color.Lime)
 
@@ -54,10 +54,10 @@ module DocumentsConsole =
 
 
     let document (document: ApiModels.Document) =
-        let cats = document.categories |> Strings.join ", "
+        let cats = document.categories |> String.join ", "
 
         seq {
-            document.title |> Strings.escapeMarkup |> Console.cyan
+            document.title |> String.escapeMarkup |> Console.cyan
             document.uri |> Console.yellow |> Console.italic
 
             $"{document.publication.ToString()} - {document.author}"
@@ -65,14 +65,14 @@ module DocumentsConsole =
             |> Console.italic
 
             if document.description.Length > 0 then
-                document.description |> Strings.escapeMarkup
+                document.description |> String.escapeMarkup
             else
-                document.content |> Strings.escapeMarkup
+                document.content |> String.escapeMarkup
 
             if cats.Length > 0 then
                 $"Categories: {cats |> Console.italic}" |> Console.grey
         }
-        |> Strings.join System.Environment.NewLine
+        |> String.join System.Environment.NewLine
         |> Console.markup
         |> Console.renderable
 
@@ -80,7 +80,7 @@ module DocumentsConsole =
 
         let title (doc: Document option) =
             doc
-            |> Option.map (fun d -> d.title |> Strings.escapeMarkup |> Console.cyan)
+            |> Option.map (fun d -> d.title |> String.escapeMarkup |> Console.cyan)
             |> Option.defaultValue ""
             |> render
 
@@ -91,10 +91,10 @@ module DocumentsConsole =
                 let cats =
                     seq {
                         doc.publication.ToString() |> Console.lightgrey
-                        doc.author |> Strings.escapeMarkup |> Console.lightgrey
+                        doc.author |> String.escapeMarkup |> Console.lightgrey
                     }
                     |> Seq.filter (fun x -> x <> "")
-                    |> Strings.join " by "
+                    |> String.join " by "
                     |> Console.grey
                     |> Console.italic
 
@@ -103,7 +103,7 @@ module DocumentsConsole =
 
         let uri (doc: Document option) =
             doc
-            |> Option.map (fun d -> d.uri |> Strings.escapeMarkup |> Console.yellow)
+            |> Option.map (fun d -> d.uri |> String.escapeMarkup |> Console.yellow)
             |> Option.defaultValue ""
             |> render
 
@@ -113,13 +113,13 @@ module DocumentsConsole =
             | Some doc ->
                 seq {
                     (if doc.description.Length > 0 then doc.description else "")
-                    |> Strings.escapeMarkup
+                    |> String.escapeMarkup
                     |> Console.lightcyan
 
-                    (if doc.content.Length > 0 then doc.content else "") |> Strings.escapeMarkup
+                    (if doc.content.Length > 0 then doc.content else "") |> String.escapeMarkup
                 }
                 |> Seq.filter (fun x -> x.Length > 0)
-                |> Strings.join System.Environment.NewLine
+                |> String.join System.Environment.NewLine
             |> render
 
         let categories (doc: Document option) =
@@ -128,7 +128,7 @@ module DocumentsConsole =
                 |> Option.map _.categories
                 |> Option.defaultValue [||]
                 |> Seq.map (fun s -> s |> Console.lightgrey |> Console.italic)
-                |> Strings.join ", "
+                |> String.join ", "
 
             if categories.Length = 0 then
                 ""
