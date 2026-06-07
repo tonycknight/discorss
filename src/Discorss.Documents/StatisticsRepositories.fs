@@ -27,6 +27,14 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
         Mongo.initCollection "uri" config.Value.mongoDbName colName config.Value.mongoConnection
         |> Mongo.setIndex "wordFrequencies"
 
+    let normaliseWords (value: DocumentStatistics) =
+        let words =
+            value.wordFrequencies
+            |> Seq.map (fun kvp -> (Strings.lower kvp.Key, kvp.Value) |> Seq.singleton |> Map.ofSeq)
+
+        { value with
+            wordFrequencies = Map.empty |> Map.addMany words }
+
     interface IStatsSource with
         member this.GetStatsAsync() =
             task {
@@ -41,7 +49,11 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
     interface IDocumentStatisticsRepository with
         member this.SetAsync(value: DocumentStatistics) =
             task {
-                let! result = value |> BsonMapping.toDocumentStatisticsBson |> Mongo.upsert collection
+                let! result =
+                    value
+                    |> normaliseWords
+                    |> BsonMapping.toDocumentStatisticsBson
+                    |> Mongo.upsert collection
 
                 if not result.IsAcknowledged then
                     new Exception("Set not acknowledged") |> raise
