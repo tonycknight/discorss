@@ -1,5 +1,6 @@
 namespace Discorss.Documents
 
+open System
 open System.Threading.Tasks
 open Discorss
 open Microsoft.Extensions.Logging
@@ -15,7 +16,7 @@ type DocumentNotificationReader
     let rec getNext () =
         task {
             log.LogTrace "Fetching next document notification..."
-            let! msg = broker.GetNextAsync Queues.QueueNames.documentNotifications
+            let! msg = broker.GetNextAsync(Queues.QueueNames.documentNotifications, TimeSpan.FromSeconds 1.)
 
             return!
                 match msg with
