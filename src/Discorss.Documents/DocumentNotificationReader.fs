@@ -16,7 +16,7 @@ type DocumentNotificationReader
     let rec getNext () =
         task {
             log.LogTrace "Fetching next document notification..."
-            let! msg = broker.GetNextAsync (Queues.QueueNames.documentNotifications, TimeSpan.FromSeconds 1.)
+            let! msg = broker.GetNextAsync(Queues.QueueNames.documentNotifications, TimeSpan.FromSeconds 1.)
 
             return!
                 match msg with
