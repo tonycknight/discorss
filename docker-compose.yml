@@ -10,13 +10,13 @@ services:
       - "27017:27017"
 
   microbroker:
-    image: "ghcr.io/tonycknight/microbroker:v0.2.2"
+    image: "ghcr.io/tonycknight/microbroker:latest"
     depends_on: [mongodb]
     networks:
       - discorssnetwork
     ports:
       - "8080:8080"
-    command: '--mongoConnection=mongodb://mongodb:27017 --hostUrls=http://+:8080'
+    command: '--mongoConnection=mongodb://mongodb:27017 --mongoDbName=microbroker --hostUrls=http://+:8080'
 
   discorss:
     image: discorss
@@ -24,7 +24,7 @@ services:
       - discorssnetwork
     ports:
       - "8081:8081"    
-    command: '--Discorss:microbrokerServiceUrl=http://microbroker:8080 --Discorss:mongoConnection=mongodb://mongodb:27017'
+    command: '--Discorss:microbrokerServiceUrl=http://microbroker:8080 --Discorss:mongoDbName=discorss --Discorss:mongoConnection=mongodb://mongodb:27017'
 
 networks:
   discorssnetwork:
