@@ -1,5 +1,5 @@
 
-version: '3.4'
+version: '3.9'
 
 services:
   mongodb:
@@ -8,6 +8,11 @@ services:
       - discorssnetwork
     ports:
       - "27017:27017"
+    healthcheck:
+      test: mongosh --eval 'db.adminCommand("ping")'
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   microbroker:
     image: "ghcr.io/tonycknight/microbroker:latest"
@@ -17,6 +22,11 @@ services:
     ports:
       - "8080:8080"
     command: '--mongoConnection=mongodb://mongodb:27017 --mongoDbName=microbroker --hostUrls=http://+:8080 --ttaScanFrequency=00:00:15  --Logging:Console:LogLevel:microbroker=Information --Logging:Console:LogLevel:Microsoft=Warning --Logging:Console:LogLevel:Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware=Warning'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/heartbeat/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   discorss:
     image: discorss
@@ -27,7 +37,12 @@ services:
       - discorssnetwork
     ports:
       - "8081:8081"    
-    command: '--Discorss:microbrokerServiceUrl=http://microbroker:8080 --Discorss:mongoDbName=discorss --Discorss:mongoConnection=mongodb://mongodb:27017 --Logging:Console:LogLevel:Discorss=Information --Logging:Console:LogLevel:Microsoft=Warning'
+    command: '--Discorss:microbrokerServiceUrl=http://microbroker:8080 --Discorss:mongoDbName=discorss --Discorss:mongoConnection=mongodb://mongodb:27017 --Logging:Console:LogLevel:Discorss=Information --Logging:Console:LogLevel:Microsoft=Warning --Logging:Console:LogLevel:Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware=Warning'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/api/v1/heartbeat/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 networks:
   discorssnetwork:
