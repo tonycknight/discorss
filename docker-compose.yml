@@ -20,6 +20,9 @@ services:
 
   discorss:
     image: discorss
+    depends_on:
+      - microbroker
+      - mongodb
     networks:
       - discorssnetwork
     ports:
