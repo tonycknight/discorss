@@ -16,7 +16,7 @@ services:
       - discorssnetwork
     ports:
       - "8080:8080"
-    command: '--mongoConnection=mongodb://mongodb:27017 --mongoDbName=microbroker --hostUrls=http://+:8080'
+    command: '--mongoConnection=mongodb://mongodb:27017 --mongoDbName=microbroker --hostUrls=http://+:8080 --ttaScanFrequency=00:00:15  --Logging:Console:LogLevel:microbroker=Information --Logging:Console:LogLevel:Microsoft=Warning --Logging:Console:LogLevel:Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware=Warning'
 
   discorss:
     image: discorss
@@ -24,7 +24,7 @@ services:
       - discorssnetwork
     ports:
       - "8081:8081"    
-    command: '--Discorss:microbrokerServiceUrl=http://microbroker:8080 --Discorss:mongoDbName=discorss --Discorss:mongoConnection=mongodb://mongodb:27017'
+    command: '--Discorss:microbrokerServiceUrl=http://microbroker:8080 --Discorss:mongoDbName=discorss --Discorss:mongoConnection=mongodb://mongodb:27017 --Logging:Console:LogLevel:Discorss=Information --Logging:Console:LogLevel:Microsoft=Warning'
 
 networks:
   discorssnetwork:
