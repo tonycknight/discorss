@@ -1,5 +1,5 @@
 
-version: '3.4'
+version: '3.9'
 
 services:
   mongodb:
@@ -8,24 +8,33 @@ services:
       - discorssnetwork
     ports:
       - "27017:27017"
+    healthcheck:
+      test: mongosh --eval 'db.adminCommand("ping")'
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   microbroker:
-    image: "ghcr.io/tonycknight/microbroker:v0.2.2"
-    depends_on: [mongodb]
+    restart: always
+    image: "ghcr.io/tonycknight/microbroker:latest"
+    depends_on:
+      mongodb:
+        condition: service_healthy
     networks:
       - discorssnetwork
     ports:
       - "8080:8080"
-    command: '--mongoConnection=mongodb://mongodb:27017 --hostUrls=http://+:8080'
-
+    command: '--mongoConnection=mongodb://mongodb:27017 --mongoDbName=microbroker --hostUrls=http://+:8080 --ttaScanFrequency=00:00:15  --Logging:Console:LogLevel:microbroker=Information --Logging:Console:LogLevel:Microsoft=Warning --Logging:Console:LogLevel:Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware=Warning'
+    
   discorss:
     image: discorss
+    depends_on: [microbroker, mongodb]
     networks:
       - discorssnetwork
     ports:
       - "8081:8081"    
-    command: '--Discorss:microbrokerServiceUrl=http://microbroker:8080 --Discorss:mongoConnection=mongodb://mongodb:27017'
-
+    command: '--Discorss:microbrokerServiceUrl=http://microbroker:8080 --Discorss:mongoDbName=discorss --Discorss:mongoConnection=mongodb://mongodb:27017 --Logging:Console:LogLevel:Discorss=Information --Logging:Console:LogLevel:Microsoft=Warning --Logging:Console:LogLevel:Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware=Warning'
+        
 networks:
   discorssnetwork:
     driver: bridge
