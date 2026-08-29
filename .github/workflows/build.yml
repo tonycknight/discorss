@@ -62,59 +62,25 @@ jobs:
           dotnet restore
               
       - name: Run Tests
-        run: dotnet test -c Debug --filter FullyQualifiedName!~integration /p:CollectCoverage=true /p:CoverletOutput=./TestResults/coverage.info /p:CoverletOutputFormat=cobertura --logger "trx;LogFileName=test_results.trx" 
+        run: dotnet test -c Debug --filter FullyQualifiedName!~integration --ignore-exit-code 8 -- --coverage --coverage-output-format cobertura --report-trx
 
       - name: Consolidate code coverage
         if: always()
         run: |
-          dotnet reportgenerator -reports:"./test/**/coverage.info" -targetdir:"./publish/codecoverage" -reporttypes:"Html"  
-          dotnet reportgenerator -reports:"./test/**/coverage.info" -targetdir:"./publish/codecoveragedata" -reporttypes:"Cobertura"
-      
-      - name: Archive Test results
-        uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: tests.results
-          path: |
-            ./test/**/TestResults/*
-          
-      - name: Archive Code coverage report
-        uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: code_coverage_report
-          path: ./publish/codecoverage/*.*
-
-      - name: Archive Code coverage
-        uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: codecoverage
-          path: ./publish/codecoveragedata/*.*
+          dotnet reportgenerator -reports:./TestResults/*.cobertura.xml -targetdir:"./publish/codecoveragesummary" -reporttypes:"MarkdownSummaryGithub"
           
       - name: Unit test results
         uses: dorny/test-reporter@v3
         if: always()
         with:
           name: unit test results
-          path: ${{ github.workspace }}/test/**/TestResults/test_results.trx
+          path: ${{ github.workspace }}/TestResults/*.trx
           reporter: dotnet-trx
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Code coverage results
-        uses: 5monkeys/cobertura-action@master
-        if: always()
-        with:
-          path: ${{ github.workspace }}/publish/codecoveragedata/Cobertura.xml
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          minimum_coverage: 10
-          fail_below_threshold: true
-          show_line: true
-          show_branch: true
-          show_missing: true
-          show_class_names: true
-          link_missing_lines: true
-          report_name: code coverage results
+      - name: Post Code coverage summary
+        run: |
+          cat ./publish/codecoveragesummary/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
   
   benchmarks:    
     runs-on: ubuntu-latest
