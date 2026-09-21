@@ -128,11 +128,13 @@ type AddFeedCommand(nuget: Tk.Nuget.INugetClient) =
                 Commands.renderBanner nuget
 
             let feed =
-                { FeedInfo.uri = settings.FeedUri
-                  title = ""
-                  description = ""
-                  updated = DateTime.UtcNow
-                  lastFetched = DateTime.UtcNow }
+                {
+                    FeedInfo.uri = settings.FeedUri
+                    title = ""
+                    description = ""
+                    updated = DateTime.UtcNow
+                    lastFetched = DateTime.UtcNow
+                }
 
             let! feed = DiscorssApi.addFeeds settings.ApiHost feed
 

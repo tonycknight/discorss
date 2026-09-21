@@ -4,22 +4,26 @@ open System
 
 [<CLIMutable>]
 type FeedInfo =
-    { uri: string
-      title: string
-      description: string
-      updated: DateTime
-      lastFetched: DateTime }
+    {
+        uri: string
+        title: string
+        description: string
+        updated: DateTime
+        lastFetched: DateTime
+    }
 
 [<CLIMutable>]
 type FeedEntry =
-    { id: string
-      publication: DateTime
-      uri: string
-      title: string
-      description: string
-      author: string
-      content: string
-      categories: string[] }
+    {
+        id: string
+        publication: DateTime
+        uri: string
+        title: string
+        description: string
+        author: string
+        content: string
+        categories: string[]
+    }
 
 [<CLIMutable>]
 type Feed =

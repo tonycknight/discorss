@@ -13,14 +13,16 @@ module DocumentAnalyserTests =
         let analyser = new DocumentAnalyser(lexicon): IDocumentAnalyser
 
         let doc =
-            { Document.uri = ""
-              author = ""
-              title = ""
-              description = ""
-              publication = DateTime.UtcNow
-              categories = [||]
-              content = ""
-              sha512 = "" }
+            {
+                Document.uri = ""
+                author = ""
+                title = ""
+                description = ""
+                publication = DateTime.UtcNow
+                categories = [||]
+                content = ""
+                sha512 = ""
+            }
 
         let words = analyser.GetWords(doc) |> Array.ofSeq
 
@@ -34,14 +36,16 @@ module DocumentAnalyserTests =
         let expected = [| "headline"; "joe"; "summary"; "stuff" |]
 
         let doc =
-            { Document.uri = ""
-              author = expected.[1]
-              title = expected.[0]
-              description = expected.[2]
-              publication = DateTime.UtcNow
-              categories = [||]
-              content = expected.[3]
-              sha512 = "" }
+            {
+                Document.uri = ""
+                author = expected.[1]
+                title = expected.[0]
+                description = expected.[2]
+                publication = DateTime.UtcNow
+                categories = [||]
+                content = expected.[3]
+                sha512 = ""
+            }
 
         let words = analyser.GetWords(doc) |> Array.ofSeq
 
@@ -54,14 +58,16 @@ module DocumentAnalyserTests =
         let analyser = new DocumentAnalyser(lexicon): IDocumentAnalyser
 
         let doc =
-            { Document.uri = ""
-              author = ""
-              title = ""
-              description = ""
-              publication = DateTime.UtcNow
-              categories = [||]
-              content = ""
-              sha512 = "" }
+            {
+                Document.uri = ""
+                author = ""
+                title = ""
+                description = ""
+                publication = DateTime.UtcNow
+                categories = [||]
+                content = ""
+                sha512 = ""
+            }
 
         let stats = analyser.GetStatistics(doc)
 
@@ -76,14 +82,16 @@ module DocumentAnalyserTests =
         let words = [| "headline" |]
 
         let doc =
-            { Document.uri = ""
-              author = words.[0]
-              title = words.[0]
-              description = words.[0]
-              publication = DateTime.UtcNow
-              categories = [||]
-              content = words.[0]
-              sha512 = "" }
+            {
+                Document.uri = ""
+                author = words.[0]
+                title = words.[0]
+                description = words.[0]
+                publication = DateTime.UtcNow
+                categories = [||]
+                content = words.[0]
+                sha512 = ""
+            }
 
         let stats = analyser.GetStatistics(doc)
 

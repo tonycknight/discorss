@@ -19,12 +19,14 @@ module FeedReader =
                 author = Html.stripHtml entry.author
                 description = Html.stripHtml entry.description
                 content = Html.stripHtml entry.content
-                categories = entry.categories |> Array.map Html.stripHtml }
+                categories = entry.categories |> Array.map Html.stripHtml
+            }
 
         { feed with
             title = feed.title |> Html.stripHtml
             description = feed.description |> Html.stripHtml
-            entries = feed.entries |> List.map cleanEntry }
+            entries = feed.entries |> List.map cleanEntry
+        }
 
     let private parser (xml: XDocument) =
         match xml with

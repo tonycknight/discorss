@@ -165,8 +165,10 @@ module DiscorssApi =
             let uri = Http.route host "api/v1/documents/likes/"
 
             let req =
-                { ApiModels.DocumentLike.uri = document.uri
-                  liked = like }
+                {
+                    ApiModels.DocumentLike.uri = document.uri
+                    liked = like
+                }
 
             let body = req |> Newtonsoft.Json.JsonConvert.SerializeObject
             let req = new HttpRequestMessage(HttpMethod.Put, uri) |> Http.applyJsonContent body

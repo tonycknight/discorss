@@ -14,7 +14,8 @@ module MongoDocumentLikesRepositoryTests =
 
             let value =
                 { value with
-                    uri = value.uri + (System.Guid.NewGuid().ToString()) }
+                    uri = value.uri + (System.Guid.NewGuid().ToString())
+                }
 
             let repo = new MongoDocumentLikeRepository(opts) :> IDocumentLikeRepository
 
@@ -33,7 +34,8 @@ module MongoDocumentLikesRepositoryTests =
 
             let value =
                 { value with
-                    uri = value.uri + (System.Guid.NewGuid().ToString()) }
+                    uri = value.uri + (System.Guid.NewGuid().ToString())
+                }
 
             let repo = new MongoDocumentLikeRepository(opts) :> IDocumentLikeRepository
 
@@ -57,7 +59,8 @@ module MongoDocumentLikesRepositoryTests =
 
             let value =
                 { value with
-                    uri = value.uri + (System.Guid.NewGuid().ToString()) }
+                    uri = value.uri + (System.Guid.NewGuid().ToString())
+                }
 
             let repo = new MongoDocumentLikeRepository(opts) :> IDocumentLikeRepository
 
@@ -77,7 +80,8 @@ module MongoDocumentLikesRepositoryTests =
 
             let value =
                 { value with
-                    uri = value.uri + (System.Guid.NewGuid().ToString()) |> String.lower }
+                    uri = value.uri + (System.Guid.NewGuid().ToString()) |> String.lower
+                }
 
             let repo = new MongoDocumentLikeRepository(opts) :> IDocumentLikeRepository
 

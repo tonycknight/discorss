@@ -10,7 +10,11 @@ module WebApp =
         subRouteCi
             path
             (choose
-                [ GET
-                  >=> choose
-                          [ route "stats/" >=> publicResponseCaching 5 None >=> WebAppHandlers.getStats sp
-                            route "heartbeat/" >=> noResponseCaching >=> json [ "OK" ] ] ])
+                [
+                    GET
+                    >=> choose
+                            [
+                                route "stats/" >=> publicResponseCaching 5 None >=> WebAppHandlers.getStats sp
+                                route "heartbeat/" >=> noResponseCaching >=> json [ "OK" ]
+                            ]
+                ])

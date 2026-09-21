@@ -16,14 +16,16 @@ module MongoDocumentRepositoryTests =
                 new MongoDocumentRepository(opts, TestHelpers.logFactory ()) :> IDocumentRepository
 
             let document =
-                { Document.uri = $"http://localhost/{Guid.NewGuid()}"
-                  publication = DateTime.UtcNow
-                  author = "test author name"
-                  title = "test doc title"
-                  description = "test description"
-                  content = "test content"
-                  categories = [| "tag1"; "tag2" |]
-                  sha512 = "test sha" }
+                {
+                    Document.uri = $"http://localhost/{Guid.NewGuid()}"
+                    publication = DateTime.UtcNow
+                    author = "test author name"
+                    title = "test doc title"
+                    description = "test description"
+                    content = "test content"
+                    categories = [| "tag1"; "tag2" |]
+                    sha512 = "test sha"
+                }
 
             let! result = repo.SetDocumentAsync document
 
@@ -39,14 +41,16 @@ module MongoDocumentRepositoryTests =
                 new MongoDocumentRepository(opts, TestHelpers.logFactory ()) :> IDocumentRepository
 
             let document =
-                { Document.uri = $"http://localhost/{Guid.NewGuid()}"
-                  publication = DateTime.UtcNow
-                  author = "test author name"
-                  title = "test doc title"
-                  description = "test description"
-                  content = "test content"
-                  categories = [| "tag1"; "tag2" |]
-                  sha512 = "test sha" }
+                {
+                    Document.uri = $"http://localhost/{Guid.NewGuid()}"
+                    publication = DateTime.UtcNow
+                    author = "test author name"
+                    title = "test doc title"
+                    description = "test description"
+                    content = "test content"
+                    categories = [| "tag1"; "tag2" |]
+                    sha512 = "test sha"
+                }
 
             let! result = repo.SetDocumentAsync document
 
@@ -55,7 +59,8 @@ module MongoDocumentRepositoryTests =
                     description = Guid.NewGuid().ToString()
                     title = Guid.NewGuid().ToString()
                     content = Guid.NewGuid().ToString()
-                    author = Guid.NewGuid().ToString() }
+                    author = Guid.NewGuid().ToString()
+                }
 
             let! result = repo.SetDocumentAsync document
 
@@ -84,14 +89,16 @@ module MongoDocumentRepositoryTests =
 
             // set a document
             let document =
-                { Document.uri = $"http://localhost/{Guid.NewGuid()}"
-                  publication = DateTime.UtcNow
-                  author = "test author name"
-                  title = "test doc title"
-                  description = "test description"
-                  content = "test content"
-                  categories = [| "tag1"; "tag2" |]
-                  sha512 = "test sha" }
+                {
+                    Document.uri = $"http://localhost/{Guid.NewGuid()}"
+                    publication = DateTime.UtcNow
+                    author = "test author name"
+                    title = "test doc title"
+                    description = "test description"
+                    content = "test content"
+                    categories = [| "tag1"; "tag2" |]
+                    sha512 = "test sha"
+                }
 
             let! result = repo.SetDocumentAsync document
 

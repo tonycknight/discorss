@@ -10,7 +10,9 @@ type HttpResponseHeaders = (string * string) list
 
 [<CLIMutable>]
 type HttpResponseErrors =
-    { errors: string[] }
+    {
+        errors: string[]
+    }
 
     static member empty = { errors = [||] }
 
@@ -68,7 +70,8 @@ module Http =
                 |> Array.ofSeq
 
             { HttpResponseErrors.empty with
-                errors = msgs }
+                errors = msgs
+            }
 
     let private contentHeaders (resp: HttpResponseMessage) =
         resp.Content.Headers

@@ -20,9 +20,11 @@ module Actor =
     let stop actor = (actor :> IOrchestrationActor).Stop()
 
     let getStats name (mailbox: MailboxProcessor<ActorMessage>) =
-        { Stats.name = name
-          itemCount = mailbox.CurrentQueueLength
-          childStats = [] }
+        {
+            Stats.name = name
+            itemCount = mailbox.CurrentQueueLength
+            childStats = []
+        }
 
     let createTimer (duration: TimeSpan) (func: obj -> unit) =
         let f source args = func args

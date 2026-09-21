@@ -33,14 +33,16 @@ module AtomParser =
             | x -> x
 
         let parse (e: XElement) =
-            { FeedEntry.id = e |> Xml.elementValueDefault "link"
-              publication = DateTime.UtcNow
-              uri = uri e
-              title = e |> Xml.elementValueDefault "title"
-              description = e |> Xml.elementValueDefault "summary"
-              author = e |> Xml.elementValueDefault "creator"
-              content = e |> Xml.elementValueDefault "content"
-              categories = e |> Xml.elementValues "category" |> Array.ofSeq }
+            {
+                FeedEntry.id = e |> Xml.elementValueDefault "link"
+                publication = DateTime.UtcNow
+                uri = uri e
+                title = e |> Xml.elementValueDefault "title"
+                description = e |> Xml.elementValueDefault "summary"
+                author = e |> Xml.elementValueDefault "creator"
+                content = e |> Xml.elementValueDefault "content"
+                categories = e |> Xml.elementValues "category" |> Array.ofSeq
+            }
 
         xml |> Xml.docElements "entry" |> Seq.map parse |> List.ofSeq
 
@@ -53,12 +55,14 @@ module AtomParser =
         match parseChannel xml with
         | ("", "") -> Choice2Of2 "Empty channel in feed"
         | (title, description) ->
-            { Feed.uri = url
-              feedType = FeedType.Atom
-              title = title
-              description = description
-              updated = DateTime.UtcNow
-              entries = parseEntries xml }
+            {
+                Feed.uri = url
+                feedType = FeedType.Atom
+                title = title
+                description = description
+                updated = DateTime.UtcNow
+                entries = parseEntries xml
+            }
             |> Choice1Of2
 
     let (|IsAtom|_|) (xml: XDocument) =

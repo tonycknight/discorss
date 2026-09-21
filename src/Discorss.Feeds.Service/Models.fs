@@ -5,28 +5,36 @@ open Discorss.ApiModels
 
 module Mapping =
     let toFeedInfoApiModel (value: Discorss.Feeds.FeedInfo) =
-        { Discorss.ApiModels.FeedInfo.uri = value.uri
-          title = value.title
-          description = value.description
-          updated = value.updated
-          lastFetched = value.lastFetched }
+        {
+            Discorss.ApiModels.FeedInfo.uri = value.uri
+            title = value.title
+            description = value.description
+            updated = value.updated
+            lastFetched = value.lastFetched
+        }
 
     let toFeedApiModel (value: Discorss.Feeds.Feed) =
-        { Discorss.ApiModels.Feed.feed =
-            { uri = value.uri
-              title = value.title
-              description = value.description
-              updated = value.updated
-              lastFetched = System.DateTime.UtcNow }
-          entries =
-            value.entries
-            |> Seq.map (fun e ->
-                { id = e.id
-                  publication = e.publication
-                  uri = e.uri
-                  title = e.title
-                  description = e.description
-                  author = e.author
-                  content = e.content
-                  categories = e.categories })
-            |> Array.ofSeq }
+        {
+            Discorss.ApiModels.Feed.feed =
+                {
+                    uri = value.uri
+                    title = value.title
+                    description = value.description
+                    updated = value.updated
+                    lastFetched = System.DateTime.UtcNow
+                }
+            entries =
+                value.entries
+                |> Seq.map (fun e ->
+                    {
+                        id = e.id
+                        publication = e.publication
+                        uri = e.uri
+                        title = e.title
+                        description = e.description
+                        author = e.author
+                        content = e.content
+                        categories = e.categories
+                    })
+                |> Array.ofSeq
+        }

@@ -62,15 +62,18 @@ type MongoDocumentLikeRepository(config: IOptions<AppConfiguration>) =
                 let! count = Mongo.estimatedCount collection
 
                 return
-                    { Stats.name = this.GetType().Name
-                      itemCount = count
-                      childStats = [] }
+                    {
+                        Stats.name = this.GetType().Name
+                        itemCount = count
+                        childStats = []
+                    }
             }
 
     interface IDocumentLikeRepository with
         member this.GetAsync(uri: string) =
             task {
-                let! xs = $"{{ _id: '{String.lower uri}' }}" |> Mongo.getMany<BsonDocument> collection
+                let! xs =
+                    $"{{ _id: '{String.lower uri}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromDocumentLikeBson |> Seq.tryHead
             }

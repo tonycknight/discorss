@@ -4,23 +4,27 @@ open System
 
 [<CLIMutable>]
 type AppConfiguration =
-    { microbrokerServiceUrl: string
-      microbrokerThrottle: TimeSpan
-      documentIngestionWindow: TimeSpan
-      queuePollFrequency: TimeSpan
-      feedIngestionFrequency: TimeSpan
-      documentEditDistanceThreshold: int
-      mongoConnection: string
-      mongoDbName: string }
+    {
+        microbrokerServiceUrl: string
+        microbrokerThrottle: TimeSpan
+        documentIngestionWindow: TimeSpan
+        queuePollFrequency: TimeSpan
+        feedIngestionFrequency: TimeSpan
+        documentEditDistanceThreshold: int
+        mongoConnection: string
+        mongoDbName: string
+    }
 
     static member sectionName = "Discorss"
 
     static member defaultConfig =
-        { AppConfiguration.microbrokerServiceUrl = "http://localhost:8080"
-          microbrokerThrottle = TimeSpan.FromSeconds 2.
-          documentIngestionWindow = TimeSpan.FromMinutes 60.
-          queuePollFrequency = TimeSpan.FromSeconds 5.
-          feedIngestionFrequency = TimeSpan.FromMinutes 5.
-          documentEditDistanceThreshold = 20
-          mongoConnection = "mongodb://localhost:27017"
-          mongoDbName = "discorss" }
+        {
+            AppConfiguration.microbrokerServiceUrl = "http://localhost:8080"
+            microbrokerThrottle = TimeSpan.FromSeconds 2.
+            documentIngestionWindow = TimeSpan.FromMinutes 60.
+            queuePollFrequency = TimeSpan.FromSeconds 5.
+            feedIngestionFrequency = TimeSpan.FromMinutes 5.
+            documentEditDistanceThreshold = 20
+            mongoConnection = "mongodb://localhost:27017"
+            mongoDbName = "discorss"
+        }

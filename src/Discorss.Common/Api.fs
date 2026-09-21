@@ -29,7 +29,13 @@ module Api =
 
             clearResponse
             >=> publicResponseCaching 5 None
-            >=> ServerErrors.internalError (json ({ ApiErrorResult.errors = [| "An unhandled error occurred." |] }))
+            >=> ServerErrors.internalError (
+                json (
+                    {
+                        ApiErrorResult.errors = [| "An unhandled error occurred." |]
+                    }
+                )
+            )
 
     let logClient: HttpHandler =
         fun (next: HttpFunc) (ctx: HttpContext) ->
@@ -81,8 +87,10 @@ module ApiStartup =
             let appConfig =
                 sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<AppConfiguration>>()
 
-            { MicrobrokerConfiguration.brokerBaseUrl = appConfig.Value.microbrokerServiceUrl
-              throttleMaxTime = appConfig.Value.microbrokerThrottle }
+            {
+                MicrobrokerConfiguration.brokerBaseUrl = appConfig.Value.microbrokerServiceUrl
+                throttleMaxTime = appConfig.Value.microbrokerThrottle
+            }
 
         DependencyInjection.addServices services
         |> DependencyInjection.addConfiguration config
@@ -112,7 +120,11 @@ module ApiValidation =
                 && ctx.Request.ContentType
                    <> $"{System.Net.Mime.MediaTypeNames.Application.Json}; charset=utf-8"
             then
-                let result = { ApiErrorResult.errors = [| "Invalid content type" |] }
+                let result =
+                    {
+                        ApiErrorResult.errors = [| "Invalid content type" |]
+                    }
+
                 return Choice1Of2 result
             else
                 try
@@ -121,7 +133,15 @@ module ApiValidation =
                     return
                         match System.Object.ReferenceEquals(msg, null) with
                         | false -> Choice2Of2 msg
-                        | true -> Choice1Of2 { ApiErrorResult.errors = [| "Invalid request" |] }
+                        | true ->
+                            Choice1Of2
+                                {
+                                    ApiErrorResult.errors = [| "Invalid request" |]
+                                }
                 with ex ->
-                    return Choice1Of2 { ApiErrorResult.errors = [| "Invalid request" |] }
+                    return
+                        Choice1Of2
+                            {
+                                ApiErrorResult.errors = [| "Invalid request" |]
+                            }
         }

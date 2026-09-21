@@ -28,7 +28,12 @@ module WebAppHandlers =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 if Uri.tryParse feedUri |> Option.isNone then
-                    let result = json { ApiErrorResult.errors = [| "Invalid Uri" |] }
+                    let result =
+                        json
+                            {
+                                ApiErrorResult.errors = [| "Invalid Uri" |]
+                            }
+
                     return! RequestErrors.badRequest result next ctx
                 else
                     let! feed = (feedProvider sp).GetFeedAsync feedUri
@@ -44,7 +49,10 @@ module WebAppHandlers =
                         return! RequestErrors.unprocessableEntity result next ctx
                     | _ ->
                         let result =
-                            json { ApiErrorResult.errors = [| $"Internal error: {feed.GetType()}" |] }
+                            json
+                                {
+                                    ApiErrorResult.errors = [| $"Internal error: {feed.GetType()}" |]
+                                }
 
                         return! ServerErrors.internalError result next ctx
 
@@ -63,23 +71,40 @@ module WebAppHandlers =
                         match! (feedProvider sp).GetFeedAsync req.uri with
                         | FeedReadResult.Feed fr ->
                             let feed =
-                                { FeedInfo.uri = req.uri
-                                  title = fr.title
-                                  description = fr.description
-                                  updated = DateTime.UtcNow
-                                  lastFetched = DateTime.MinValue }
+                                {
+                                    FeedInfo.uri = req.uri
+                                    title = fr.title
+                                    description = fr.description
+                                    updated = DateTime.UtcNow
+                                    lastFetched = DateTime.MinValue
+                                }
 
                             let! result = (feedRepo sp).SetFeedInfoAsync feed
 
                             return! Successful.ok (result |> Mapping.toFeedInfoApiModel |> json) next ctx
                         | FeedReadResult.Xml _ ->
-                            let result = json { ApiErrorResult.errors = [| "An error occurred." |] }
+                            let result =
+                                json
+                                    {
+                                        ApiErrorResult.errors = [| "An error occurred." |]
+                                    }
+
                             return! ServerErrors.internalError result next ctx
                         | FeedReadResult.Error err ->
-                            let result = json { ApiErrorResult.errors = [| $"An error occurred: {err}" |] }
+                            let result =
+                                json
+                                    {
+                                        ApiErrorResult.errors = [| $"An error occurred: {err}" |]
+                                    }
+
                             return! ServerErrors.internalError result next ctx
                     with ex ->
-                        let result = json { ApiErrorResult.errors = [| "An error occurred." |] }
+                        let result =
+                            json
+                                {
+                                    ApiErrorResult.errors = [| "An error occurred." |]
+                                }
+
                         return! ServerErrors.internalError result next ctx
             }
 
@@ -87,15 +112,22 @@ module WebAppHandlers =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 if Uri.tryParse feedUri |> Option.isNone then
-                    let result = json { ApiErrorResult.errors = [| "Invalid Uri" |] }
+                    let result =
+                        json
+                            {
+                                ApiErrorResult.errors = [| "Invalid Uri" |]
+                            }
+
                     return! RequestErrors.badRequest result next ctx
                 else
                     let feed =
-                        { FeedInfo.uri = feedUri
-                          title = ""
-                          description = ""
-                          updated = DateTime.UtcNow
-                          lastFetched = DateTime.MinValue }
+                        {
+                            FeedInfo.uri = feedUri
+                            title = ""
+                            description = ""
+                            updated = DateTime.UtcNow
+                            lastFetched = DateTime.MinValue
+                        }
 
                     do! (feedRepo sp).DeleteFeedInfoAsync feed
 

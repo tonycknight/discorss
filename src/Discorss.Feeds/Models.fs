@@ -10,29 +10,35 @@ type FeedType =
     | Unknown
 
 type FeedEntry =
-    { id: string
-      publication: DateTime
-      uri: string
-      title: string
-      description: string
-      author: string
-      content: string
-      categories: string[] }
+    {
+        id: string
+        publication: DateTime
+        uri: string
+        title: string
+        description: string
+        author: string
+        content: string
+        categories: string[]
+    }
 
 type Feed =
-    { feedType: FeedType
-      title: string
-      uri: string
-      description: string
-      updated: DateTime
-      entries: FeedEntry list }
+    {
+        feedType: FeedType
+        title: string
+        uri: string
+        description: string
+        updated: DateTime
+        entries: FeedEntry list
+    }
 
 type FeedInfo =
-    { uri: string
-      title: string
-      description: string
-      updated: DateTime
-      lastFetched: DateTime }
+    {
+        uri: string
+        title: string
+        description: string
+        updated: DateTime
+        lastFetched: DateTime
+    }
 
 type FeedReadResult =
     | Xml of doc: System.Xml.Linq.XDocument
@@ -55,8 +61,10 @@ module BsonMapping =
     let fromBson (document: BsonDocument) =
         let asString key = getProperty key >> asString
 
-        { FeedInfo.uri = document |> asString "uri"
-          title = document |> asString "title"
-          description = document |> asString "description"
-          updated = document |> getProperty "updated" |> asDateTime
-          lastFetched = document |> getProperty "lastFetched" |> asDateTime }
+        {
+            FeedInfo.uri = document |> asString "uri"
+            title = document |> asString "title"
+            description = document |> asString "description"
+            updated = document |> getProperty "updated" |> asDateTime
+            lastFetched = document |> getProperty "lastFetched" |> asDateTime
+        }

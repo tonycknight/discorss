@@ -58,7 +58,8 @@ type DocumentIndexingActor
 
                 return
                     { stats with
-                        itemCount = stats.itemCount + (queueCount |> Option.map _.count |> Option.defaultValue 0) }
+                        itemCount = stats.itemCount + (queueCount |> Option.map _.count |> Option.defaultValue 0)
+                    }
             }
 
     interface IActor with

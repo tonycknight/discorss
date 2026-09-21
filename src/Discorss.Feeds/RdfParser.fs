@@ -22,14 +22,16 @@ module RdfParser =
 
     let parseEntries (xml: XDocument) =
         let parse (e: XElement) =
-            { FeedEntry.id = e |> Xml.elementValueDefault "link"
-              publication = DateTime.UtcNow
-              uri = e |> Xml.elementValueDefault "link"
-              title = e |> Xml.elementValueDefault "title"
-              description = e |> Xml.elementValueDefault "description"
-              author = e |> Xml.elementValueDefault "creator"
-              content = e |> Xml.elementValueDefault "content"
-              categories = e |> Xml.elementValues "category" |> Array.ofSeq }
+            {
+                FeedEntry.id = e |> Xml.elementValueDefault "link"
+                publication = DateTime.UtcNow
+                uri = e |> Xml.elementValueDefault "link"
+                title = e |> Xml.elementValueDefault "title"
+                description = e |> Xml.elementValueDefault "description"
+                author = e |> Xml.elementValueDefault "creator"
+                content = e |> Xml.elementValueDefault "content"
+                categories = e |> Xml.elementValues "category" |> Array.ofSeq
+            }
 
         xml |> Xml.docElements "item" |> Seq.map parse |> List.ofSeq
 
@@ -43,12 +45,14 @@ module RdfParser =
         match parseChannel xml with
         | ("", "") -> Choice2Of2 "Empty channel in feed"
         | (title, description) ->
-            { Feed.uri = url
-              feedType = FeedType.Rss20
-              title = title
-              description = description
-              updated = DateTime.UtcNow
-              entries = parseEntries xml }
+            {
+                Feed.uri = url
+                feedType = FeedType.Rss20
+                title = title
+                description = description
+                updated = DateTime.UtcNow
+                entries = parseEntries xml
+            }
             |> Choice1Of2
 
     let (|IsRdf|_|) (xml: XDocument) =
