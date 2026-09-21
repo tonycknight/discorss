@@ -12,11 +12,15 @@ module WebApp =
             path
             (Api.logClient
              >=> choose
-                     [ GET
-                       >=> choose
-                               [ routeCif "/%s/" (fun url ->
-                                     publicResponseCaching 5 None >=> WebAppHandlers.getFeed sp url)
-                                 route "/" >=> (noResponseCaching >=> WebAppHandlers.getFeeds sp) ]
-                       PUT >=> choose [ route "/" >=> WebAppHandlers.setFeed sp ]
-                       DELETE
-                       >=> choose [ routeCif "/%s/" (fun url -> WebAppHandlers.deleteFeed sp url) ] ])
+                     [
+                         GET
+                         >=> choose
+                                 [
+                                     routeCif "/%s/" (fun url ->
+                                         publicResponseCaching 5 None >=> WebAppHandlers.getFeed sp url)
+                                     route "/" >=> (noResponseCaching >=> WebAppHandlers.getFeeds sp)
+                                 ]
+                         PUT >=> choose [ route "/" >=> WebAppHandlers.setFeed sp ]
+                         DELETE
+                         >=> choose [ routeCif "/%s/" (fun url -> WebAppHandlers.deleteFeed sp url) ]
+                     ])

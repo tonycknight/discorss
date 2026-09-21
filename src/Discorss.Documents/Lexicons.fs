@@ -11,21 +11,23 @@ type ILexicon =
 
 type Lexicon() =
     let stopWords =
-        [ "the"
-          "these"
-          "this"
-          "a"
-          "an"
-          "and"
-          "i"
-          "we"
-          "it"
-          "is"
-          "as"
-          "be"
-          "to"
-          "has"
-          "for" ]
+        [
+            "the"
+            "these"
+            "this"
+            "a"
+            "an"
+            "and"
+            "i"
+            "we"
+            "it"
+            "is"
+            "as"
+            "be"
+            "to"
+            "has"
+            "for"
+        ]
         |> Set.ofSeq
 
     let knownWords = [ ".net"; "asp.net" ] |> Set.ofSeq

@@ -3,19 +3,23 @@
 open System
 
 type Document =
-    { uri: string
-      publication: DateTime
-      author: string
-      title: string
-      description: string
-      content: string
-      categories: string[]
-      sha512: string }
+    {
+        uri: string
+        publication: DateTime
+        author: string
+        title: string
+        description: string
+        content: string
+        categories: string[]
+        sha512: string
+    }
 
 type DocumentStatistics =
-    { uri: string
-      wordCount: int
-      wordFrequencies: Map<string, int> }
+    {
+        uri: string
+        wordCount: int
+        wordFrequencies: Map<string, int>
+    }
 
 type WordStatistics = { word: string; wordCounts: int }
 
@@ -42,14 +46,16 @@ module BsonMapping =
     let fromDocumentBson (document: BsonDocument) =
         let asString key = getProperty key >> asString
 
-        { Document.uri = document |> asString "uri"
-          title = document |> asString "title"
-          content = document |> asString "content"
-          description = document |> asString "description"
-          author = document |> asString "author"
-          sha512 = document |> asString "sha512"
-          publication = document |> getProperty "publication" |> asDateTime
-          categories = document |> getProperty "categories" |> asStringArray }
+        {
+            Document.uri = document |> asString "uri"
+            title = document |> asString "title"
+            content = document |> asString "content"
+            description = document |> asString "description"
+            author = document |> asString "author"
+            sha512 = document |> asString "sha512"
+            publication = document |> getProperty "publication" |> asDateTime
+            categories = document |> getProperty "categories" |> asStringArray
+        }
 
     let toDocumentStatisticsBson (stats: DocumentStatistics) =
         newObject ()
@@ -70,9 +76,11 @@ module BsonMapping =
             |> Seq.map (fun kvp -> (kvp.Key, kvp.Value :?> int32))
             |> Map.ofSeq
 
-        { DocumentStatistics.uri = document |> asString "uri"
-          wordCount = document |> asInt "wordCount"
-          wordFrequencies = freqs }
+        {
+            DocumentStatistics.uri = document |> asString "uri"
+            wordCount = document |> asInt "wordCount"
+            wordFrequencies = freqs
+        }
 
     let toDocumentLikeBson (document: DocumentLike) =
         newObject ()
@@ -81,5 +89,7 @@ module BsonMapping =
         |> setProperty "liked" (value document.liked)
 
     let fromDocumentLikeBson (document: BsonDocument) =
-        { DocumentLike.uri = document |> getProperty "uri" |> asString
-          liked = document |> getProperty "liked" |> asBoolean }
+        {
+            DocumentLike.uri = document |> getProperty "uri" |> asString
+            liked = document |> getProperty "liked" |> asBoolean
+        }

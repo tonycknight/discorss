@@ -25,9 +25,11 @@ type IngestionActor
             return
                 queueCounts
                 |> Seq.map (fun qc ->
-                    { Stats.name = qc.name
-                      itemCount = qc.count
-                      childStats = [] })
+                    {
+                        Stats.name = qc.name
+                        itemCount = qc.count
+                        childStats = []
+                    })
                 |> List.ofSeq
         }
 
@@ -81,9 +83,11 @@ type IngestionActor
         MailboxProcessor<ActorMessage>.Start(fun inbox -> loop inbox { stopped = false; state = () })
 
     member this.QueueNames =
-        [ Discorss.Queues.QueueNames.feedEntries
-          Discorss.Queues.QueueNames.documents
-          Queues.QueueNames.documentIndexing ]
+        [
+            Discorss.Queues.QueueNames.feedEntries
+            Discorss.Queues.QueueNames.documents
+            Queues.QueueNames.documentIndexing
+        ]
 
     interface IStatsSource with
         member this.GetStatsAsync() =

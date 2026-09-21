@@ -14,7 +14,8 @@ module MongoDocumentStatisticsRepositoryTests =
 
             let value =
                 { value with
-                    uri = value.uri + (System.Guid.NewGuid().ToString()) }
+                    uri = value.uri + (System.Guid.NewGuid().ToString())
+                }
 
             let repo =
                 new MongoDocumentStatisticsRepository(opts) :> IDocumentStatisticsRepository
@@ -40,7 +41,8 @@ module MongoDocumentStatisticsRepositoryTests =
 
             let value =
                 { value with
-                    uri = value.uri + (System.Guid.NewGuid().ToString()) }
+                    uri = value.uri + (System.Guid.NewGuid().ToString())
+                }
 
             let repo =
                 new MongoDocumentStatisticsRepository(opts) :> IDocumentStatisticsRepository
@@ -69,7 +71,8 @@ module MongoDocumentStatisticsRepositoryTests =
                 |> Array.map (fun v ->
                     { v with
                         wordFrequencies = words
-                        uri = v.uri + (System.Guid.NewGuid().ToString()) })
+                        uri = v.uri + (System.Guid.NewGuid().ToString())
+                    })
 
             let! values = values |> Array.map repo.SetAsync |> Task.whenAll
 

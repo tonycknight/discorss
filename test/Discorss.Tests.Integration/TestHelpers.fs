@@ -9,7 +9,8 @@ open NSubstitute
 module TestHelpers =
     let config () =
         { AppConfiguration.defaultConfig with
-            mongoDbName = "discorss_inttests" }
+            mongoDbName = "discorss_inttests"
+        }
 
     let configOptions (config: AppConfiguration) =
         let result = Substitute.For<IOptions<AppConfiguration>>()

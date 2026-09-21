@@ -17,11 +17,13 @@ module MongoFeedRepositoryTests =
                 new MongoFeedRepository(opts, TestHelpers.logFactory ()) :> IFeedRepository
 
             let feed =
-                { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
-                  title = "test feed title"
-                  description = "test description"
-                  updated = DateTime.UtcNow
-                  lastFetched = DateTime.UtcNow }
+                {
+                    FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
+                    title = "test feed title"
+                    description = "test description"
+                    updated = DateTime.UtcNow
+                    lastFetched = DateTime.UtcNow
+                }
 
             let! result = repo.SetFeedInfoAsync feed
 
@@ -39,11 +41,13 @@ module MongoFeedRepositoryTests =
                 new MongoFeedRepository(opts, TestHelpers.logFactory ()) :> IFeedRepository
 
             let feed =
-                { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
-                  title = "test feed title"
-                  description = "test feed description"
-                  updated = DateTime.UtcNow
-                  lastFetched = DateTime.UtcNow }
+                {
+                    FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
+                    title = "test feed title"
+                    description = "test feed description"
+                    updated = DateTime.UtcNow
+                    lastFetched = DateTime.UtcNow
+                }
 
             let! result = repo.SetFeedInfoAsync feed
 
@@ -51,7 +55,8 @@ module MongoFeedRepositoryTests =
                 { feed with
                     title = Guid.NewGuid().ToString()
                     updated = DateTime.UtcNow
-                    lastFetched = DateTime.UtcNow }
+                    lastFetched = DateTime.UtcNow
+                }
 
             let! result = repo.SetFeedInfoAsync feed
 
@@ -77,11 +82,13 @@ module MongoFeedRepositoryTests =
                 new MongoFeedRepository(opts, TestHelpers.logFactory ()) :> IFeedRepository
 
             let feed =
-                { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
-                  title = "test feed title"
-                  description = "test feed description"
-                  updated = DateTime.UtcNow
-                  lastFetched = DateTime.UtcNow }
+                {
+                    FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
+                    title = "test feed title"
+                    description = "test feed description"
+                    updated = DateTime.UtcNow
+                    lastFetched = DateTime.UtcNow
+                }
 
             let! result = repo.SetFeedInfoAsync feed
 
@@ -100,11 +107,13 @@ module MongoFeedRepositoryTests =
                 new MongoFeedRepository(opts, TestHelpers.logFactory ()) :> IFeedRepository
 
             let feed =
-                { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
-                  title = "test feed title"
-                  description = "test feed description"
-                  updated = DateTime.UtcNow
-                  lastFetched = DateTime.UtcNow }
+                {
+                    FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
+                    title = "test feed title"
+                    description = "test feed description"
+                    updated = DateTime.UtcNow
+                    lastFetched = DateTime.UtcNow
+                }
 
             let! result = repo.SetFeedInfoAsync feed
 
@@ -132,11 +141,13 @@ module MongoFeedRepositoryTests =
             let date = DateTime.UtcNow.AddDays(-1)
 
             let feed =
-                { FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
-                  title = "test feed title"
-                  description = "test feed description"
-                  updated = date
-                  lastFetched = date }
+                {
+                    FeedInfo.uri = $"http://localhost/{Guid.NewGuid()}"
+                    title = "test feed title"
+                    description = "test feed description"
+                    updated = date
+                    lastFetched = date
+                }
 
             let! result = repo.SetFeedInfoAsync feed
 

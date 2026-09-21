@@ -12,15 +12,22 @@ module WebApi =
             path
             (Api.logClient
              >=> choose
-                     [ GET
-                       >=> choose
-                               [ route "/queue/" >=> noResponseCaching >=> WebAppHandlers.getNextDocument sp
-                                 routeCif "/likes/%s/" (fun uri -> uri |> WebAppHandlers.getDocumentLike sp)
-                                 route "/categories/stats/"
-                                 >=> noResponseCaching
-                                 >=> WebAppHandlers.getCategoryStats sp ]
+                     [
+                         GET
+                         >=> choose
+                                 [
+                                     route "/queue/" >=> noResponseCaching >=> WebAppHandlers.getNextDocument sp
+                                     routeCif "/likes/%s/" (fun uri -> uri |> WebAppHandlers.getDocumentLike sp)
+                                     route "/categories/stats/"
+                                     >=> noResponseCaching
+                                     >=> WebAppHandlers.getCategoryStats sp
+                                 ]
 
-                       DELETE
-                       >=> choose [ routeCif "/likes/%s/" (fun uri -> uri |> WebAppHandlers.deleteDocumentLike sp) ]
+                         DELETE
+                         >=> choose
+                                 [
+                                     routeCif "/likes/%s/" (fun uri -> uri |> WebAppHandlers.deleteDocumentLike sp)
+                                 ]
 
-                       PUT >=> choose [ route "/likes/" >=> WebAppHandlers.setDocumentLike sp ] ])
+                         PUT >=> choose [ route "/likes/" >=> WebAppHandlers.setDocumentLike sp ]
+                     ])

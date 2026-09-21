@@ -19,18 +19,22 @@ module QueueNames =
 
 module Messages =
     let toQueueMessage (value: 'a) =
-        { MicrobrokerMessage.messageType = value.GetType().AssemblyQualifiedName
-          content = Newtonsoft.Json.JsonConvert.SerializeObject value
-          created = DateTimeOffset.UtcNow
-          active = DateTimeOffset.UtcNow
-          expiry = DateTimeOffset.MaxValue }
+        {
+            MicrobrokerMessage.messageType = value.GetType().AssemblyQualifiedName
+            content = Newtonsoft.Json.JsonConvert.SerializeObject value
+            created = DateTimeOffset.UtcNow
+            active = DateTimeOffset.UtcNow
+            expiry = DateTimeOffset.MaxValue
+        }
 
     let toRawMessage (value: string) =
-        { MicrobrokerMessage.messageType = value.GetType().AssemblyQualifiedName
-          content = value
-          created = DateTimeOffset.UtcNow
-          active = DateTimeOffset.UtcNow
-          expiry = DateTimeOffset.MaxValue }
+        {
+            MicrobrokerMessage.messageType = value.GetType().AssemblyQualifiedName
+            content = value
+            created = DateTimeOffset.UtcNow
+            active = DateTimeOffset.UtcNow
+            expiry = DateTimeOffset.MaxValue
+        }
 
     let fromQueueMessage<'a> (msg: MicrobrokerMessage) =
         try

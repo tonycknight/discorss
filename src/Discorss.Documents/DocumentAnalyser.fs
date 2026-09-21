@@ -26,6 +26,8 @@ type DocumentAnalyser(lexicon: ILexicon) =
             let wordCounts = doc |> words |> Seq.counts
             let wordCount = wordCounts |> Seq.sumBy (fun kvp -> kvp.Value)
 
-            { DocumentStatistics.uri = doc.uri
-              wordCount = wordCount
-              wordFrequencies = wordCounts }
+            {
+                DocumentStatistics.uri = doc.uri
+                wordCount = wordCount
+                wordFrequencies = wordCounts
+            }

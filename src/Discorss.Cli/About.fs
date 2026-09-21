@@ -15,16 +15,18 @@ module AboutConsole =
             |> Array.map (Console.markup >> Console.renderable)
 
         let header =
-            [| "Host"
-               seq {
-                   Console.cyan host
+            [|
+                "Host"
+                seq {
+                    Console.cyan host
 
-                   if heartbeat then
-                       Console.green ":check_mark_button: Server is OK"
-                   else
-                       Console.red ":warning:  Server is sick"
-               }
-               |> String.join " " |]
+                    if heartbeat then
+                        Console.green ":check_mark_button: Server is OK"
+                    else
+                        Console.red ":warning:  Server is sick"
+                }
+                |> String.join " "
+            |]
             |> Array.map (Console.markup >> Console.renderable)
 
         let table = Console.table () |> Console.tableColumn "" |> Console.tableColumn ""
@@ -43,7 +45,9 @@ type AboutCommand(nuget: Tk.Nuget.INugetClient) =
                 Commands.renderBanner nuget
 
             let! heartbeat = DiscorssApi.getHeartbeat settings.ApiHost
-            let! stats = Exception.catchDefault [||] (fun () -> DiscorssApi.getStats settings.ApiHost)
+
+            let! stats =
+                Exception.catchDefault [||] (fun () -> DiscorssApi.getStats settings.ApiHost)
 
             AboutConsole.about (settings.ApiHost, heartbeat, stats)
             |> AnsiConsole.Console.Write

@@ -40,7 +40,12 @@ module WebAppHandlers =
 
                 match doc with
                 | None ->
-                    let result = json { ApiErrorResult.errors = [| "Not found." |] }
+                    let result =
+                        json
+                            {
+                                ApiErrorResult.errors = [| "Not found." |]
+                            }
+
                     return! RequestErrors.notFound result next ctx
                 | Some doc -> return! Successful.ok (doc |> Mapping.toDocumentLikeApiModel |> json) next ctx
             }

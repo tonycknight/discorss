@@ -21,9 +21,11 @@ type Startup() =
             "/api/v1"
             (Api.logClient
              >=> choose
-                     [ Discorss.Server.WebApp.webApp "/" app.ApplicationServices
-                       Discorss.Feeds.Service.WebApp.webApp "/feeds" app.ApplicationServices
-                       Discorss.Documents.Service.WebApi.webApp "/documents" app.ApplicationServices ])
+                     [
+                         Discorss.Server.WebApp.webApp "/" app.ApplicationServices
+                         Discorss.Feeds.Service.WebApp.webApp "/feeds" app.ApplicationServices
+                         Discorss.Documents.Service.WebApi.webApp "/documents" app.ApplicationServices
+                     ])
 
     member __.ConfigureServices(services: IServiceCollection) =
 
@@ -39,9 +41,11 @@ module Program =
     open Discorss.Ingestion
 
     let ingestionActors (sp: IServiceProvider) =
-        [| sp.GetRequiredService<FeedIngestionActor>() :> IOrchestrationActor
-           sp.GetRequiredService<QueueMonitorActor>() :> IOrchestrationActor
-           sp.GetRequiredService<IngestionActor>() :> IOrchestrationActor |]
+        [|
+            sp.GetRequiredService<FeedIngestionActor>() :> IOrchestrationActor
+            sp.GetRequiredService<QueueMonitorActor>() :> IOrchestrationActor
+            sp.GetRequiredService<IngestionActor>() :> IOrchestrationActor
+        |]
 
     let startup (sp: IServiceProvider) =
 

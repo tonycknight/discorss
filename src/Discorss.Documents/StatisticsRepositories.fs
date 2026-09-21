@@ -33,7 +33,8 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
             |> Seq.map (fun kvp -> (String.lower kvp.Key, kvp.Value) |> Seq.singleton |> Map.ofSeq)
 
         { value with
-            wordFrequencies = Map.empty |> Map.addMany words }
+            wordFrequencies = Map.empty |> Map.addMany words
+        }
 
     interface IStatsSource with
         member this.GetStatsAsync() =
@@ -41,9 +42,11 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
                 let! count = Mongo.estimatedCount collection
 
                 return
-                    { Stats.name = this.GetType().Name
-                      itemCount = count
-                      childStats = [] }
+                    {
+                        Stats.name = this.GetType().Name
+                        itemCount = count
+                        childStats = []
+                    }
             }
 
     interface IDocumentStatisticsRepository with
@@ -63,7 +66,8 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
 
         member this.GetAsync(uri: string) =
             task {
-                let! xs = $"{{ _id: '{String.lower uri}' }}" |> Mongo.getMany<BsonDocument> collection
+                let! xs =
+                    $"{{ _id: '{String.lower uri}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromDocumentStatisticsBson |> Seq.tryHead
             }
@@ -93,10 +97,12 @@ type MongoDocumentStatisticsRepository(config: IOptions<AppConfiguration>) =
                 let uris = uris |> Seq.map (fun x -> $"\"{String.lower x}\"") |> String.concat ", "
 
                 let pipeline =
-                    [| sprintf "{ $match: { _id: { $in: [ %s ] }}}" uris
-                       "{ $project: { words: { $objectToArray: \"$wordFrequencies\" } } }"
-                       "{ $unwind: { path: \"$words\" } }"
-                       "{ $group: { _id: \"$words.k\", count: { $sum: \"$words.v\" } } }" |]
+                    [|
+                        sprintf "{ $match: { _id: { $in: [ %s ] }}}" uris
+                        "{ $project: { words: { $objectToArray: \"$wordFrequencies\" } } }"
+                        "{ $unwind: { path: \"$words\" } }"
+                        "{ $group: { _id: \"$words.k\", count: { $sum: \"$words.v\" } } }"
+                    |]
                     |> Mongo.pipeline
 
                 return pipeline |> collection.Aggregate |> read Map.empty

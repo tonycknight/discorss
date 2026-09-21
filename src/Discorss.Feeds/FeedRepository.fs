@@ -21,11 +21,13 @@ type StubFeedRepository(feedUris) =
     let feeds =
         feedUris
         |> List.map (fun u ->
-            { FeedInfo.uri = u
-              title = ""
-              description = ""
-              updated = DateTime.MinValue
-              lastFetched = DateTime.MinValue })
+            {
+                FeedInfo.uri = u
+                title = ""
+                description = ""
+                updated = DateTime.MinValue
+                lastFetched = DateTime.MinValue
+            })
 
     let feedCache =
         feeds
@@ -34,13 +36,15 @@ type StubFeedRepository(feedUris) =
 
     new() =
         StubFeedRepository(
-            [ "https://devblogs.microsoft.com/dotnet/feed/"
-              "https://azure.microsoft.com/en-gb/blog/feed/"
-              "https://devblogs.microsoft.com/cosmosdb/feed/"
-              "https://devblogs.microsoft.com/dotnet/tag/f/feed/"
-              "https://github.blog/changelog/feed/"
-              "https://github.blog/latest/feed/"
-              "https://rss.slashdot.org/Slashdot/slashdotMain" ]
+            [
+                "https://devblogs.microsoft.com/dotnet/feed/"
+                "https://azure.microsoft.com/en-gb/blog/feed/"
+                "https://devblogs.microsoft.com/cosmosdb/feed/"
+                "https://devblogs.microsoft.com/dotnet/tag/f/feed/"
+                "https://github.blog/changelog/feed/"
+                "https://github.blog/latest/feed/"
+                "https://rss.slashdot.org/Slashdot/slashdotMain"
+            ]
         )
 
     interface IFeedRepository with
@@ -87,9 +91,11 @@ type MongoFeedRepository(config: IOptions<AppConfiguration>, logFactory: ILogger
                 let! count = Mongo.estimatedCount collection
 
                 return
-                    { Stats.name = this.GetType().Name
-                      itemCount = count
-                      childStats = [] }
+                    {
+                        Stats.name = this.GetType().Name
+                        itemCount = count
+                        childStats = []
+                    }
             }
 
 
@@ -129,7 +135,8 @@ type MongoFeedRepository(config: IOptions<AppConfiguration>, logFactory: ILogger
                 | Some feed ->
                     let feed =
                         { feed with
-                            lastFetched = DateTime.UtcNow }
+                            lastFetched = DateTime.UtcNow
+                        }
 
                     let! x = this.SetFeedInfoAsync feed
                     ignore 0

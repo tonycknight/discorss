@@ -39,9 +39,11 @@ type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILo
                 let! count = Mongo.estimatedCount collection
 
                 return
-                    { Stats.name = this.GetType().Name
-                      itemCount = count
-                      childStats = [] }
+                    {
+                        Stats.name = this.GetType().Name
+                        itemCount = count
+                        childStats = []
+                    }
             }
 
     interface IDocumentRepository with
@@ -58,7 +60,8 @@ type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILo
 
         member this.GetDocumentAsync(key: string) =
             task {
-                let! xs = $"{{ _id: '{String.lower key}' }}" |> Mongo.getMany<BsonDocument> collection
+                let! xs =
+                    $"{{ _id: '{String.lower key}' }}" |> Mongo.getMany<BsonDocument> collection
 
                 return xs |> Seq.map BsonMapping.fromDocumentBson |> Seq.tryHead
             }
@@ -86,9 +89,11 @@ type MongoDocumentRepository(config: IOptions<AppConfiguration>, logFactory: ILo
             task {
 
                 let pipeline =
-                    [| "{ $project: { categories: 1 } }"
-                       "{ $unwind: { path: \"$categories\" } }"
-                       "{ $group: { _id: \"$categories\", count: { $count: {} } } }]" |]
+                    [|
+                        "{ $project: { categories: 1 } }"
+                        "{ $unwind: { path: \"$categories\" } }"
+                        "{ $group: { _id: \"$categories\", count: { $count: {} } } }]"
+                    |]
                     |> Mongo.pipeline
 
                 use cursor = collection.Aggregate pipeline
